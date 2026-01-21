@@ -1,6 +1,6 @@
 # vSphere Infra Provider
 
-Use the Cluster API [vSphere Infra Provider](https://github.com/kubernetes-sigs/cluster-api-provider-vsphere) to create a fully functional Kubernetes cluster using the Cluster API [Kamaji Control Plane Provider](https://github.com/clastix/cluster-api-control-plane-provider-kamaji).
+Use the Cluster API [vSphere Infra Provider](https://github.com/kubernetes-sigs/cluster-api-provider-vsphere) to create a fully functional Kubernetes cluster using the Cluster API [Steward Control Plane Provider](https://github.com/butlerlabs/cluster-api-control-plane-provider-steward).
 
 ## vSphere Requirements
 
@@ -54,7 +54,7 @@ export VSPHERE_DATACENTER="SDDC-Datacenter"
 export VSPHERE_DATASTORE="DefaultDatastore"
 export VSPHERE_NETWORK="VM Network"
 export VSPHERE_RESOURCE_POOL="*/Resources"
-export VSPHERE_FOLDER="kamaji-capi-pool"
+export VSPHERE_FOLDER="steward-capi-pool"
 export VSPHERE_TLS_THUMBPRINT="..."
 export VSPHERE_STORAGE_POLICY="vSAN Storage Policy"
 ```
@@ -97,24 +97,24 @@ export MACHINE_DEPLOY_REPLICAS=2
 export NODE_DISK_SIZE=25
 export NODE_MEMORY_SIZE=8192
 export NODE_CPU_COUNT=2
-export SSH_USER="clastix"
+export SSH_USER="butlerlabs"
 export SSH_AUTHORIZED_KEY="ssh-rsa AAAAB3N..."
 ```
 
-The following command will generate a cluster manifest based on the [`capi-kamaji-vsphere-template.yaml`](https://raw.githubusercontent.com/clastix/cluster-api-control-plane-provider-kamaji/master/templates/vsphere/capi-kamaji-vsphere-template.yaml) template file:
+The following command will generate a cluster manifest based on the [`capi-steward-vsphere-template.yaml`](https://raw.githubusercontent.com/butlerlabs/cluster-api-control-plane-provider-steward/master/templates/vsphere/capi-steward-vsphere-template.yaml) template file:
 
 ```bash
 clusterctl generate cluster $CLUSTER_NAME \
-    --from capi-kamaji-vsphere-template.yaml \
-    > capi-kamaji-vsphere-cluster.yaml
+    --from capi-steward-vsphere-template.yaml \
+    > capi-steward-vsphere-cluster.yaml
 ```
 
-If you want to use DHCP instead of IPAM, use the [`capi-kamaji-vsphere-dhcp-template.yaml`](https://raw.githubusercontent.com/clastix/cluster-api-control-plane-provider-kamaji/master/templates/vsphere/capi-kamaji-vsphere-dhcp-template.yaml) template file:
+If you want to use DHCP instead of IPAM, use the [`capi-steward-vsphere-dhcp-template.yaml`](https://raw.githubusercontent.com/butlerlabs/cluster-api-control-plane-provider-steward/master/templates/vsphere/capi-steward-vsphere-dhcp-template.yaml) template file:
 
 ```bash
 clusterctl generate cluster $CLUSTER_NAME \
-    --from capi-kamaji-vsphere-dhcp-template.yaml \
-    > capi-kamaji-vsphere-cluster.yaml
+    --from capi-steward-vsphere-dhcp-template.yaml \
+    > capi-steward-vsphere-cluster.yaml
 ```
 
 ### Additional cloud-init configuration
@@ -146,8 +146,8 @@ and include it in the `clusterctl generate cluster` command:
 
 ```bash
 clusterctl generate cluster $CLUSTER_NAME \
-    --from capi-kamaji-vsphere-template.yaml \
-    > capi-kamaji-vsphere-cluster.yaml
+    --from capi-steward-vsphere-template.yaml \
+    > capi-steward-vsphere-cluster.yaml
 ```
 
 ### Apply the Cluster Manifest
@@ -155,7 +155,7 @@ clusterctl generate cluster $CLUSTER_NAME \
 Apply the generated cluster manifest to create the tenant cluster:
 
 ```bash
-kubectl apply -f capi-kamaji-vsphere-cluster.yaml
+kubectl apply -f capi-steward-vsphere-cluster.yaml
 ```
 
 You can check the status of the cluster deployment with `clusterctl`:
@@ -170,7 +170,7 @@ You can check the status of the tenant cluster with `kubectl`:
 kubectl get clusters -n default
 ```
 
-and related tenant control plane created on the Kamaji Management Cluster:
+and related tenant control plane created on the Steward Management Cluster:
 
 ```bash
 kubectl get tcp -n default
@@ -178,7 +178,7 @@ kubectl get tcp -n default
 
 ## Access the Tenant Cluster
 
-To access the tenant cluster, you can estract the `kubeconfig` file from the Kamaji Management Cluster:
+To access the tenant cluster, you can estract the `kubeconfig` file from the Steward Management Cluster:
 
 ```bash
 clusterctl get kubeconfig $CLUSTER_NAME \
@@ -194,29 +194,29 @@ kubectl cluster-info
 
 ## Cloud Controller Manager
 
-The template file [`capi-kamaji-vsphere-template.yaml`](https://raw.githubusercontent.com/clastix/cluster-api-control-plane-provider-kamaji/master/templates/vsphere/capi-kamaji-vsphere-template.yaml) includes the external [Cloud Controller Manager (CCM)](https://github.com/kubernetes/cloud-provider-vsphere) configuration for vSphere. The CCM is a Kubernetes controller that manages the cloud provider's resources.
+The template file [`capi-steward-vsphere-template.yaml`](https://raw.githubusercontent.com/butlerlabs/cluster-api-control-plane-provider-steward/master/templates/vsphere/capi-steward-vsphere-template.yaml) includes the external [Cloud Controller Manager (CCM)](https://github.com/kubernetes/cloud-provider-vsphere) configuration for vSphere. The CCM is a Kubernetes controller that manages the cloud provider's resources.
 
-Usually, the CCM is deployed on control plane nodes, but in Kamaji there are no nodes for Control Plane, so the CCM is deployed on the worker nodes as daemonset.
+Usually, the CCM is deployed on control plane nodes, but in Steward there are no nodes for Control Plane, so the CCM is deployed on the worker nodes as daemonset.
 
-As alternative, you can deploy the CCM as part of the Hosted Control Plane on the Management Cluster. To do so, the template file [`capi-kamaji-vsphere-template-ccm.yaml`](https://raw.githubusercontent.com/clastix/cluster-api-control-plane-provider-kamaji/master/templates/vsphere/capi-kamaji-vsphere-template-ccm.yaml) includes the configuration for the CCM as part of the Kamaji Control Plane. This approach provides security benefits by isolating vSphere credentials from tenant users while maintaining full Cluster API integration.
+As alternative, you can deploy the CCM as part of the Hosted Control Plane on the Management Cluster. To do so, the template file [`capi-steward-vsphere-template-ccm.yaml`](https://raw.githubusercontent.com/butlerlabs/cluster-api-control-plane-provider-steward/master/templates/vsphere/capi-steward-vsphere-template-ccm.yaml) includes the configuration for the CCM as part of the Steward Control Plane. This approach provides security benefits by isolating vSphere credentials from tenant users while maintaining full Cluster API integration.
 
 The following command will generate a cluster manifest with the CCM installed on the Management Cluster:
 
 ```bash
 clusterctl generate cluster $CLUSTER_NAME \
-    --from capi-kamaji-vsphere-template-ccm.yaml \
-    > capi-kamaji-vsphere-cluster.yaml
+    --from capi-steward-vsphere-template-ccm.yaml \
+    > capi-steward-vsphere-cluster.yaml
 ```
 
 Apply the generated cluster manifest to create the tenant cluster:
 
 ```bash
-kubectl apply -f capi-kamaji-vsphere-cluster.yaml
+kubectl apply -f capi-steward-vsphere-cluster.yaml
 ```
 
 ## vSphere CSI Driver
 
-The template file [`capi-kamaji-vsphere-template-csi.yaml`](https://raw.githubusercontent.com/clastix/cluster-api-control-plane-provider-kamaji/master/templates/vsphere/capi-kamaji-vsphere-template-csi.yaml) includes the [vSphere CSI Driver](https://github.com/kubernetes-sigs/vsphere-csi-driver) configuration for vSphere. The vSphere CSI Driver is a Container Storage Interface (CSI) driver that provides a way to use vSphere storage with Kubernetes.
+The template file [`capi-steward-vsphere-template-csi.yaml`](https://raw.githubusercontent.com/butlerlabs/cluster-api-control-plane-provider-steward/master/templates/vsphere/capi-steward-vsphere-template-csi.yaml) includes the [vSphere CSI Driver](https://github.com/kubernetes-sigs/vsphere-csi-driver) configuration for vSphere. The vSphere CSI Driver is a Container Storage Interface (CSI) driver that provides a way to use vSphere storage with Kubernetes.
 
 This template file introduces a *"split configuration"* for the vSphere CSI Driver, with the CSI driver deployed on the worker nodes as daemonset and the CSI Controller Manager deployed on the Management Cluster as part of the Hosted Control Plane. In this way, no vSphere credentials are required on the tenant cluster.
 
@@ -243,14 +243,14 @@ The following command will generate a cluster manifest with split configuration 
 
 ```bash
 clusterctl generate cluster $CLUSTER_NAME \
-    --from capi-kamaji-vsphere-template-csi.yaml \
-    > capi-kamaji-vsphere-cluster.yaml
+    --from capi-steward-vsphere-template-csi.yaml \
+    > capi-steward-vsphere-cluster.yaml
 ```
 
 Apply the generated cluster manifest to create the tenant cluster:
 
 ```bash
-kubectl apply -f capi-kamaji-vsphere-cluster.yaml
+kubectl apply -f capi-steward-vsphere-cluster.yaml
 ```
 
 ## Delete the Tenant Cluster
@@ -261,21 +261,21 @@ For cluster deletion, use the following command:
 kubectl delete cluster sample
 ```
 
-Always use `kubectl delete cluster $CLUSTER_NAME` to delete the tenant cluster. Using `kubectl delete -f capi-kamaji-vsphere-cluster.yaml` may lead to orphaned resources in some scenarios, as this method doesn't always respect ownership references between resources that were created after the initial deployment.
+Always use `kubectl delete cluster $CLUSTER_NAME` to delete the tenant cluster. Using `kubectl delete -f capi-steward-vsphere-cluster.yaml` may lead to orphaned resources in some scenarios, as this method doesn't always respect ownership references between resources that were created after the initial deployment.
 
 ## Install the Tenant Cluster as Helm Release
 
-Another option to create a Tenant Cluster is to use the Helm Chart [cluster-api-kamaji-vsphere](https://github.com/clastix/cluster-api-kamaji-vsphere).
+Another option to create a Tenant Cluster is to use the Helm Chart [cluster-api-steward-vsphere](https://github.com/butlerlabs/cluster-api-steward-vsphere).
 
 !!! warning "Advanced Usage"
-    This Helm Chart provides several additional configuration options to customize the Tenant Cluster. Please refer to its documentation for more information. Make sure you get comfortable with the Cluster API concepts and Kamaji before to attempt to use it.
+    This Helm Chart provides several additional configuration options to customize the Tenant Cluster. Please refer to its documentation for more information. Make sure you get comfortable with the Cluster API concepts and Steward before to attempt to use it.
 
 Create a Tenant Cluster as Helm Release:
 
 ```bash
-helm repo add clastix https://clastix.github.io/cluster-api-kamaji-vsphere
+helm repo add butlerlabs https://butlerlabs.github.io/cluster-api-steward-vsphere
 helm repo update
-helm install sample clastix/cluster-api-kamaji-vsphere \
+helm install sample butlerlabs/cluster-api-steward-vsphere \
     --set cluster.name=sample \
     --namespace default \
     --values my-values.yaml

@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package resources
@@ -17,12 +17,12 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/kubeadm"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/kubeadm"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
-func GetKubeadmManifestDeps(ctx context.Context, client client.Client, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (*clientset.Clientset, *kubeadm.Configuration, error) {
+func GetKubeadmManifestDeps(ctx context.Context, client client.Client, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (*clientset.Clientset, *kubeadm.Configuration, error) {
 	config, err := getStoredKubeadmConfiguration(ctx, client, "", tenantControlPlane)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "cannot retrieve kubeadm configuration")
@@ -86,7 +86,7 @@ func GetKubeadmManifestDeps(ctx context.Context, client client.Client, tenantCon
 	return tenantClient, config, nil
 }
 
-func KubeadmBootstrap(ctx context.Context, r KubeadmPhaseResource, logger logr.Logger, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
+func KubeadmBootstrap(ctx context.Context, r KubeadmPhaseResource, logger logr.Logger, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
 	var checksum string
 
 	tntClient, err := utilities.GetTenantClient(ctx, r.GetClient(), tenantControlPlane)
@@ -169,7 +169,7 @@ func KubeadmBootstrap(ctx context.Context, r KubeadmPhaseResource, logger logr.L
 	return controllerutil.OperationResultUpdated, nil
 }
 
-func KubeadmPhaseCreate(ctx context.Context, r KubeadmPhaseResource, logger logr.Logger, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
+func KubeadmPhaseCreate(ctx context.Context, r KubeadmPhaseResource, logger logr.Logger, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
 	config, err := getStoredKubeadmConfiguration(ctx, r.GetClient(), r.GetTmpDirectory(), tenantControlPlane)
 	if err != nil {
 		logger.Error(err, "cannot retrieve kubeadm configuration")

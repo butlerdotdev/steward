@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package controllers
@@ -15,7 +15,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
 )
 
 type KubeconfigGeneratorWatcher struct {
@@ -28,7 +28,7 @@ func (r *KubeconfigGeneratorWatcher) Reconcile(ctx context.Context, req ctrl.Req
 
 	logger.Info("reconciling resource")
 
-	var tcp kamajiv1alpha1.TenantControlPlane
+	var tcp stewardv1alpha1.TenantControlPlane
 	if err := r.Client.Get(ctx, req.NamespacedName, &tcp); err != nil {
 		if apierrors.IsNotFound(err) {
 			logger.Info("resource may have been deleted, skipping")
@@ -41,7 +41,7 @@ func (r *KubeconfigGeneratorWatcher) Reconcile(ctx context.Context, req ctrl.Req
 		return ctrl.Result{}, err
 	}
 
-	var generators kamajiv1alpha1.KubeconfigGeneratorList
+	var generators stewardv1alpha1.KubeconfigGeneratorList
 	if err := r.Client.List(ctx, &generators); err != nil {
 		logger.Error(err, "cannot list generators")
 
@@ -70,6 +70,6 @@ func (r *KubeconfigGeneratorWatcher) Reconcile(ctx context.Context, req ctrl.Req
 
 func (r *KubeconfigGeneratorWatcher) SetupWithManager(mgr manager.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&kamajiv1alpha1.TenantControlPlane{}).
+		For(&stewardv1alpha1.TenantControlPlane{}).
 		Complete(r)
 }

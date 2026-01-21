@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package resources
@@ -16,7 +16,7 @@ import (
 	gatewayv1 "sigs.k8s.io/gateway-api/apis/v1"
 	gatewayv1alpha2 "sigs.k8s.io/gateway-api/apis/v1alpha2"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
 )
 
 // fetchGatewayByListener uses the indexer to efficiently find a gateway with a specific listener.
@@ -32,7 +32,7 @@ func fetchGatewayByListener(ctx context.Context, c client.Client, ref gatewayv1.
 	// Query gateways using the indexer
 	gatewayList := &gatewayv1.GatewayList{}
 	if err := c.List(ctx, gatewayList, client.MatchingFieldsSelector{
-		Selector: fields.OneTermEqualSelector(kamajiv1alpha1.GatewayListenerNameKey, listenerKey),
+		Selector: fields.OneTermEqualSelector(stewardv1alpha1.GatewayListenerNameKey, listenerKey),
 	}); err != nil {
 		return nil, fmt.Errorf("failed to list gateways by listener: %w", err)
 	}
@@ -74,7 +74,7 @@ func FindMatchingListener(listeners []gatewayv1.Listener, ref gatewayv1.ParentRe
 
 // IsGatewayRouteStatusChanged checks if the gateway route status has changed compared to the stored status.
 // Returns true if the status has changed (update needed), false if it's the same.
-func IsGatewayRouteStatusChanged(currentStatus *kamajiv1alpha1.KubernetesGatewayStatus, resourceStatus gatewayv1alpha2.RouteStatus) bool {
+func IsGatewayRouteStatusChanged(currentStatus *stewardv1alpha1.KubernetesGatewayStatus, resourceStatus gatewayv1alpha2.RouteStatus) bool {
 	if currentStatus == nil {
 		return true
 	}
@@ -167,8 +167,8 @@ func CleanupTLSRoute(ctx context.Context, c client.Client, routeName, routeNames
 }
 
 // BuildGatewayAccessPointsStatus builds access points from route statuses.
-func BuildGatewayAccessPointsStatus(ctx context.Context, c client.Client, route *gatewayv1alpha2.TLSRoute, routeStatuses gatewayv1alpha2.RouteStatus) ([]kamajiv1alpha1.GatewayAccessPoint, error) {
-	accessPoints := []kamajiv1alpha1.GatewayAccessPoint{}
+func BuildGatewayAccessPointsStatus(ctx context.Context, c client.Client, route *gatewayv1alpha2.TLSRoute, routeStatuses gatewayv1alpha2.RouteStatus) ([]stewardv1alpha1.GatewayAccessPoint, error) {
+	accessPoints := []stewardv1alpha1.GatewayAccessPoint{}
 	routeNamespace := gatewayv1.Namespace(route.Namespace)
 
 	for _, routeStatus := range routeStatuses.Parents {
@@ -216,7 +216,7 @@ func BuildGatewayAccessPointsStatus(ctx context.Context, c client.Client, route 
 			}
 
 			hostnameAddressType := gatewayv1.HostnameAddressType
-			accessPoints = append(accessPoints, kamajiv1alpha1.GatewayAccessPoint{
+			accessPoints = append(accessPoints, stewardv1alpha1.GatewayAccessPoint{
 				Type:  &hostnameAddressType,
 				Value: parsedURL.String(),
 				Port:  listener.Port,

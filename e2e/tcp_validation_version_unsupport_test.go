@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package e2e
@@ -15,8 +15,8 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	pointer "k8s.io/utils/ptr"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/upgrade"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/upgrade"
 )
 
 var _ = Describe("using an unsupported TenantControlPlane Kubernetes version", func() {
@@ -28,23 +28,23 @@ var _ = Describe("using an unsupported TenantControlPlane Kubernetes version", f
 
 	It("should be blocked on creation", func() {
 		Consistently(func() error {
-			tcp := kamajiv1alpha1.TenantControlPlane{
+			tcp := stewardv1alpha1.TenantControlPlane{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "unsupported-version",
 					Namespace: "default",
 				},
-				Spec: kamajiv1alpha1.TenantControlPlaneSpec{
-					ControlPlane: kamajiv1alpha1.ControlPlane{
-						Deployment: kamajiv1alpha1.DeploymentSpec{
+				Spec: stewardv1alpha1.TenantControlPlaneSpec{
+					ControlPlane: stewardv1alpha1.ControlPlane{
+						Deployment: stewardv1alpha1.DeploymentSpec{
 							Replicas: pointer.To(int32(1)),
 						},
-						Service: kamajiv1alpha1.ServiceSpec{
+						Service: stewardv1alpha1.ServiceSpec{
 							ServiceType: "ClusterIP",
 						},
 					},
-					Kubernetes: kamajiv1alpha1.KubernetesSpec{
+					Kubernetes: stewardv1alpha1.KubernetesSpec{
 						Version: fmt.Sprintf("v%s", unsupported.String()),
-						Kubelet: kamajiv1alpha1.KubeletSpec{
+						Kubelet: stewardv1alpha1.KubeletSpec{
 							CGroupFS: "cgroupfs",
 						},
 					},
@@ -56,23 +56,23 @@ var _ = Describe("using an unsupported TenantControlPlane Kubernetes version", f
 	})
 
 	It("should be blocked on update", func() {
-		tcp := kamajiv1alpha1.TenantControlPlane{
+		tcp := stewardv1alpha1.TenantControlPlane{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      "non-linear-update",
 				Namespace: "default",
 			},
-			Spec: kamajiv1alpha1.TenantControlPlaneSpec{
-				ControlPlane: kamajiv1alpha1.ControlPlane{
-					Deployment: kamajiv1alpha1.DeploymentSpec{
+			Spec: stewardv1alpha1.TenantControlPlaneSpec{
+				ControlPlane: stewardv1alpha1.ControlPlane{
+					Deployment: stewardv1alpha1.DeploymentSpec{
 						Replicas: pointer.To(int32(1)),
 					},
-					Service: kamajiv1alpha1.ServiceSpec{
+					Service: stewardv1alpha1.ServiceSpec{
 						ServiceType: "ClusterIP",
 					},
 				},
-				Kubernetes: kamajiv1alpha1.KubernetesSpec{
+				Kubernetes: stewardv1alpha1.KubernetesSpec{
 					Version: fmt.Sprintf("v%s", v.String()),
-					Kubelet: kamajiv1alpha1.KubeletSpec{
+					Kubelet: stewardv1alpha1.KubeletSpec{
 						CGroupFS: "cgroupfs",
 					},
 				},

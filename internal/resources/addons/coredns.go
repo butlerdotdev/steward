@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package addons
@@ -18,13 +18,13 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/constants"
-	"github.com/clastix/kamaji/internal/kubeadm"
-	"github.com/clastix/kamaji/internal/resources"
-	addons_utils "github.com/clastix/kamaji/internal/resources/addons/utils"
-	"github.com/clastix/kamaji/internal/resources/utils"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/constants"
+	"github.com/butlerdotdev/steward/internal/kubeadm"
+	"github.com/butlerdotdev/steward/internal/resources"
+	addons_utils "github.com/butlerdotdev/steward/internal/resources/addons/utils"
+	"github.com/butlerdotdev/steward/internal/resources/utils"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 type CoreDNS struct {
@@ -44,7 +44,7 @@ func (c *CoreDNS) GetHistogram() prometheus.Histogram {
 	return coreDNSCollector
 }
 
-func (c *CoreDNS) Define(context.Context, *kamajiv1alpha1.TenantControlPlane) error {
+func (c *CoreDNS) Define(context.Context, *stewardv1alpha1.TenantControlPlane) error {
 	c.deployment = &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      kubeadm.CoreDNSName,
@@ -83,11 +83,11 @@ func (c *CoreDNS) Define(context.Context, *kamajiv1alpha1.TenantControlPlane) er
 	return nil
 }
 
-func (c *CoreDNS) ShouldCleanup(tcp *kamajiv1alpha1.TenantControlPlane) bool {
+func (c *CoreDNS) ShouldCleanup(tcp *stewardv1alpha1.TenantControlPlane) bool {
 	return tcp.Spec.Addons.CoreDNS == nil && tcp.Status.Addons.CoreDNS.Enabled
 }
 
-func (c *CoreDNS) CleanUp(ctx context.Context, tcp *kamajiv1alpha1.TenantControlPlane) (bool, error) {
+func (c *CoreDNS) CleanUp(ctx context.Context, tcp *stewardv1alpha1.TenantControlPlane) (bool, error) {
 	logger := log.FromContext(ctx, "resource", "kubeadm_addons", "addon", c.GetName())
 
 	tenantClient, err := utilities.GetTenantClient(ctx, c.Client, tcp)
@@ -107,7 +107,7 @@ func (c *CoreDNS) CleanUp(ctx context.Context, tcp *kamajiv1alpha1.TenantControl
 				continue
 			}
 		}
-		// Don't delete resource if it is not managed by Kamaji
+		// Don't delete resource if it is not managed by Steward
 		if labels := obj.GetLabels(); labels == nil || labels[constants.ProjectNameLabelKey] != constants.ProjectNameLabelValue {
 			continue
 		}
@@ -126,7 +126,7 @@ func (c *CoreDNS) CleanUp(ctx context.Context, tcp *kamajiv1alpha1.TenantControl
 	return deleted, nil
 }
 
-func (c *CoreDNS) CreateOrUpdate(ctx context.Context, tcp *kamajiv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
+func (c *CoreDNS) CreateOrUpdate(ctx context.Context, tcp *stewardv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
 	logger := log.FromContext(ctx, "addon", c.GetName())
 
 	if tcp.Spec.Addons.CoreDNS == nil {
@@ -205,18 +205,18 @@ func (c *CoreDNS) GetName() string {
 	return "coredns"
 }
 
-func (c *CoreDNS) ShouldStatusBeUpdated(_ context.Context, tcp *kamajiv1alpha1.TenantControlPlane) bool {
+func (c *CoreDNS) ShouldStatusBeUpdated(_ context.Context, tcp *stewardv1alpha1.TenantControlPlane) bool {
 	return tcp.Spec.Addons.CoreDNS != nil && !tcp.Status.Addons.CoreDNS.Enabled
 }
 
-func (c *CoreDNS) UpdateTenantControlPlaneStatus(_ context.Context, tcp *kamajiv1alpha1.TenantControlPlane) error {
+func (c *CoreDNS) UpdateTenantControlPlaneStatus(_ context.Context, tcp *stewardv1alpha1.TenantControlPlane) error {
 	tcp.Status.Addons.CoreDNS.Enabled = tcp.Spec.Addons.CoreDNS != nil
 	tcp.Status.Addons.CoreDNS.LastUpdate = metav1.Now()
 
 	return nil
 }
 
-func (c *CoreDNS) decodeManifests(ctx context.Context, tcp *kamajiv1alpha1.TenantControlPlane) error {
+func (c *CoreDNS) decodeManifests(ctx context.Context, tcp *stewardv1alpha1.TenantControlPlane) error {
 	tcpClient, config, err := resources.GetKubeadmManifestDeps(ctx, c.Client, tcp)
 	if err != nil {
 		return errors.Wrap(err, "unable to create manifests dependencies")
@@ -243,32 +243,32 @@ func (c *CoreDNS) decodeManifests(ctx context.Context, tcp *kamajiv1alpha1.Tenan
 	if err = utilities.DecodeFromYAML(string(parts[1]), c.deployment); err != nil {
 		return errors.Wrap(err, "unable to decode Deployment manifest")
 	}
-	addons_utils.SetKamajiManagedLabels(c.deployment)
+	addons_utils.SetStewardManagedLabels(c.deployment)
 
 	if err = utilities.DecodeFromYAML(string(parts[2]), c.configMap); err != nil {
 		return errors.Wrap(err, "unable to decode ConfigMap manifest")
 	}
-	addons_utils.SetKamajiManagedLabels(c.configMap)
+	addons_utils.SetStewardManagedLabels(c.configMap)
 
 	if err = utilities.DecodeFromYAML(string(parts[3]), c.service); err != nil {
 		return errors.Wrap(err, "unable to decode Service manifest")
 	}
-	addons_utils.SetKamajiManagedLabels(c.service)
+	addons_utils.SetStewardManagedLabels(c.service)
 
 	if err = utilities.DecodeFromYAML(string(parts[4]), c.clusterRole); err != nil {
 		return errors.Wrap(err, "unable to decode ClusterRole manifest")
 	}
-	addons_utils.SetKamajiManagedLabels(c.clusterRole)
+	addons_utils.SetStewardManagedLabels(c.clusterRole)
 
 	if err = utilities.DecodeFromYAML(string(parts[5]), c.clusterRoleBinding); err != nil {
 		return errors.Wrap(err, "unable to decode ClusterRoleBinding manifest")
 	}
-	addons_utils.SetKamajiManagedLabels(c.clusterRoleBinding)
+	addons_utils.SetStewardManagedLabels(c.clusterRoleBinding)
 
 	if err = utilities.DecodeFromYAML(string(parts[6]), c.serviceAccount); err != nil {
 		return errors.Wrap(err, "unable to decode ServiceAccount manifest")
 	}
-	addons_utils.SetKamajiManagedLabels(c.serviceAccount)
+	addons_utils.SetStewardManagedLabels(c.serviceAccount)
 
 	return nil
 }
@@ -310,7 +310,7 @@ func (c *CoreDNS) mutateDeployment(ctx context.Context, tenantClient client.Clie
 		return controllerutil.OperationResultNone, err
 	}
 
-	return controllerutil.OperationResultNone, tenantClient.Patch(ctx, c.deployment, client.Apply, client.FieldOwner("kamaji"), client.ForceOwnership)
+	return controllerutil.OperationResultNone, tenantClient.Patch(ctx, c.deployment, client.Apply, client.FieldOwner("steward"), client.ForceOwnership)
 }
 
 func (c *CoreDNS) mutateConfigMap(ctx context.Context, tenantClient client.Client) (controllerutil.OperationResult, error) {
@@ -346,7 +346,7 @@ func (c *CoreDNS) mutateService(ctx context.Context, tenantClient client.Client)
 		return controllerutil.OperationResultNone, err
 	}
 
-	return controllerutil.OperationResultNone, tenantClient.Patch(ctx, c.service, client.Apply, client.FieldOwner("kamaji"), client.ForceOwnership)
+	return controllerutil.OperationResultNone, tenantClient.Patch(ctx, c.service, client.Apply, client.FieldOwner("steward"), client.ForceOwnership)
 }
 
 func (c *CoreDNS) mutateClusterRole(ctx context.Context, tenantClient client.Client) (controllerutil.OperationResult, error) {

@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package controlplane
@@ -13,8 +13,8 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 	pointer "k8s.io/utils/ptr"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 const (
@@ -47,7 +47,7 @@ func (k Konnectivity) serverVersion(tcpVersion, addonVersion string) string {
 	return fmt.Sprintf("v0.%d.0", version.Minor)
 }
 
-func (k Konnectivity) buildKonnectivityContainer(tcpVersion string, addon *kamajiv1alpha1.KonnectivitySpec, replicas int32, podSpec *corev1.PodSpec) {
+func (k Konnectivity) buildKonnectivityContainer(tcpVersion string, addon *stewardv1alpha1.KonnectivitySpec, replicas int32, podSpec *corev1.PodSpec) {
 	found, index := utilities.HasNamedContainer(podSpec.Containers, konnectivityServerName)
 	if !found {
 		index = len(podSpec.Containers)
@@ -221,7 +221,7 @@ func (k Konnectivity) buildVolumeMounts(podSpec *corev1.PodSpec) {
 	podSpec.Containers[index].VolumeMounts[vIndex].MountPath = "/etc/kubernetes/konnectivity/configurations"
 }
 
-func (k Konnectivity) buildVolumes(status kamajiv1alpha1.KonnectivityStatus, podSpec *corev1.PodSpec) {
+func (k Konnectivity) buildVolumes(status stewardv1alpha1.KonnectivityStatus, podSpec *corev1.PodSpec) {
 	// Defining volumes for the UDS socket
 	found, index := utilities.HasNamedVolume(podSpec.Volumes, konnectivityUDSVolume)
 	if !found {
@@ -267,7 +267,7 @@ func (k Konnectivity) buildVolumes(status kamajiv1alpha1.KonnectivityStatus, pod
 	}
 }
 
-func (k Konnectivity) Build(deployment *appsv1.Deployment, tenantControlPlane kamajiv1alpha1.TenantControlPlane) {
+func (k Konnectivity) Build(deployment *appsv1.Deployment, tenantControlPlane stewardv1alpha1.TenantControlPlane) {
 	k.buildKonnectivityContainer(tenantControlPlane.Spec.Kubernetes.Version, tenantControlPlane.Spec.Addons.Konnectivity, *tenantControlPlane.Spec.ControlPlane.Deployment.Replicas, &deployment.Spec.Template.Spec)
 	k.buildVolumeMounts(&deployment.Spec.Template.Spec)
 	k.buildVolumes(tenantControlPlane.Status.Addons.Konnectivity, &deployment.Spec.Template.Spec)

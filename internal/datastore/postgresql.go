@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package datastore
@@ -12,8 +12,8 @@ import (
 	"github.com/go-pg/pg/v10"
 	goerrors "github.com/pkg/errors"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/datastore/errors"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/datastore/errors"
 )
 
 const (
@@ -39,7 +39,7 @@ type PostgreSQLConnection struct {
 	switchDatabaseFn func(dbName string) *pg.DB
 }
 
-func (r *PostgreSQLConnection) Migrate(ctx context.Context, tcp kamajiv1alpha1.TenantControlPlane, target Connection) error {
+func (r *PostgreSQLConnection) Migrate(ctx context.Context, tcp stewardv1alpha1.TenantControlPlane, target Connection) error {
 	// Ensuring the connection is working as expected
 	if err := target.Check(ctx); err != nil {
 		return fmt.Errorf("unable to check target datastore: %w", err)
@@ -122,7 +122,7 @@ func NewPostgreSQLConnection(config ConnectionConfig) (Connection, error) {
 }
 
 func (r *PostgreSQLConnection) Driver() string {
-	return string(kamajiv1alpha1.KinePostgreSQLDriver)
+	return string(stewardv1alpha1.KinePostgreSQLDriver)
 }
 
 func (r *PostgreSQLConnection) UserExists(ctx context.Context, user string) (bool, error) {

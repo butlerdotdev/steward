@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package resources
@@ -34,7 +34,7 @@ func LazyLoadHistogramFromResource(collector prometheus.Histogram, resource Reso
 
 	if collector == nil {
 		c := prometheus.NewHistogram(prometheus.HistogramOpts{
-			Namespace: "kamaji",
+			Namespace: "steward",
 			Subsystem: "handler",
 			Name:      n + "_time_seconds",
 			Help:      "Bucket time requested for the given handler to complete its handling.",

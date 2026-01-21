@@ -1,31 +1,31 @@
 # API Reference
 
-This section contains the Kamaji Customer Resource Definitions,
+This section contains the Steward Customer Resource Definitions,
 as well as the Cluster API Control Plane provider ones.
 
 Packages:
 
 - [controlplane.cluster.x-k8s.io/v1alpha1](#controlplaneclusterx-k8siov1alpha1)
-- [kamaji.clastix.io/v1alpha1](#kamajiclastixiov1alpha1)
+- [steward.butlerlabs.io/v1alpha1](#stewardbutlerlabsiov1alpha1)
 
 ## controlplane.cluster.x-k8s.io/v1alpha1
 
 Resource Types:
 
-- [KamajiControlPlane](#kamajicontrolplane)
+- [StewardControlPlane](#stewardcontrolplane)
 
-- [KamajiControlPlaneTemplate](#kamajicontrolplanetemplate)
-
-
-
-
-### KamajiControlPlane
+- [StewardControlPlaneTemplate](#stewardcontrolplanetemplate)
 
 
 
 
+### StewardControlPlane
 
-KamajiControlPlane is the Schema for the kamajicontrolplanes API.
+
+
+
+
+StewardControlPlane is the Schema for the stewardcontrolplanes API.
 
 <table>
     <thead>
@@ -45,7 +45,7 @@ KamajiControlPlane is the Schema for the kamajicontrolplanes API.
       <tr>
       <td><b>kind</b></td>
       <td>string</td>
-      <td>KamajiControlPlane</td>
+      <td>StewardControlPlane</td>
       <td>true</td>
       </tr>
       <tr>
@@ -54,27 +54,27 @@ KamajiControlPlane is the Schema for the kamajicontrolplanes API.
       <td>Refer to the Kubernetes API documentation for the fields of the `metadata` field.</td>
       <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespec">spec</a></b></td>
+        <td><b><a href="#stewardcontrolplanespec">spec</a></b></td>
         <td>object</td>
         <td>
-          KamajiControlPlaneSpec defines the desired state of KamajiControlPlane.<br/>
+          StewardControlPlaneSpec defines the desired state of StewardControlPlane.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanestatus">status</a></b></td>
+        <td><b><a href="#stewardcontrolplanestatus">status</a></b></td>
         <td>object</td>
         <td>
-          KamajiControlPlaneStatus defines the observed state of KamajiControlPlane.<br/>
+          StewardControlPlaneStatus defines the observed state of StewardControlPlane.<br/>
         </td>
         <td>false</td>
       </tr></tbody>
 </table>
 
 
-<span id="kamajicontrolplanespec">`KamajiControlPlane.spec`</span>
+<span id="stewardcontrolplanespec">`StewardControlPlane.spec`</span>
 
 
-KamajiControlPlaneSpec defines the desired state of KamajiControlPlane.
+StewardControlPlaneSpec defines the desired state of StewardControlPlane.
 
 <table>
     <thead>
@@ -93,10 +93,10 @@ KamajiControlPlaneSpec defines the desired state of KamajiControlPlane.
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecaddons">addons</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecaddons">addons</a></b></td>
         <td>object</td>
         <td>
-          The addons that must be managed by Kamaji, such as CoreDNS, kube-proxy, and konnectivity.<br/>
+          The addons that must be managed by Steward, such as CoreDNS, kube-proxy, and konnectivity.<br/>
         </td>
         <td>false</td>
       </tr><tr>
@@ -112,21 +112,21 @@ More info: https://kubernetes.io/docs/reference/access-authn-authz/admission-con
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecapiserver">apiServer</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecapiserver">apiServer</a></b></td>
         <td>object</td>
         <td>
           ControlPlaneComponent allows the customization for the given component of the control plane.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespeccontrolplaneendpoint">controlPlaneEndpoint</a></b></td>
+        <td><b><a href="#stewardcontrolplanespeccontrolplaneendpoint">controlPlaneEndpoint</a></b></td>
         <td>object</td>
         <td>
-          ControlPlaneEndpoint propagates the endpoint the Kubernetes API Server managed by Kamaji is located.<br/>
+          ControlPlaneEndpoint propagates the endpoint the Kubernetes API Server managed by Steward is located.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespeccontrollermanager">controllerManager</a></b></td>
+        <td><b><a href="#stewardcontrolplanespeccontrollermanager">controllerManager</a></b></td>
         <td>object</td>
         <td>
           ControlPlaneComponent allows the customization for the given component of the control plane.<br/>
@@ -136,8 +136,8 @@ More info: https://kubernetes.io/docs/reference/access-authn-authz/admission-con
         <td><b>dataStoreName</b></td>
         <td>string</td>
         <td>
-          The Kamaji DataStore to use for the given TenantControlPlane.
-Retrieve the list of the allowed ones by issuing "kubectl get datastores.kamaji.clastix.io".<br/>
+          The Steward DataStore to use for the given TenantControlPlane.
+Retrieve the list of the allowed ones by issuing "kubectl get datastores.steward.butlerlabs.io".<br/>
         </td>
         <td>false</td>
       </tr><tr>
@@ -152,28 +152,28 @@ Retrieve the list of the allowed ones by issuing "kubectl get datastores.kamaji.
         <td>string</td>
         <td>
           DataStoreUsername allows to specify the username of the database (for relational DataStores). This
-value is optional and immutable. Note that Kamaji currently doesn't ensure that DataStoreUsername values are unique. It's up
-to the user to avoid clashes between different TenantControlPlanes. If not set upon creation, Kamaji will default the
+value is optional and immutable. Note that Steward currently doesn't ensure that DataStoreUsername values are unique. It's up
+to the user to avoid clashes between different TenantControlPlanes. If not set upon creation, Steward will default the
 DataStoreUsername by concatenating the namespace and name of the TenantControlPlane.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeployment">deployment</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeployment">deployment</a></b></td>
         <td>object</td>
         <td>
           Configure how the TenantControlPlane Deployment object should be configured.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespeckine">kine</a></b></td>
+        <td><b><a href="#stewardcontrolplanespeckine">kine</a></b></td>
         <td>object</td>
         <td>
           KineComponent allows the customization for the kine component of the control plane.
-Available only if Kamaji is running using Kine as backing storage.<br/>
+Available only if Steward is running using Kine as backing storage.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespeckubelet">kubelet</a></b></td>
+        <td><b><a href="#stewardcontrolplanespeckubelet">kubelet</a></b></td>
         <td>object</td>
         <td>
           Configure the Kubelet options, such as the preferred address types, or the expected cgroupfs.<br/>
@@ -182,7 +182,7 @@ Available only if Kamaji is running using Kine as backing storage.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecnetwork">network</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecnetwork">network</a></b></td>
         <td>object</td>
         <td>
           Configure how the TenantControlPlane should be exposed.<br/>
@@ -212,7 +212,7 @@ Defaults to 2.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecscheduler">scheduler</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecscheduler">scheduler</a></b></td>
         <td>object</td>
         <td>
           ControlPlaneComponent allows the customization for the given component of the control plane.<br/>
@@ -222,10 +222,10 @@ Defaults to 2.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecaddons">`KamajiControlPlane.spec.addons`</span>
+<span id="stewardcontrolplanespecaddons">`StewardControlPlane.spec.addons`</span>
 
 
-The addons that must be managed by Kamaji, such as CoreDNS, kube-proxy, and konnectivity.
+The addons that must be managed by Steward, such as CoreDNS, kube-proxy, and konnectivity.
 
 <table>
     <thead>
@@ -237,7 +237,7 @@ The addons that must be managed by Kamaji, such as CoreDNS, kube-proxy, and konn
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecaddonscoredns">coreDNS</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecaddonscoredns">coreDNS</a></b></td>
         <td>object</td>
         <td>
           Enables the DNS addon in the Tenant Cluster.
@@ -245,14 +245,14 @@ The registry and the tag are configurable, the image is hard-coded to `coredns`.
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecaddonskonnectivity">konnectivity</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecaddonskonnectivity">konnectivity</a></b></td>
         <td>object</td>
         <td>
           Enables the Konnectivity addon in the Tenant Cluster, required if the worker nodes are in a different network.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecaddonskubeproxy">kubeProxy</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecaddonskubeproxy">kubeProxy</a></b></td>
         <td>object</td>
         <td>
           Enables the kube-proxy addon in the Tenant Cluster.
@@ -263,7 +263,7 @@ The registry and the tag are configurable, the image is hard-coded to `kube-prox
 </table>
 
 
-<span id="kamajicontrolplanespecaddonscoredns">`KamajiControlPlane.spec.addons.coreDNS`</span>
+<span id="stewardcontrolplanespecaddonscoredns">`StewardControlPlane.spec.addons.coreDNS`</span>
 
 
 Enables the DNS addon in the Tenant Cluster.
@@ -283,7 +283,7 @@ The registry and the tag are configurable, the image is hard-coded to `coredns`.
         <td>[]string</td>
         <td>
           DNSServiceIPs contains the CoreDNS Service IPs.
-When set to an empty slice, Kamaji will automatically inflect it from the Service CIDR.<br/>
+When set to an empty slice, Steward will automatically inflect it from the Service CIDR.<br/>
         </td>
         <td>false</td>
       </tr><tr>
@@ -306,7 +306,7 @@ In case this value is set, kubeadm does not change automatically the version of 
 </table>
 
 
-<span id="kamajicontrolplanespecaddonskonnectivity">`KamajiControlPlane.spec.addons.konnectivity`</span>
+<span id="stewardcontrolplanespecaddonskonnectivity">`StewardControlPlane.spec.addons.konnectivity`</span>
 
 
 Enables the Konnectivity addon in the Tenant Cluster, required if the worker nodes are in a different network.
@@ -321,7 +321,7 @@ Enables the Konnectivity addon in the Tenant Cluster, required if the worker nod
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecaddonskonnectivityagent">agent</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecaddonskonnectivityagent">agent</a></b></td>
         <td>object</td>
         <td>
           <br/>
@@ -330,7 +330,7 @@ Enables the Konnectivity addon in the Tenant Cluster, required if the worker nod
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecaddonskonnectivityserver">server</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecaddonskonnectivityserver">server</a></b></td>
         <td>object</td>
         <td>
           <br/>
@@ -342,7 +342,7 @@ Enables the Konnectivity addon in the Tenant Cluster, required if the worker nod
 </table>
 
 
-<span id="kamajicontrolplanespecaddonskonnectivityagent">`KamajiControlPlane.spec.addons.konnectivity.agent`</span>
+<span id="stewardcontrolplanespecaddonskonnectivityagent">`StewardControlPlane.spec.addons.konnectivity.agent`</span>
 
 
 
@@ -408,7 +408,7 @@ Must be 0 if Mode is DaemonSet.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecaddonskonnectivityagenttolerationsindex">tolerations</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecaddonskonnectivityagenttolerationsindex">tolerations</a></b></td>
         <td>[]object</td>
         <td>
           Tolerations for the deployed agent.
@@ -422,7 +422,7 @@ Can be customized to start the konnectivity-agent even if the nodes are not read
         <td>string</td>
         <td>
           Version for Konnectivity agent.
-If left empty, Kamaji will automatically inflect the version from the deployed Tenant Control Plane.
+If left empty, Steward will automatically inflect the version from the deployed Tenant Control Plane.
 
 WARNING: for last cut-off releases, the container image could be not available.<br/>
         </td>
@@ -431,7 +431,7 @@ WARNING: for last cut-off releases, the container image could be not available.<
 </table>
 
 
-<span id="kamajicontrolplanespecaddonskonnectivityagenttolerationsindex">`KamajiControlPlane.spec.addons.konnectivity.agent.tolerations[index]`</span>
+<span id="stewardcontrolplanespecaddonskonnectivityagenttolerationsindex">`StewardControlPlane.spec.addons.konnectivity.agent.tolerations[index]`</span>
 
 
 The pod this Toleration is attached to tolerates any taint that matches
@@ -496,7 +496,7 @@ If the operator is Exists, the value should be empty, otherwise just a regular s
 </table>
 
 
-<span id="kamajicontrolplanespecaddonskonnectivityserver">`KamajiControlPlane.spec.addons.konnectivity.server`</span>
+<span id="stewardcontrolplanespecaddonskonnectivityserver">`StewardControlPlane.spec.addons.konnectivity.server`</span>
 
 
 
@@ -539,7 +539,7 @@ unxpected ways. Only modify if you know what you are doing.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecaddonskonnectivityserverresources">resources</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecaddonskonnectivityserverresources">resources</a></b></td>
         <td>object</td>
         <td>
           Resources define the amount of CPU and memory to allocate to the Konnectivity server.<br/>
@@ -550,7 +550,7 @@ unxpected ways. Only modify if you know what you are doing.<br/>
         <td>string</td>
         <td>
           Container image version of the Konnectivity server.
-If left empty, Kamaji will automatically inflect the version from the deployed Tenant Control Plane.
+If left empty, Steward will automatically inflect the version from the deployed Tenant Control Plane.
 
 WARNING: for last cut-off releases, the container image could be not available.<br/>
         </td>
@@ -559,7 +559,7 @@ WARNING: for last cut-off releases, the container image could be not available.<
 </table>
 
 
-<span id="kamajicontrolplanespecaddonskonnectivityserverresources">`KamajiControlPlane.spec.addons.konnectivity.server.resources`</span>
+<span id="stewardcontrolplanespecaddonskonnectivityserverresources">`StewardControlPlane.spec.addons.konnectivity.server.resources`</span>
 
 
 Resources define the amount of CPU and memory to allocate to the Konnectivity server.
@@ -574,7 +574,7 @@ Resources define the amount of CPU and memory to allocate to the Konnectivity se
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecaddonskonnectivityserverresourcesclaimsindex">claims</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecaddonskonnectivityserverresourcesclaimsindex">claims</a></b></td>
         <td>[]object</td>
         <td>
           Claims lists the names of resources, defined in spec.resourceClaims,
@@ -608,7 +608,7 @@ More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-co
 </table>
 
 
-<span id="kamajicontrolplanespecaddonskonnectivityserverresourcesclaimsindex">`KamajiControlPlane.spec.addons.konnectivity.server.resources.claims[index]`</span>
+<span id="stewardcontrolplanespecaddonskonnectivityserverresourcesclaimsindex">`StewardControlPlane.spec.addons.konnectivity.server.resources.claims[index]`</span>
 
 
 ResourceClaim references one entry in PodSpec.ResourceClaims.
@@ -644,7 +644,7 @@ only the result of this request.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecaddonskubeproxy">`KamajiControlPlane.spec.addons.kubeProxy`</span>
+<span id="stewardcontrolplanespecaddonskubeproxy">`StewardControlPlane.spec.addons.kubeProxy`</span>
 
 
 Enables the kube-proxy addon in the Tenant Cluster.
@@ -679,7 +679,7 @@ In case this value is set, kubeadm does not change automatically the version of 
 </table>
 
 
-<span id="kamajicontrolplanespecapiserver">`KamajiControlPlane.spec.apiServer`</span>
+<span id="stewardcontrolplanespecapiserver">`StewardControlPlane.spec.apiServer`</span>
 
 
 ControlPlaneComponent allows the customization for the given component of the control plane.
@@ -709,14 +709,14 @@ With no value, the default images will be used.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecapiserverextravolumemountsindex">extraVolumeMounts</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecapiserverextravolumemountsindex">extraVolumeMounts</a></b></td>
         <td>[]object</td>
         <td>
           <br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecapiserverresources">resources</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecapiserverresources">resources</a></b></td>
         <td>object</td>
         <td>
           ResourceRequirements describes the compute resource requirements.<br/>
@@ -726,7 +726,7 @@ With no value, the default images will be used.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecapiserverextravolumemountsindex">`KamajiControlPlane.spec.apiServer.extraVolumeMounts[index]`</span>
+<span id="stewardcontrolplanespecapiserverextravolumemountsindex">`StewardControlPlane.spec.apiServer.extraVolumeMounts[index]`</span>
 
 
 VolumeMount describes a mounting of a Volume within a container.
@@ -819,7 +819,7 @@ SubPathExpr and SubPath are mutually exclusive.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecapiserverresources">`KamajiControlPlane.spec.apiServer.resources`</span>
+<span id="stewardcontrolplanespecapiserverresources">`StewardControlPlane.spec.apiServer.resources`</span>
 
 
 ResourceRequirements describes the compute resource requirements.
@@ -834,7 +834,7 @@ ResourceRequirements describes the compute resource requirements.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecapiserverresourcesclaimsindex">claims</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecapiserverresourcesclaimsindex">claims</a></b></td>
         <td>[]object</td>
         <td>
           Claims lists the names of resources, defined in spec.resourceClaims,
@@ -868,7 +868,7 @@ More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-co
 </table>
 
 
-<span id="kamajicontrolplanespecapiserverresourcesclaimsindex">`KamajiControlPlane.spec.apiServer.resources.claims[index]`</span>
+<span id="stewardcontrolplanespecapiserverresourcesclaimsindex">`StewardControlPlane.spec.apiServer.resources.claims[index]`</span>
 
 
 ResourceClaim references one entry in PodSpec.ResourceClaims.
@@ -904,10 +904,10 @@ only the result of this request.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespeccontrolplaneendpoint">`KamajiControlPlane.spec.controlPlaneEndpoint`</span>
+<span id="stewardcontrolplanespeccontrolplaneendpoint">`StewardControlPlane.spec.controlPlaneEndpoint`</span>
 
 
-ControlPlaneEndpoint propagates the endpoint the Kubernetes API Server managed by Kamaji is located.
+ControlPlaneEndpoint propagates the endpoint the Kubernetes API Server managed by Steward is located.
 
 <table>
     <thead>
@@ -938,7 +938,7 @@ ControlPlaneEndpoint propagates the endpoint the Kubernetes API Server managed b
 </table>
 
 
-<span id="kamajicontrolplanespeccontrollermanager">`KamajiControlPlane.spec.controllerManager`</span>
+<span id="stewardcontrolplanespeccontrollermanager">`StewardControlPlane.spec.controllerManager`</span>
 
 
 ControlPlaneComponent allows the customization for the given component of the control plane.
@@ -968,14 +968,14 @@ With no value, the default images will be used.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespeccontrollermanagerextravolumemountsindex">extraVolumeMounts</a></b></td>
+        <td><b><a href="#stewardcontrolplanespeccontrollermanagerextravolumemountsindex">extraVolumeMounts</a></b></td>
         <td>[]object</td>
         <td>
           <br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespeccontrollermanagerresources">resources</a></b></td>
+        <td><b><a href="#stewardcontrolplanespeccontrollermanagerresources">resources</a></b></td>
         <td>object</td>
         <td>
           ResourceRequirements describes the compute resource requirements.<br/>
@@ -985,7 +985,7 @@ With no value, the default images will be used.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespeccontrollermanagerextravolumemountsindex">`KamajiControlPlane.spec.controllerManager.extraVolumeMounts[index]`</span>
+<span id="stewardcontrolplanespeccontrollermanagerextravolumemountsindex">`StewardControlPlane.spec.controllerManager.extraVolumeMounts[index]`</span>
 
 
 VolumeMount describes a mounting of a Volume within a container.
@@ -1078,7 +1078,7 @@ SubPathExpr and SubPath are mutually exclusive.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespeccontrollermanagerresources">`KamajiControlPlane.spec.controllerManager.resources`</span>
+<span id="stewardcontrolplanespeccontrollermanagerresources">`StewardControlPlane.spec.controllerManager.resources`</span>
 
 
 ResourceRequirements describes the compute resource requirements.
@@ -1093,7 +1093,7 @@ ResourceRequirements describes the compute resource requirements.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespeccontrollermanagerresourcesclaimsindex">claims</a></b></td>
+        <td><b><a href="#stewardcontrolplanespeccontrollermanagerresourcesclaimsindex">claims</a></b></td>
         <td>[]object</td>
         <td>
           Claims lists the names of resources, defined in spec.resourceClaims,
@@ -1127,7 +1127,7 @@ More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-co
 </table>
 
 
-<span id="kamajicontrolplanespeccontrollermanagerresourcesclaimsindex">`KamajiControlPlane.spec.controllerManager.resources.claims[index]`</span>
+<span id="stewardcontrolplanespeccontrollermanagerresourcesclaimsindex">`StewardControlPlane.spec.controllerManager.resources.claims[index]`</span>
 
 
 ResourceClaim references one entry in PodSpec.ResourceClaims.
@@ -1163,7 +1163,7 @@ only the result of this request.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeployment">`KamajiControlPlane.spec.deployment`</span>
+<span id="stewardcontrolplanespecdeployment">`StewardControlPlane.spec.deployment`</span>
 
 
 Configure how the TenantControlPlane Deployment object should be configured.
@@ -1178,22 +1178,22 @@ Configure how the TenantControlPlane Deployment object should be configured.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentadditionalmetadata">additionalMetadata</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentadditionalmetadata">additionalMetadata</a></b></td>
         <td>object</td>
         <td>
           AdditionalMetadata refers to the additional labels and annotations attached
-to the resulting Deployment managed by Kamaji.<br/>
+to the resulting Deployment managed by Steward.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinity">affinity</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinity">affinity</a></b></td>
         <td>object</td>
         <td>
           Affinity is a group of affinity scheduling rules.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentexternalclusterreference">externalClusterReference</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentexternalclusterreference">externalClusterReference</a></b></td>
         <td>object</td>
         <td>
           ExternalClusterReference allows defining the target Cluster where the Tenant Control Plane components must be deployed.
@@ -1202,21 +1202,21 @@ The ExternalClusterReference feature gate must be enabled with one of the availa
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindex">extraContainers</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindex">extraContainers</a></b></td>
         <td>[]object</td>
         <td>
           <br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindex">extraInitContainers</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindex">extraInitContainers</a></b></td>
         <td>[]object</td>
         <td>
           <br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindex">extraVolumes</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindex">extraVolumes</a></b></td>
         <td>[]object</td>
         <td>
           <br/>
@@ -1230,7 +1230,7 @@ The ExternalClusterReference feature gate must be enabled with one of the availa
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentpodadditionalmetadata">podAdditionalMetadata</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentpodadditionalmetadata">podAdditionalMetadata</a></b></td>
         <td>object</td>
         <td>
           PodAdditionalMetadata defines the additional labels and annotations that must be attached
@@ -1252,21 +1252,21 @@ to the resulting Pods managed by the Deployment.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentstrategy">strategy</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentstrategy">strategy</a></b></td>
         <td>object</td>
         <td>
           DeploymentStrategy describes how to replace existing pods with new ones.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymenttolerationsindex">tolerations</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymenttolerationsindex">tolerations</a></b></td>
         <td>[]object</td>
         <td>
           <br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymenttopologyspreadconstraintsindex">topologySpreadConstraints</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymenttopologyspreadconstraintsindex">topologySpreadConstraints</a></b></td>
         <td>[]object</td>
         <td>
           <br/>
@@ -1276,11 +1276,11 @@ to the resulting Pods managed by the Deployment.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentadditionalmetadata">`KamajiControlPlane.spec.deployment.additionalMetadata`</span>
+<span id="stewardcontrolplanespecdeploymentadditionalmetadata">`StewardControlPlane.spec.deployment.additionalMetadata`</span>
 
 
 AdditionalMetadata refers to the additional labels and annotations attached
-to the resulting Deployment managed by Kamaji.
+to the resulting Deployment managed by Steward.
 
 <table>
     <thead>
@@ -1309,7 +1309,7 @@ to the resulting Deployment managed by Kamaji.
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinity">`KamajiControlPlane.spec.deployment.affinity`</span>
+<span id="stewardcontrolplanespecdeploymentaffinity">`StewardControlPlane.spec.deployment.affinity`</span>
 
 
 Affinity is a group of affinity scheduling rules.
@@ -1324,21 +1324,21 @@ Affinity is a group of affinity scheduling rules.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitynodeaffinity">nodeAffinity</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitynodeaffinity">nodeAffinity</a></b></td>
         <td>object</td>
         <td>
           Describes node affinity scheduling rules for the pod.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitypodaffinity">podAffinity</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitypodaffinity">podAffinity</a></b></td>
         <td>object</td>
         <td>
           Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitypodantiaffinity">podAntiAffinity</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitypodantiaffinity">podAntiAffinity</a></b></td>
         <td>object</td>
         <td>
           Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).<br/>
@@ -1348,7 +1348,7 @@ Affinity is a group of affinity scheduling rules.
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitynodeaffinity">`KamajiControlPlane.spec.deployment.affinity.nodeAffinity`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitynodeaffinity">`StewardControlPlane.spec.deployment.affinity.nodeAffinity`</span>
 
 
 Describes node affinity scheduling rules for the pod.
@@ -1363,7 +1363,7 @@ Describes node affinity scheduling rules for the pod.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindex">preferredDuringSchedulingIgnoredDuringExecution</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindex">preferredDuringSchedulingIgnoredDuringExecution</a></b></td>
         <td>[]object</td>
         <td>
           The scheduler will prefer to schedule pods to nodes that satisfy
@@ -1378,7 +1378,7 @@ node(s) with the highest sum are the most preferred.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecution">requiredDuringSchedulingIgnoredDuringExecution</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecution">requiredDuringSchedulingIgnoredDuringExecution</a></b></td>
         <td>object</td>
         <td>
           If the affinity requirements specified by this field are not met at
@@ -1392,7 +1392,7 @@ may or may not try to eventually evict the pod from its node.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindex">`KamajiControlPlane.spec.deployment.affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[index]`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindex">`StewardControlPlane.spec.deployment.affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[index]`</span>
 
 
 An empty preferred scheduling term matches all objects with implicit weight 0
@@ -1408,7 +1408,7 @@ An empty preferred scheduling term matches all objects with implicit weight 0
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindexpreference">preference</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindexpreference">preference</a></b></td>
         <td>object</td>
         <td>
           A node selector term, associated with the corresponding weight.<br/>
@@ -1427,7 +1427,7 @@ An empty preferred scheduling term matches all objects with implicit weight 0
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindexpreference">`KamajiControlPlane.spec.deployment.affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].preference`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindexpreference">`StewardControlPlane.spec.deployment.affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].preference`</span>
 
 
 A node selector term, associated with the corresponding weight.
@@ -1442,14 +1442,14 @@ A node selector term, associated with the corresponding weight.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindexpreferencematchexpressionsindex">matchExpressions</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindexpreferencematchexpressionsindex">matchExpressions</a></b></td>
         <td>[]object</td>
         <td>
           A list of node selector requirements by node's labels.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindexpreferencematchfieldsindex">matchFields</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindexpreferencematchfieldsindex">matchFields</a></b></td>
         <td>[]object</td>
         <td>
           A list of node selector requirements by node's fields.<br/>
@@ -1459,7 +1459,7 @@ A node selector term, associated with the corresponding weight.
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindexpreferencematchexpressionsindex">`KamajiControlPlane.spec.deployment.affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].preference.matchExpressions[index]`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindexpreferencematchexpressionsindex">`StewardControlPlane.spec.deployment.affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].preference.matchExpressions[index]`</span>
 
 
 A node selector requirement is a selector that contains values, a key, and an operator
@@ -1504,7 +1504,7 @@ This array is replaced during a strategic merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindexpreferencematchfieldsindex">`KamajiControlPlane.spec.deployment.affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].preference.matchFields[index]`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindexpreferencematchfieldsindex">`StewardControlPlane.spec.deployment.affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].preference.matchFields[index]`</span>
 
 
 A node selector requirement is a selector that contains values, a key, and an operator
@@ -1549,7 +1549,7 @@ This array is replaced during a strategic merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecution">`KamajiControlPlane.spec.deployment.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecution">`StewardControlPlane.spec.deployment.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution`</span>
 
 
 If the affinity requirements specified by this field are not met at
@@ -1568,7 +1568,7 @@ may or may not try to eventually evict the pod from its node.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecutionnodeselectortermsindex">nodeSelectorTerms</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecutionnodeselectortermsindex">nodeSelectorTerms</a></b></td>
         <td>[]object</td>
         <td>
           Required. A list of node selector terms. The terms are ORed.<br/>
@@ -1578,7 +1578,7 @@ may or may not try to eventually evict the pod from its node.
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecutionnodeselectortermsindex">`KamajiControlPlane.spec.deployment.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[index]`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecutionnodeselectortermsindex">`StewardControlPlane.spec.deployment.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[index]`</span>
 
 
 A null or empty node selector term matches no objects. The requirements of
@@ -1595,14 +1595,14 @@ The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecutionnodeselectortermsindexmatchexpressionsindex">matchExpressions</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecutionnodeselectortermsindexmatchexpressionsindex">matchExpressions</a></b></td>
         <td>[]object</td>
         <td>
           A list of node selector requirements by node's labels.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecutionnodeselectortermsindexmatchfieldsindex">matchFields</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecutionnodeselectortermsindexmatchfieldsindex">matchFields</a></b></td>
         <td>[]object</td>
         <td>
           A list of node selector requirements by node's fields.<br/>
@@ -1612,7 +1612,7 @@ The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecutionnodeselectortermsindexmatchexpressionsindex">`KamajiControlPlane.spec.deployment.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[index].matchExpressions[index]`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecutionnodeselectortermsindexmatchexpressionsindex">`StewardControlPlane.spec.deployment.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[index].matchExpressions[index]`</span>
 
 
 A node selector requirement is a selector that contains values, a key, and an operator
@@ -1657,7 +1657,7 @@ This array is replaced during a strategic merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecutionnodeselectortermsindexmatchfieldsindex">`KamajiControlPlane.spec.deployment.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[index].matchFields[index]`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecutionnodeselectortermsindexmatchfieldsindex">`StewardControlPlane.spec.deployment.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[index].matchFields[index]`</span>
 
 
 A node selector requirement is a selector that contains values, a key, and an operator
@@ -1702,7 +1702,7 @@ This array is replaced during a strategic merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitypodaffinity">`KamajiControlPlane.spec.deployment.affinity.podAffinity`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitypodaffinity">`StewardControlPlane.spec.deployment.affinity.podAffinity`</span>
 
 
 Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
@@ -1717,7 +1717,7 @@ Describes pod affinity scheduling rules (e.g. co-locate this pod in the same nod
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindex">preferredDuringSchedulingIgnoredDuringExecution</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindex">preferredDuringSchedulingIgnoredDuringExecution</a></b></td>
         <td>[]object</td>
         <td>
           The scheduler will prefer to schedule pods to nodes that satisfy
@@ -1732,7 +1732,7 @@ node(s) with the highest sum are the most preferred.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindex">requiredDuringSchedulingIgnoredDuringExecution</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindex">requiredDuringSchedulingIgnoredDuringExecution</a></b></td>
         <td>[]object</td>
         <td>
           If the affinity requirements specified by this field are not met at
@@ -1748,7 +1748,7 @@ podAffinityTerm are intersected, i.e. all terms must be satisfied.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindex">`KamajiControlPlane.spec.deployment.affinity.podAffinity.preferredDuringSchedulingIgnoredDuringExecution[index]`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindex">`StewardControlPlane.spec.deployment.affinity.podAffinity.preferredDuringSchedulingIgnoredDuringExecution[index]`</span>
 
 
 The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -1763,7 +1763,7 @@ The weights of all of the matched WeightedPodAffinityTerm fields are added per-n
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinityterm">podAffinityTerm</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinityterm">podAffinityTerm</a></b></td>
         <td>object</td>
         <td>
           Required. A pod affinity term, associated with the corresponding weight.<br/>
@@ -1783,7 +1783,7 @@ in the range 1-100.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinityterm">`KamajiControlPlane.spec.deployment.affinity.podAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinityterm">`StewardControlPlane.spec.deployment.affinity.podAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm`</span>
 
 
 Required. A pod affinity term, associated with the corresponding weight.
@@ -1809,7 +1809,7 @@ Empty topologyKey is not allowed.<br/>
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselector">labelSelector</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselector">labelSelector</a></b></td>
         <td>object</td>
         <td>
           A label query over a set of resources, in this case pods.
@@ -1845,7 +1845,7 @@ Also, mismatchLabelKeys cannot be set when labelSelector isn't set.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselector">namespaceSelector</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselector">namespaceSelector</a></b></td>
         <td>object</td>
         <td>
           A label query over the set of namespaces that the term applies to.
@@ -1869,7 +1869,7 @@ null or empty namespaces list and null namespaceSelector means "this pod's names
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselector">`KamajiControlPlane.spec.deployment.affinity.podAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.labelSelector`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselector">`StewardControlPlane.spec.deployment.affinity.podAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.labelSelector`</span>
 
 
 A label query over a set of resources, in this case pods.
@@ -1885,7 +1885,7 @@ If it's null, this PodAffinityTerm matches with no Pods.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselectormatchexpressionsindex">matchExpressions</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselectormatchexpressionsindex">matchExpressions</a></b></td>
         <td>[]object</td>
         <td>
           matchExpressions is a list of label selector requirements. The requirements are ANDed.<br/>
@@ -1904,7 +1904,7 @@ operator is "In", and the values array contains only "value". The requirements a
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselectormatchexpressionsindex">`KamajiControlPlane.spec.deployment.affinity.podAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.labelSelector.matchExpressions[index]`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselectormatchexpressionsindex">`StewardControlPlane.spec.deployment.affinity.podAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.labelSelector.matchExpressions[index]`</span>
 
 
 A label selector requirement is a selector that contains values, a key, and an operator that
@@ -1948,7 +1948,7 @@ merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselector">`KamajiControlPlane.spec.deployment.affinity.podAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.namespaceSelector`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselector">`StewardControlPlane.spec.deployment.affinity.podAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.namespaceSelector`</span>
 
 
 A label query over the set of namespaces that the term applies to.
@@ -1967,7 +1967,7 @@ An empty selector ({}) matches all namespaces.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselectormatchexpressionsindex">matchExpressions</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselectormatchexpressionsindex">matchExpressions</a></b></td>
         <td>[]object</td>
         <td>
           matchExpressions is a list of label selector requirements. The requirements are ANDed.<br/>
@@ -1986,7 +1986,7 @@ operator is "In", and the values array contains only "value". The requirements a
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselectormatchexpressionsindex">`KamajiControlPlane.spec.deployment.affinity.podAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.namespaceSelector.matchExpressions[index]`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselectormatchexpressionsindex">`StewardControlPlane.spec.deployment.affinity.podAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.namespaceSelector.matchExpressions[index]`</span>
 
 
 A label selector requirement is a selector that contains values, a key, and an operator that
@@ -2030,7 +2030,7 @@ merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindex">`KamajiControlPlane.spec.deployment.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[index]`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindex">`StewardControlPlane.spec.deployment.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[index]`</span>
 
 
 Defines a set of pods (namely those matching the labelSelector
@@ -2061,7 +2061,7 @@ Empty topologyKey is not allowed.<br/>
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexlabelselector">labelSelector</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexlabelselector">labelSelector</a></b></td>
         <td>object</td>
         <td>
           A label query over a set of resources, in this case pods.
@@ -2097,7 +2097,7 @@ Also, mismatchLabelKeys cannot be set when labelSelector isn't set.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselector">namespaceSelector</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselector">namespaceSelector</a></b></td>
         <td>object</td>
         <td>
           A label query over the set of namespaces that the term applies to.
@@ -2121,7 +2121,7 @@ null or empty namespaces list and null namespaceSelector means "this pod's names
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexlabelselector">`KamajiControlPlane.spec.deployment.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].labelSelector`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexlabelselector">`StewardControlPlane.spec.deployment.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].labelSelector`</span>
 
 
 A label query over a set of resources, in this case pods.
@@ -2137,7 +2137,7 @@ If it's null, this PodAffinityTerm matches with no Pods.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexlabelselectormatchexpressionsindex">matchExpressions</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexlabelselectormatchexpressionsindex">matchExpressions</a></b></td>
         <td>[]object</td>
         <td>
           matchExpressions is a list of label selector requirements. The requirements are ANDed.<br/>
@@ -2156,7 +2156,7 @@ operator is "In", and the values array contains only "value". The requirements a
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexlabelselectormatchexpressionsindex">`KamajiControlPlane.spec.deployment.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].labelSelector.matchExpressions[index]`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexlabelselectormatchexpressionsindex">`StewardControlPlane.spec.deployment.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].labelSelector.matchExpressions[index]`</span>
 
 
 A label selector requirement is a selector that contains values, a key, and an operator that
@@ -2200,7 +2200,7 @@ merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselector">`KamajiControlPlane.spec.deployment.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].namespaceSelector`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselector">`StewardControlPlane.spec.deployment.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].namespaceSelector`</span>
 
 
 A label query over the set of namespaces that the term applies to.
@@ -2219,7 +2219,7 @@ An empty selector ({}) matches all namespaces.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselectormatchexpressionsindex">matchExpressions</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselectormatchexpressionsindex">matchExpressions</a></b></td>
         <td>[]object</td>
         <td>
           matchExpressions is a list of label selector requirements. The requirements are ANDed.<br/>
@@ -2238,7 +2238,7 @@ operator is "In", and the values array contains only "value". The requirements a
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselectormatchexpressionsindex">`KamajiControlPlane.spec.deployment.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].namespaceSelector.matchExpressions[index]`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselectormatchexpressionsindex">`StewardControlPlane.spec.deployment.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].namespaceSelector.matchExpressions[index]`</span>
 
 
 A label selector requirement is a selector that contains values, a key, and an operator that
@@ -2282,7 +2282,7 @@ merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitypodantiaffinity">`KamajiControlPlane.spec.deployment.affinity.podAntiAffinity`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitypodantiaffinity">`StewardControlPlane.spec.deployment.affinity.podAntiAffinity`</span>
 
 
 Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
@@ -2297,7 +2297,7 @@ Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindex">preferredDuringSchedulingIgnoredDuringExecution</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindex">preferredDuringSchedulingIgnoredDuringExecution</a></b></td>
         <td>[]object</td>
         <td>
           The scheduler will prefer to schedule pods to nodes that satisfy
@@ -2312,7 +2312,7 @@ node(s) with the highest sum are the most preferred.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindex">requiredDuringSchedulingIgnoredDuringExecution</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindex">requiredDuringSchedulingIgnoredDuringExecution</a></b></td>
         <td>[]object</td>
         <td>
           If the anti-affinity requirements specified by this field are not met at
@@ -2328,7 +2328,7 @@ podAffinityTerm are intersected, i.e. all terms must be satisfied.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindex">`KamajiControlPlane.spec.deployment.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[index]`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindex">`StewardControlPlane.spec.deployment.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[index]`</span>
 
 
 The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -2343,7 +2343,7 @@ The weights of all of the matched WeightedPodAffinityTerm fields are added per-n
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinityterm">podAffinityTerm</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinityterm">podAffinityTerm</a></b></td>
         <td>object</td>
         <td>
           Required. A pod affinity term, associated with the corresponding weight.<br/>
@@ -2363,7 +2363,7 @@ in the range 1-100.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinityterm">`KamajiControlPlane.spec.deployment.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinityterm">`StewardControlPlane.spec.deployment.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm`</span>
 
 
 Required. A pod affinity term, associated with the corresponding weight.
@@ -2389,7 +2389,7 @@ Empty topologyKey is not allowed.<br/>
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselector">labelSelector</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselector">labelSelector</a></b></td>
         <td>object</td>
         <td>
           A label query over a set of resources, in this case pods.
@@ -2425,7 +2425,7 @@ Also, mismatchLabelKeys cannot be set when labelSelector isn't set.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselector">namespaceSelector</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselector">namespaceSelector</a></b></td>
         <td>object</td>
         <td>
           A label query over the set of namespaces that the term applies to.
@@ -2449,7 +2449,7 @@ null or empty namespaces list and null namespaceSelector means "this pod's names
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselector">`KamajiControlPlane.spec.deployment.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.labelSelector`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselector">`StewardControlPlane.spec.deployment.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.labelSelector`</span>
 
 
 A label query over a set of resources, in this case pods.
@@ -2465,7 +2465,7 @@ If it's null, this PodAffinityTerm matches with no Pods.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselectormatchexpressionsindex">matchExpressions</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselectormatchexpressionsindex">matchExpressions</a></b></td>
         <td>[]object</td>
         <td>
           matchExpressions is a list of label selector requirements. The requirements are ANDed.<br/>
@@ -2484,7 +2484,7 @@ operator is "In", and the values array contains only "value". The requirements a
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselectormatchexpressionsindex">`KamajiControlPlane.spec.deployment.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.labelSelector.matchExpressions[index]`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselectormatchexpressionsindex">`StewardControlPlane.spec.deployment.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.labelSelector.matchExpressions[index]`</span>
 
 
 A label selector requirement is a selector that contains values, a key, and an operator that
@@ -2528,7 +2528,7 @@ merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselector">`KamajiControlPlane.spec.deployment.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.namespaceSelector`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselector">`StewardControlPlane.spec.deployment.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.namespaceSelector`</span>
 
 
 A label query over the set of namespaces that the term applies to.
@@ -2547,7 +2547,7 @@ An empty selector ({}) matches all namespaces.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselectormatchexpressionsindex">matchExpressions</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselectormatchexpressionsindex">matchExpressions</a></b></td>
         <td>[]object</td>
         <td>
           matchExpressions is a list of label selector requirements. The requirements are ANDed.<br/>
@@ -2566,7 +2566,7 @@ operator is "In", and the values array contains only "value". The requirements a
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselectormatchexpressionsindex">`KamajiControlPlane.spec.deployment.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.namespaceSelector.matchExpressions[index]`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselectormatchexpressionsindex">`StewardControlPlane.spec.deployment.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.namespaceSelector.matchExpressions[index]`</span>
 
 
 A label selector requirement is a selector that contains values, a key, and an operator that
@@ -2610,7 +2610,7 @@ merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindex">`KamajiControlPlane.spec.deployment.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[index]`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindex">`StewardControlPlane.spec.deployment.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[index]`</span>
 
 
 Defines a set of pods (namely those matching the labelSelector
@@ -2641,7 +2641,7 @@ Empty topologyKey is not allowed.<br/>
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexlabelselector">labelSelector</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexlabelselector">labelSelector</a></b></td>
         <td>object</td>
         <td>
           A label query over a set of resources, in this case pods.
@@ -2677,7 +2677,7 @@ Also, mismatchLabelKeys cannot be set when labelSelector isn't set.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselector">namespaceSelector</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselector">namespaceSelector</a></b></td>
         <td>object</td>
         <td>
           A label query over the set of namespaces that the term applies to.
@@ -2701,7 +2701,7 @@ null or empty namespaces list and null namespaceSelector means "this pod's names
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexlabelselector">`KamajiControlPlane.spec.deployment.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].labelSelector`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexlabelselector">`StewardControlPlane.spec.deployment.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].labelSelector`</span>
 
 
 A label query over a set of resources, in this case pods.
@@ -2717,7 +2717,7 @@ If it's null, this PodAffinityTerm matches with no Pods.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexlabelselectormatchexpressionsindex">matchExpressions</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexlabelselectormatchexpressionsindex">matchExpressions</a></b></td>
         <td>[]object</td>
         <td>
           matchExpressions is a list of label selector requirements. The requirements are ANDed.<br/>
@@ -2736,7 +2736,7 @@ operator is "In", and the values array contains only "value". The requirements a
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexlabelselectormatchexpressionsindex">`KamajiControlPlane.spec.deployment.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].labelSelector.matchExpressions[index]`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexlabelselectormatchexpressionsindex">`StewardControlPlane.spec.deployment.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].labelSelector.matchExpressions[index]`</span>
 
 
 A label selector requirement is a selector that contains values, a key, and an operator that
@@ -2780,7 +2780,7 @@ merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselector">`KamajiControlPlane.spec.deployment.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].namespaceSelector`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselector">`StewardControlPlane.spec.deployment.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].namespaceSelector`</span>
 
 
 A label query over the set of namespaces that the term applies to.
@@ -2799,7 +2799,7 @@ An empty selector ({}) matches all namespaces.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselectormatchexpressionsindex">matchExpressions</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselectormatchexpressionsindex">matchExpressions</a></b></td>
         <td>[]object</td>
         <td>
           matchExpressions is a list of label selector requirements. The requirements are ANDed.<br/>
@@ -2818,7 +2818,7 @@ operator is "In", and the values array contains only "value". The requirements a
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselectormatchexpressionsindex">`KamajiControlPlane.spec.deployment.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].namespaceSelector.matchExpressions[index]`</span>
+<span id="stewardcontrolplanespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselectormatchexpressionsindex">`StewardControlPlane.spec.deployment.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].namespaceSelector.matchExpressions[index]`</span>
 
 
 A label selector requirement is a selector that contains values, a key, and an operator that
@@ -2862,7 +2862,7 @@ merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentexternalclusterreference">`KamajiControlPlane.spec.deployment.externalClusterReference`</span>
+<span id="stewardcontrolplanespecdeploymentexternalclusterreference">`StewardControlPlane.spec.deployment.externalClusterReference`</span>
 
 
 ExternalClusterReference allows defining the target Cluster where the Tenant Control Plane components must be deployed.
@@ -2905,14 +2905,14 @@ the Tenant Control Plane resources generated by the Control Plane Provider.<br/>
         <td>string</td>
         <td>
           When ExternalClusterReferenceCrossNamespace is enabled allows specifying a different Namespace where the kubeconfig can be retrieved.
-With ExternalClusterReference this value can be left empty since the KamajiControlPlane object Namespace will be used.<br/>
+With ExternalClusterReference this value can be left empty since the StewardControlPlane object Namespace will be used.<br/>
         </td>
         <td>false</td>
       </tr></tbody>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindex">`KamajiControlPlane.spec.deployment.extraContainers[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindex">`StewardControlPlane.spec.deployment.extraContainers[index]`</span>
 
 
 A single application container that you want to run within a pod.
@@ -2964,7 +2964,7 @@ More info: https://kubernetes.io/docs/tasks/inject-data-application/define-comma
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexenvindex">env</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexenvindex">env</a></b></td>
         <td>[]object</td>
         <td>
           List of environment variables to set in the container.
@@ -2972,7 +2972,7 @@ Cannot be updated.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexenvfromindex">envFrom</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexenvfromindex">envFrom</a></b></td>
         <td>[]object</td>
         <td>
           List of sources to populate environment variables in the container.
@@ -3005,7 +3005,7 @@ More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexlifecycle">lifecycle</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexlifecycle">lifecycle</a></b></td>
         <td>object</td>
         <td>
           Actions that the management system should take in response to container lifecycle events.
@@ -3013,7 +3013,7 @@ Cannot be updated.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexlivenessprobe">livenessProbe</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexlivenessprobe">livenessProbe</a></b></td>
         <td>object</td>
         <td>
           Periodic probe of container liveness.
@@ -3023,7 +3023,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexportsindex">ports</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexportsindex">ports</a></b></td>
         <td>[]object</td>
         <td>
           List of ports to expose from the container. Not specifying a port here
@@ -3036,7 +3036,7 @@ Cannot be updated.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexreadinessprobe">readinessProbe</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexreadinessprobe">readinessProbe</a></b></td>
         <td>object</td>
         <td>
           Periodic probe of container service readiness.
@@ -3046,14 +3046,14 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexresizepolicyindex">resizePolicy</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexresizepolicyindex">resizePolicy</a></b></td>
         <td>[]object</td>
         <td>
           Resources resize policy for the container.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexresources">resources</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexresources">resources</a></b></td>
         <td>object</td>
         <td>
           Compute Resources required by this container.
@@ -3083,7 +3083,7 @@ completed.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexrestartpolicyrulesindex">restartPolicyRules</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexrestartpolicyrulesindex">restartPolicyRules</a></b></td>
         <td>[]object</td>
         <td>
           Represents a list of rules to be checked to determine if the
@@ -3100,7 +3100,7 @@ even it if matches the Pod's RestartPolicy.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexsecuritycontext">securityContext</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexsecuritycontext">securityContext</a></b></td>
         <td>object</td>
         <td>
           SecurityContext defines the security options the container should be run with.
@@ -3109,7 +3109,7 @@ More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-con
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexstartupprobe">startupProbe</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexstartupprobe">startupProbe</a></b></td>
         <td>object</td>
         <td>
           StartupProbe indicates that the Pod has successfully initialized.
@@ -3178,14 +3178,14 @@ Default is false.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexvolumedevicesindex">volumeDevices</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexvolumedevicesindex">volumeDevices</a></b></td>
         <td>[]object</td>
         <td>
           volumeDevices is the list of block devices to be used by the container.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexvolumemountsindex">volumeMounts</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexvolumemountsindex">volumeMounts</a></b></td>
         <td>[]object</td>
         <td>
           Pod volumes to mount into the container's filesystem.
@@ -3206,7 +3206,7 @@ Cannot be updated.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexenvindex">`KamajiControlPlane.spec.deployment.extraContainers[index].env[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexenvindex">`StewardControlPlane.spec.deployment.extraContainers[index].env[index]`</span>
 
 
 EnvVar represents an environment variable present in a Container.
@@ -3244,7 +3244,7 @@ Defaults to "".<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexenvindexvaluefrom">valueFrom</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexenvindexvaluefrom">valueFrom</a></b></td>
         <td>object</td>
         <td>
           Source for the environment variable's value. Cannot be used if value is not empty.<br/>
@@ -3254,7 +3254,7 @@ Defaults to "".<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexenvindexvaluefrom">`KamajiControlPlane.spec.deployment.extraContainers[index].env[index].valueFrom`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexenvindexvaluefrom">`StewardControlPlane.spec.deployment.extraContainers[index].env[index].valueFrom`</span>
 
 
 Source for the environment variable's value. Cannot be used if value is not empty.
@@ -3269,14 +3269,14 @@ Source for the environment variable's value. Cannot be used if value is not empt
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexenvindexvaluefromconfigmapkeyref">configMapKeyRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexenvindexvaluefromconfigmapkeyref">configMapKeyRef</a></b></td>
         <td>object</td>
         <td>
           Selects a key of a ConfigMap.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexenvindexvaluefromfieldref">fieldRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexenvindexvaluefromfieldref">fieldRef</a></b></td>
         <td>object</td>
         <td>
           Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
@@ -3284,7 +3284,7 @@ spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podI
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexenvindexvaluefromfilekeyref">fileKeyRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexenvindexvaluefromfilekeyref">fileKeyRef</a></b></td>
         <td>object</td>
         <td>
           FileKeyRef selects a key of the env file.
@@ -3292,7 +3292,7 @@ Requires the EnvFiles feature gate to be enabled.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexenvindexvaluefromresourcefieldref">resourceFieldRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexenvindexvaluefromresourcefieldref">resourceFieldRef</a></b></td>
         <td>object</td>
         <td>
           Selects a resource of the container: only resources limits and requests
@@ -3300,7 +3300,7 @@ Requires the EnvFiles feature gate to be enabled.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexenvindexvaluefromsecretkeyref">secretKeyRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexenvindexvaluefromsecretkeyref">secretKeyRef</a></b></td>
         <td>object</td>
         <td>
           Selects a key of a secret in the pod's namespace<br/>
@@ -3310,7 +3310,7 @@ Requires the EnvFiles feature gate to be enabled.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexenvindexvaluefromconfigmapkeyref">`KamajiControlPlane.spec.deployment.extraContainers[index].env[index].valueFrom.configMapKeyRef`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexenvindexvaluefromconfigmapkeyref">`StewardControlPlane.spec.deployment.extraContainers[index].env[index].valueFrom.configMapKeyRef`</span>
 
 
 Selects a key of a ConfigMap.
@@ -3355,7 +3355,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexenvindexvaluefromfieldref">`KamajiControlPlane.spec.deployment.extraContainers[index].env[index].valueFrom.fieldRef`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexenvindexvaluefromfieldref">`StewardControlPlane.spec.deployment.extraContainers[index].env[index].valueFrom.fieldRef`</span>
 
 
 Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
@@ -3388,7 +3388,7 @@ spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podI
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexenvindexvaluefromfilekeyref">`KamajiControlPlane.spec.deployment.extraContainers[index].env[index].valueFrom.fileKeyRef`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexenvindexvaluefromfilekeyref">`StewardControlPlane.spec.deployment.extraContainers[index].env[index].valueFrom.fileKeyRef`</span>
 
 
 FileKeyRef selects a key of the env file.
@@ -3446,7 +3446,7 @@ an error will be returned during Pod creation.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexenvindexvaluefromresourcefieldref">`KamajiControlPlane.spec.deployment.extraContainers[index].env[index].valueFrom.resourceFieldRef`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexenvindexvaluefromresourcefieldref">`StewardControlPlane.spec.deployment.extraContainers[index].env[index].valueFrom.resourceFieldRef`</span>
 
 
 Selects a resource of the container: only resources limits and requests
@@ -3486,7 +3486,7 @@ Selects a resource of the container: only resources limits and requests
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexenvindexvaluefromsecretkeyref">`KamajiControlPlane.spec.deployment.extraContainers[index].env[index].valueFrom.secretKeyRef`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexenvindexvaluefromsecretkeyref">`StewardControlPlane.spec.deployment.extraContainers[index].env[index].valueFrom.secretKeyRef`</span>
 
 
 Selects a key of a secret in the pod's namespace
@@ -3531,7 +3531,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexenvfromindex">`KamajiControlPlane.spec.deployment.extraContainers[index].envFrom[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexenvfromindex">`StewardControlPlane.spec.deployment.extraContainers[index].envFrom[index]`</span>
 
 
 EnvFromSource represents the source of a set of ConfigMaps or Secrets
@@ -3546,7 +3546,7 @@ EnvFromSource represents the source of a set of ConfigMaps or Secrets
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexenvfromindexconfigmapref">configMapRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexenvfromindexconfigmapref">configMapRef</a></b></td>
         <td>object</td>
         <td>
           The ConfigMap to select from<br/>
@@ -3561,7 +3561,7 @@ May consist of any printable ASCII characters except '='.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexenvfromindexsecretref">secretRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexenvfromindexsecretref">secretRef</a></b></td>
         <td>object</td>
         <td>
           The Secret to select from<br/>
@@ -3571,7 +3571,7 @@ May consist of any printable ASCII characters except '='.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexenvfromindexconfigmapref">`KamajiControlPlane.spec.deployment.extraContainers[index].envFrom[index].configMapRef`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexenvfromindexconfigmapref">`StewardControlPlane.spec.deployment.extraContainers[index].envFrom[index].configMapRef`</span>
 
 
 The ConfigMap to select from
@@ -3609,7 +3609,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexenvfromindexsecretref">`KamajiControlPlane.spec.deployment.extraContainers[index].envFrom[index].secretRef`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexenvfromindexsecretref">`StewardControlPlane.spec.deployment.extraContainers[index].envFrom[index].secretRef`</span>
 
 
 The Secret to select from
@@ -3647,7 +3647,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexlifecycle">`KamajiControlPlane.spec.deployment.extraContainers[index].lifecycle`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexlifecycle">`StewardControlPlane.spec.deployment.extraContainers[index].lifecycle`</span>
 
 
 Actions that the management system should take in response to container lifecycle events.
@@ -3663,7 +3663,7 @@ Cannot be updated.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexlifecyclepoststart">postStart</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexlifecyclepoststart">postStart</a></b></td>
         <td>object</td>
         <td>
           PostStart is called immediately after a container is created. If the handler fails,
@@ -3673,7 +3673,7 @@ More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-ho
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexlifecycleprestop">preStop</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexlifecycleprestop">preStop</a></b></td>
         <td>object</td>
         <td>
           PreStop is called immediately before a container is terminated due to an
@@ -3700,7 +3700,7 @@ StopSignal can only be set for Pods with a non-empty .spec.os.name<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexlifecyclepoststart">`KamajiControlPlane.spec.deployment.extraContainers[index].lifecycle.postStart`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexlifecyclepoststart">`StewardControlPlane.spec.deployment.extraContainers[index].lifecycle.postStart`</span>
 
 
 PostStart is called immediately after a container is created. If the handler fails,
@@ -3718,28 +3718,28 @@ More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-ho
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexlifecyclepoststartexec">exec</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexlifecyclepoststartexec">exec</a></b></td>
         <td>object</td>
         <td>
           Exec specifies a command to execute in the container.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexlifecyclepoststarthttpget">httpGet</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexlifecyclepoststarthttpget">httpGet</a></b></td>
         <td>object</td>
         <td>
           HTTPGet specifies an HTTP GET request to perform.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexlifecyclepoststartsleep">sleep</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexlifecyclepoststartsleep">sleep</a></b></td>
         <td>object</td>
         <td>
           Sleep represents a duration that the container should sleep.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexlifecyclepoststarttcpsocket">tcpSocket</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexlifecyclepoststarttcpsocket">tcpSocket</a></b></td>
         <td>object</td>
         <td>
           Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
@@ -3751,7 +3751,7 @@ lifecycle hooks will fail at runtime when it is specified.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexlifecyclepoststartexec">`KamajiControlPlane.spec.deployment.extraContainers[index].lifecycle.postStart.exec`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexlifecyclepoststartexec">`StewardControlPlane.spec.deployment.extraContainers[index].lifecycle.postStart.exec`</span>
 
 
 Exec specifies a command to execute in the container.
@@ -3780,7 +3780,7 @@ Exit status of 0 is treated as live/healthy and non-zero is unhealthy.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexlifecyclepoststarthttpget">`KamajiControlPlane.spec.deployment.extraContainers[index].lifecycle.postStart.httpGet`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexlifecyclepoststarthttpget">`StewardControlPlane.spec.deployment.extraContainers[index].lifecycle.postStart.httpGet`</span>
 
 
 HTTPGet specifies an HTTP GET request to perform.
@@ -3812,7 +3812,7 @@ Name must be an IANA_SVC_NAME.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexlifecyclepoststarthttpgethttpheadersindex">httpHeaders</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexlifecyclepoststarthttpgethttpheadersindex">httpHeaders</a></b></td>
         <td>[]object</td>
         <td>
           Custom headers to set in the request. HTTP allows repeated headers.<br/>
@@ -3837,7 +3837,7 @@ Defaults to HTTP.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexlifecyclepoststarthttpgethttpheadersindex">`KamajiControlPlane.spec.deployment.extraContainers[index].lifecycle.postStart.httpGet.httpHeaders[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexlifecyclepoststarthttpgethttpheadersindex">`StewardControlPlane.spec.deployment.extraContainers[index].lifecycle.postStart.httpGet.httpHeaders[index]`</span>
 
 
 HTTPHeader describes a custom header to be used in HTTP probes
@@ -3870,7 +3870,7 @@ This will be canonicalized upon output, so case-variant names will be understood
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexlifecyclepoststartsleep">`KamajiControlPlane.spec.deployment.extraContainers[index].lifecycle.postStart.sleep`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexlifecyclepoststartsleep">`StewardControlPlane.spec.deployment.extraContainers[index].lifecycle.postStart.sleep`</span>
 
 
 Sleep represents a duration that the container should sleep.
@@ -3897,7 +3897,7 @@ Sleep represents a duration that the container should sleep.
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexlifecyclepoststarttcpsocket">`KamajiControlPlane.spec.deployment.extraContainers[index].lifecycle.postStart.tcpSocket`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexlifecyclepoststarttcpsocket">`StewardControlPlane.spec.deployment.extraContainers[index].lifecycle.postStart.tcpSocket`</span>
 
 
 Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
@@ -3933,7 +3933,7 @@ Name must be an IANA_SVC_NAME.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexlifecycleprestop">`KamajiControlPlane.spec.deployment.extraContainers[index].lifecycle.preStop`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexlifecycleprestop">`StewardControlPlane.spec.deployment.extraContainers[index].lifecycle.preStop`</span>
 
 
 PreStop is called immediately before a container is terminated due to an
@@ -3956,28 +3956,28 @@ More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-ho
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexlifecycleprestopexec">exec</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexlifecycleprestopexec">exec</a></b></td>
         <td>object</td>
         <td>
           Exec specifies a command to execute in the container.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexlifecycleprestophttpget">httpGet</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexlifecycleprestophttpget">httpGet</a></b></td>
         <td>object</td>
         <td>
           HTTPGet specifies an HTTP GET request to perform.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexlifecycleprestopsleep">sleep</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexlifecycleprestopsleep">sleep</a></b></td>
         <td>object</td>
         <td>
           Sleep represents a duration that the container should sleep.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexlifecycleprestoptcpsocket">tcpSocket</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexlifecycleprestoptcpsocket">tcpSocket</a></b></td>
         <td>object</td>
         <td>
           Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
@@ -3989,7 +3989,7 @@ lifecycle hooks will fail at runtime when it is specified.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexlifecycleprestopexec">`KamajiControlPlane.spec.deployment.extraContainers[index].lifecycle.preStop.exec`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexlifecycleprestopexec">`StewardControlPlane.spec.deployment.extraContainers[index].lifecycle.preStop.exec`</span>
 
 
 Exec specifies a command to execute in the container.
@@ -4018,7 +4018,7 @@ Exit status of 0 is treated as live/healthy and non-zero is unhealthy.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexlifecycleprestophttpget">`KamajiControlPlane.spec.deployment.extraContainers[index].lifecycle.preStop.httpGet`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexlifecycleprestophttpget">`StewardControlPlane.spec.deployment.extraContainers[index].lifecycle.preStop.httpGet`</span>
 
 
 HTTPGet specifies an HTTP GET request to perform.
@@ -4050,7 +4050,7 @@ Name must be an IANA_SVC_NAME.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexlifecycleprestophttpgethttpheadersindex">httpHeaders</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexlifecycleprestophttpgethttpheadersindex">httpHeaders</a></b></td>
         <td>[]object</td>
         <td>
           Custom headers to set in the request. HTTP allows repeated headers.<br/>
@@ -4075,7 +4075,7 @@ Defaults to HTTP.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexlifecycleprestophttpgethttpheadersindex">`KamajiControlPlane.spec.deployment.extraContainers[index].lifecycle.preStop.httpGet.httpHeaders[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexlifecycleprestophttpgethttpheadersindex">`StewardControlPlane.spec.deployment.extraContainers[index].lifecycle.preStop.httpGet.httpHeaders[index]`</span>
 
 
 HTTPHeader describes a custom header to be used in HTTP probes
@@ -4108,7 +4108,7 @@ This will be canonicalized upon output, so case-variant names will be understood
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexlifecycleprestopsleep">`KamajiControlPlane.spec.deployment.extraContainers[index].lifecycle.preStop.sleep`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexlifecycleprestopsleep">`StewardControlPlane.spec.deployment.extraContainers[index].lifecycle.preStop.sleep`</span>
 
 
 Sleep represents a duration that the container should sleep.
@@ -4135,7 +4135,7 @@ Sleep represents a duration that the container should sleep.
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexlifecycleprestoptcpsocket">`KamajiControlPlane.spec.deployment.extraContainers[index].lifecycle.preStop.tcpSocket`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexlifecycleprestoptcpsocket">`StewardControlPlane.spec.deployment.extraContainers[index].lifecycle.preStop.tcpSocket`</span>
 
 
 Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
@@ -4171,7 +4171,7 @@ Name must be an IANA_SVC_NAME.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexlivenessprobe">`KamajiControlPlane.spec.deployment.extraContainers[index].livenessProbe`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexlivenessprobe">`StewardControlPlane.spec.deployment.extraContainers[index].livenessProbe`</span>
 
 
 Periodic probe of container liveness.
@@ -4189,7 +4189,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexlivenessprobeexec">exec</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexlivenessprobeexec">exec</a></b></td>
         <td>object</td>
         <td>
           Exec specifies a command to execute in the container.<br/>
@@ -4206,14 +4206,14 @@ Defaults to 3. Minimum value is 1.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexlivenessprobegrpc">grpc</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexlivenessprobegrpc">grpc</a></b></td>
         <td>object</td>
         <td>
           GRPC specifies a GRPC HealthCheckRequest.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexlivenessprobehttpget">httpGet</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexlivenessprobehttpget">httpGet</a></b></td>
         <td>object</td>
         <td>
           HTTPGet specifies an HTTP GET request to perform.<br/>
@@ -4250,7 +4250,7 @@ Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexlivenessprobetcpsocket">tcpSocket</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexlivenessprobetcpsocket">tcpSocket</a></b></td>
         <td>object</td>
         <td>
           TCPSocket specifies a connection to a TCP port.<br/>
@@ -4289,7 +4289,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexlivenessprobeexec">`KamajiControlPlane.spec.deployment.extraContainers[index].livenessProbe.exec`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexlivenessprobeexec">`StewardControlPlane.spec.deployment.extraContainers[index].livenessProbe.exec`</span>
 
 
 Exec specifies a command to execute in the container.
@@ -4318,7 +4318,7 @@ Exit status of 0 is treated as live/healthy and non-zero is unhealthy.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexlivenessprobegrpc">`KamajiControlPlane.spec.deployment.extraContainers[index].livenessProbe.grpc`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexlivenessprobegrpc">`StewardControlPlane.spec.deployment.extraContainers[index].livenessProbe.grpc`</span>
 
 
 GRPC specifies a GRPC HealthCheckRequest.
@@ -4357,7 +4357,7 @@ If this is not specified, the default behavior is defined by gRPC.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexlivenessprobehttpget">`KamajiControlPlane.spec.deployment.extraContainers[index].livenessProbe.httpGet`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexlivenessprobehttpget">`StewardControlPlane.spec.deployment.extraContainers[index].livenessProbe.httpGet`</span>
 
 
 HTTPGet specifies an HTTP GET request to perform.
@@ -4389,7 +4389,7 @@ Name must be an IANA_SVC_NAME.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexlivenessprobehttpgethttpheadersindex">httpHeaders</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexlivenessprobehttpgethttpheadersindex">httpHeaders</a></b></td>
         <td>[]object</td>
         <td>
           Custom headers to set in the request. HTTP allows repeated headers.<br/>
@@ -4414,7 +4414,7 @@ Defaults to HTTP.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexlivenessprobehttpgethttpheadersindex">`KamajiControlPlane.spec.deployment.extraContainers[index].livenessProbe.httpGet.httpHeaders[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexlivenessprobehttpgethttpheadersindex">`StewardControlPlane.spec.deployment.extraContainers[index].livenessProbe.httpGet.httpHeaders[index]`</span>
 
 
 HTTPHeader describes a custom header to be used in HTTP probes
@@ -4447,7 +4447,7 @@ This will be canonicalized upon output, so case-variant names will be understood
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexlivenessprobetcpsocket">`KamajiControlPlane.spec.deployment.extraContainers[index].livenessProbe.tcpSocket`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexlivenessprobetcpsocket">`StewardControlPlane.spec.deployment.extraContainers[index].livenessProbe.tcpSocket`</span>
 
 
 TCPSocket specifies a connection to a TCP port.
@@ -4481,7 +4481,7 @@ Name must be an IANA_SVC_NAME.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexportsindex">`KamajiControlPlane.spec.deployment.extraContainers[index].ports[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexportsindex">`StewardControlPlane.spec.deployment.extraContainers[index].ports[index]`</span>
 
 
 ContainerPort represents a network port in a single container.
@@ -4547,7 +4547,7 @@ Defaults to "TCP".<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexreadinessprobe">`KamajiControlPlane.spec.deployment.extraContainers[index].readinessProbe`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexreadinessprobe">`StewardControlPlane.spec.deployment.extraContainers[index].readinessProbe`</span>
 
 
 Periodic probe of container service readiness.
@@ -4565,7 +4565,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexreadinessprobeexec">exec</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexreadinessprobeexec">exec</a></b></td>
         <td>object</td>
         <td>
           Exec specifies a command to execute in the container.<br/>
@@ -4582,14 +4582,14 @@ Defaults to 3. Minimum value is 1.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexreadinessprobegrpc">grpc</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexreadinessprobegrpc">grpc</a></b></td>
         <td>object</td>
         <td>
           GRPC specifies a GRPC HealthCheckRequest.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexreadinessprobehttpget">httpGet</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexreadinessprobehttpget">httpGet</a></b></td>
         <td>object</td>
         <td>
           HTTPGet specifies an HTTP GET request to perform.<br/>
@@ -4626,7 +4626,7 @@ Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexreadinessprobetcpsocket">tcpSocket</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexreadinessprobetcpsocket">tcpSocket</a></b></td>
         <td>object</td>
         <td>
           TCPSocket specifies a connection to a TCP port.<br/>
@@ -4665,7 +4665,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexreadinessprobeexec">`KamajiControlPlane.spec.deployment.extraContainers[index].readinessProbe.exec`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexreadinessprobeexec">`StewardControlPlane.spec.deployment.extraContainers[index].readinessProbe.exec`</span>
 
 
 Exec specifies a command to execute in the container.
@@ -4694,7 +4694,7 @@ Exit status of 0 is treated as live/healthy and non-zero is unhealthy.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexreadinessprobegrpc">`KamajiControlPlane.spec.deployment.extraContainers[index].readinessProbe.grpc`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexreadinessprobegrpc">`StewardControlPlane.spec.deployment.extraContainers[index].readinessProbe.grpc`</span>
 
 
 GRPC specifies a GRPC HealthCheckRequest.
@@ -4733,7 +4733,7 @@ If this is not specified, the default behavior is defined by gRPC.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexreadinessprobehttpget">`KamajiControlPlane.spec.deployment.extraContainers[index].readinessProbe.httpGet`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexreadinessprobehttpget">`StewardControlPlane.spec.deployment.extraContainers[index].readinessProbe.httpGet`</span>
 
 
 HTTPGet specifies an HTTP GET request to perform.
@@ -4765,7 +4765,7 @@ Name must be an IANA_SVC_NAME.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexreadinessprobehttpgethttpheadersindex">httpHeaders</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexreadinessprobehttpgethttpheadersindex">httpHeaders</a></b></td>
         <td>[]object</td>
         <td>
           Custom headers to set in the request. HTTP allows repeated headers.<br/>
@@ -4790,7 +4790,7 @@ Defaults to HTTP.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexreadinessprobehttpgethttpheadersindex">`KamajiControlPlane.spec.deployment.extraContainers[index].readinessProbe.httpGet.httpHeaders[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexreadinessprobehttpgethttpheadersindex">`StewardControlPlane.spec.deployment.extraContainers[index].readinessProbe.httpGet.httpHeaders[index]`</span>
 
 
 HTTPHeader describes a custom header to be used in HTTP probes
@@ -4823,7 +4823,7 @@ This will be canonicalized upon output, so case-variant names will be understood
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexreadinessprobetcpsocket">`KamajiControlPlane.spec.deployment.extraContainers[index].readinessProbe.tcpSocket`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexreadinessprobetcpsocket">`StewardControlPlane.spec.deployment.extraContainers[index].readinessProbe.tcpSocket`</span>
 
 
 TCPSocket specifies a connection to a TCP port.
@@ -4857,7 +4857,7 @@ Name must be an IANA_SVC_NAME.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexresizepolicyindex">`KamajiControlPlane.spec.deployment.extraContainers[index].resizePolicy[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexresizepolicyindex">`StewardControlPlane.spec.deployment.extraContainers[index].resizePolicy[index]`</span>
 
 
 ContainerResizePolicy represents resource resize policy for the container.
@@ -4891,7 +4891,7 @@ If not specified, it defaults to NotRequired.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexresources">`KamajiControlPlane.spec.deployment.extraContainers[index].resources`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexresources">`StewardControlPlane.spec.deployment.extraContainers[index].resources`</span>
 
 
 Compute Resources required by this container.
@@ -4908,7 +4908,7 @@ More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-co
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexresourcesclaimsindex">claims</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexresourcesclaimsindex">claims</a></b></td>
         <td>[]object</td>
         <td>
           Claims lists the names of resources, defined in spec.resourceClaims,
@@ -4942,7 +4942,7 @@ More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-co
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexresourcesclaimsindex">`KamajiControlPlane.spec.deployment.extraContainers[index].resources.claims[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexresourcesclaimsindex">`StewardControlPlane.spec.deployment.extraContainers[index].resources.claims[index]`</span>
 
 
 ResourceClaim references one entry in PodSpec.ResourceClaims.
@@ -4978,7 +4978,7 @@ only the result of this request.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexrestartpolicyrulesindex">`KamajiControlPlane.spec.deployment.extraContainers[index].restartPolicyRules[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexrestartpolicyrulesindex">`StewardControlPlane.spec.deployment.extraContainers[index].restartPolicyRules[index]`</span>
 
 
 ContainerRestartRule describes how a container exit is handled.
@@ -5002,7 +5002,7 @@ container.<br/>
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexrestartpolicyrulesindexexitcodes">exitCodes</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexrestartpolicyrulesindexexitcodes">exitCodes</a></b></td>
         <td>object</td>
         <td>
           Represents the exit codes to check on container exits.<br/>
@@ -5012,7 +5012,7 @@ container.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexrestartpolicyrulesindexexitcodes">`KamajiControlPlane.spec.deployment.extraContainers[index].restartPolicyRules[index].exitCodes`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexrestartpolicyrulesindexexitcodes">`StewardControlPlane.spec.deployment.extraContainers[index].restartPolicyRules[index].exitCodes`</span>
 
 
 Represents the exit codes to check on container exits.
@@ -5050,7 +5050,7 @@ At most 255 elements are allowed.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexsecuritycontext">`KamajiControlPlane.spec.deployment.extraContainers[index].securityContext`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexsecuritycontext">`StewardControlPlane.spec.deployment.extraContainers[index].securityContext`</span>
 
 
 SecurityContext defines the security options the container should be run with.
@@ -5080,7 +5080,7 @@ Note that this field cannot be set when spec.os.name is windows.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexsecuritycontextapparmorprofile">appArmorProfile</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexsecuritycontextapparmorprofile">appArmorProfile</a></b></td>
         <td>object</td>
         <td>
           appArmorProfile is the AppArmor options to use by this container. If set, this profile
@@ -5089,7 +5089,7 @@ Note that this field cannot be set when spec.os.name is windows.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexsecuritycontextcapabilities">capabilities</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexsecuritycontextcapabilities">capabilities</a></b></td>
         <td>object</td>
         <td>
           The capabilities to add/drop when running containers.
@@ -5166,7 +5166,7 @@ Note that this field cannot be set when spec.os.name is windows.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexsecuritycontextselinuxoptions">seLinuxOptions</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexsecuritycontextselinuxoptions">seLinuxOptions</a></b></td>
         <td>object</td>
         <td>
           The SELinux context to be applied to the container.
@@ -5177,7 +5177,7 @@ Note that this field cannot be set when spec.os.name is windows.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexsecuritycontextseccompprofile">seccompProfile</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexsecuritycontextseccompprofile">seccompProfile</a></b></td>
         <td>object</td>
         <td>
           The seccomp options to use by this container. If seccomp options are
@@ -5187,7 +5187,7 @@ Note that this field cannot be set when spec.os.name is windows.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexsecuritycontextwindowsoptions">windowsOptions</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexsecuritycontextwindowsoptions">windowsOptions</a></b></td>
         <td>object</td>
         <td>
           The Windows specific settings applied to all containers.
@@ -5200,7 +5200,7 @@ Note that this field cannot be set when spec.os.name is linux.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexsecuritycontextapparmorprofile">`KamajiControlPlane.spec.deployment.extraContainers[index].securityContext.appArmorProfile`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexsecuritycontextapparmorprofile">`StewardControlPlane.spec.deployment.extraContainers[index].securityContext.appArmorProfile`</span>
 
 
 appArmorProfile is the AppArmor options to use by this container. If set, this profile
@@ -5241,7 +5241,7 @@ Must be set if and only if type is "Localhost".<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexsecuritycontextcapabilities">`KamajiControlPlane.spec.deployment.extraContainers[index].securityContext.capabilities`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexsecuritycontextcapabilities">`StewardControlPlane.spec.deployment.extraContainers[index].securityContext.capabilities`</span>
 
 
 The capabilities to add/drop when running containers.
@@ -5275,7 +5275,7 @@ Note that this field cannot be set when spec.os.name is windows.
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexsecuritycontextselinuxoptions">`KamajiControlPlane.spec.deployment.extraContainers[index].securityContext.seLinuxOptions`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexsecuritycontextselinuxoptions">`StewardControlPlane.spec.deployment.extraContainers[index].securityContext.seLinuxOptions`</span>
 
 
 The SELinux context to be applied to the container.
@@ -5325,7 +5325,7 @@ Note that this field cannot be set when spec.os.name is windows.
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexsecuritycontextseccompprofile">`KamajiControlPlane.spec.deployment.extraContainers[index].securityContext.seccompProfile`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexsecuritycontextseccompprofile">`StewardControlPlane.spec.deployment.extraContainers[index].securityContext.seccompProfile`</span>
 
 
 The seccomp options to use by this container. If seccomp options are
@@ -5368,7 +5368,7 @@ Must be set if type is "Localhost". Must NOT be set for any other type.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexsecuritycontextwindowsoptions">`KamajiControlPlane.spec.deployment.extraContainers[index].securityContext.windowsOptions`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexsecuritycontextwindowsoptions">`StewardControlPlane.spec.deployment.extraContainers[index].securityContext.windowsOptions`</span>
 
 
 The Windows specific settings applied to all containers.
@@ -5425,7 +5425,7 @@ PodSecurityContext, the value specified in SecurityContext takes precedence.<br/
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexstartupprobe">`KamajiControlPlane.spec.deployment.extraContainers[index].startupProbe`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexstartupprobe">`StewardControlPlane.spec.deployment.extraContainers[index].startupProbe`</span>
 
 
 StartupProbe indicates that the Pod has successfully initialized.
@@ -5446,7 +5446,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexstartupprobeexec">exec</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexstartupprobeexec">exec</a></b></td>
         <td>object</td>
         <td>
           Exec specifies a command to execute in the container.<br/>
@@ -5463,14 +5463,14 @@ Defaults to 3. Minimum value is 1.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexstartupprobegrpc">grpc</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexstartupprobegrpc">grpc</a></b></td>
         <td>object</td>
         <td>
           GRPC specifies a GRPC HealthCheckRequest.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexstartupprobehttpget">httpGet</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexstartupprobehttpget">httpGet</a></b></td>
         <td>object</td>
         <td>
           HTTPGet specifies an HTTP GET request to perform.<br/>
@@ -5507,7 +5507,7 @@ Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexstartupprobetcpsocket">tcpSocket</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexstartupprobetcpsocket">tcpSocket</a></b></td>
         <td>object</td>
         <td>
           TCPSocket specifies a connection to a TCP port.<br/>
@@ -5546,7 +5546,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexstartupprobeexec">`KamajiControlPlane.spec.deployment.extraContainers[index].startupProbe.exec`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexstartupprobeexec">`StewardControlPlane.spec.deployment.extraContainers[index].startupProbe.exec`</span>
 
 
 Exec specifies a command to execute in the container.
@@ -5575,7 +5575,7 @@ Exit status of 0 is treated as live/healthy and non-zero is unhealthy.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexstartupprobegrpc">`KamajiControlPlane.spec.deployment.extraContainers[index].startupProbe.grpc`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexstartupprobegrpc">`StewardControlPlane.spec.deployment.extraContainers[index].startupProbe.grpc`</span>
 
 
 GRPC specifies a GRPC HealthCheckRequest.
@@ -5614,7 +5614,7 @@ If this is not specified, the default behavior is defined by gRPC.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexstartupprobehttpget">`KamajiControlPlane.spec.deployment.extraContainers[index].startupProbe.httpGet`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexstartupprobehttpget">`StewardControlPlane.spec.deployment.extraContainers[index].startupProbe.httpGet`</span>
 
 
 HTTPGet specifies an HTTP GET request to perform.
@@ -5646,7 +5646,7 @@ Name must be an IANA_SVC_NAME.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextracontainersindexstartupprobehttpgethttpheadersindex">httpHeaders</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexstartupprobehttpgethttpheadersindex">httpHeaders</a></b></td>
         <td>[]object</td>
         <td>
           Custom headers to set in the request. HTTP allows repeated headers.<br/>
@@ -5671,7 +5671,7 @@ Defaults to HTTP.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexstartupprobehttpgethttpheadersindex">`KamajiControlPlane.spec.deployment.extraContainers[index].startupProbe.httpGet.httpHeaders[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexstartupprobehttpgethttpheadersindex">`StewardControlPlane.spec.deployment.extraContainers[index].startupProbe.httpGet.httpHeaders[index]`</span>
 
 
 HTTPHeader describes a custom header to be used in HTTP probes
@@ -5704,7 +5704,7 @@ This will be canonicalized upon output, so case-variant names will be understood
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexstartupprobetcpsocket">`KamajiControlPlane.spec.deployment.extraContainers[index].startupProbe.tcpSocket`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexstartupprobetcpsocket">`StewardControlPlane.spec.deployment.extraContainers[index].startupProbe.tcpSocket`</span>
 
 
 TCPSocket specifies a connection to a TCP port.
@@ -5738,7 +5738,7 @@ Name must be an IANA_SVC_NAME.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexvolumedevicesindex">`KamajiControlPlane.spec.deployment.extraContainers[index].volumeDevices[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexvolumedevicesindex">`StewardControlPlane.spec.deployment.extraContainers[index].volumeDevices[index]`</span>
 
 
 volumeDevice describes a mapping of a raw block device within a container.
@@ -5770,7 +5770,7 @@ volumeDevice describes a mapping of a raw block device within a container.
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextracontainersindexvolumemountsindex">`KamajiControlPlane.spec.deployment.extraContainers[index].volumeMounts[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextracontainersindexvolumemountsindex">`StewardControlPlane.spec.deployment.extraContainers[index].volumeMounts[index]`</span>
 
 
 VolumeMount describes a mounting of a Volume within a container.
@@ -5863,7 +5863,7 @@ SubPathExpr and SubPath are mutually exclusive.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindex">`KamajiControlPlane.spec.deployment.extraInitContainers[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindex">`StewardControlPlane.spec.deployment.extraInitContainers[index]`</span>
 
 
 A single application container that you want to run within a pod.
@@ -5915,7 +5915,7 @@ More info: https://kubernetes.io/docs/tasks/inject-data-application/define-comma
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexenvindex">env</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexenvindex">env</a></b></td>
         <td>[]object</td>
         <td>
           List of environment variables to set in the container.
@@ -5923,7 +5923,7 @@ Cannot be updated.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexenvfromindex">envFrom</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexenvfromindex">envFrom</a></b></td>
         <td>[]object</td>
         <td>
           List of sources to populate environment variables in the container.
@@ -5956,7 +5956,7 @@ More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexlifecycle">lifecycle</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexlifecycle">lifecycle</a></b></td>
         <td>object</td>
         <td>
           Actions that the management system should take in response to container lifecycle events.
@@ -5964,7 +5964,7 @@ Cannot be updated.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexlivenessprobe">livenessProbe</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexlivenessprobe">livenessProbe</a></b></td>
         <td>object</td>
         <td>
           Periodic probe of container liveness.
@@ -5974,7 +5974,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexportsindex">ports</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexportsindex">ports</a></b></td>
         <td>[]object</td>
         <td>
           List of ports to expose from the container. Not specifying a port here
@@ -5987,7 +5987,7 @@ Cannot be updated.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexreadinessprobe">readinessProbe</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexreadinessprobe">readinessProbe</a></b></td>
         <td>object</td>
         <td>
           Periodic probe of container service readiness.
@@ -5997,14 +5997,14 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexresizepolicyindex">resizePolicy</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexresizepolicyindex">resizePolicy</a></b></td>
         <td>[]object</td>
         <td>
           Resources resize policy for the container.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexresources">resources</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexresources">resources</a></b></td>
         <td>object</td>
         <td>
           Compute Resources required by this container.
@@ -6034,7 +6034,7 @@ completed.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexrestartpolicyrulesindex">restartPolicyRules</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexrestartpolicyrulesindex">restartPolicyRules</a></b></td>
         <td>[]object</td>
         <td>
           Represents a list of rules to be checked to determine if the
@@ -6051,7 +6051,7 @@ even it if matches the Pod's RestartPolicy.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexsecuritycontext">securityContext</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexsecuritycontext">securityContext</a></b></td>
         <td>object</td>
         <td>
           SecurityContext defines the security options the container should be run with.
@@ -6060,7 +6060,7 @@ More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-con
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexstartupprobe">startupProbe</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexstartupprobe">startupProbe</a></b></td>
         <td>object</td>
         <td>
           StartupProbe indicates that the Pod has successfully initialized.
@@ -6129,14 +6129,14 @@ Default is false.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexvolumedevicesindex">volumeDevices</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexvolumedevicesindex">volumeDevices</a></b></td>
         <td>[]object</td>
         <td>
           volumeDevices is the list of block devices to be used by the container.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexvolumemountsindex">volumeMounts</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexvolumemountsindex">volumeMounts</a></b></td>
         <td>[]object</td>
         <td>
           Pod volumes to mount into the container's filesystem.
@@ -6157,7 +6157,7 @@ Cannot be updated.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexenvindex">`KamajiControlPlane.spec.deployment.extraInitContainers[index].env[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexenvindex">`StewardControlPlane.spec.deployment.extraInitContainers[index].env[index]`</span>
 
 
 EnvVar represents an environment variable present in a Container.
@@ -6195,7 +6195,7 @@ Defaults to "".<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexenvindexvaluefrom">valueFrom</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexenvindexvaluefrom">valueFrom</a></b></td>
         <td>object</td>
         <td>
           Source for the environment variable's value. Cannot be used if value is not empty.<br/>
@@ -6205,7 +6205,7 @@ Defaults to "".<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexenvindexvaluefrom">`KamajiControlPlane.spec.deployment.extraInitContainers[index].env[index].valueFrom`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexenvindexvaluefrom">`StewardControlPlane.spec.deployment.extraInitContainers[index].env[index].valueFrom`</span>
 
 
 Source for the environment variable's value. Cannot be used if value is not empty.
@@ -6220,14 +6220,14 @@ Source for the environment variable's value. Cannot be used if value is not empt
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexenvindexvaluefromconfigmapkeyref">configMapKeyRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexenvindexvaluefromconfigmapkeyref">configMapKeyRef</a></b></td>
         <td>object</td>
         <td>
           Selects a key of a ConfigMap.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexenvindexvaluefromfieldref">fieldRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexenvindexvaluefromfieldref">fieldRef</a></b></td>
         <td>object</td>
         <td>
           Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
@@ -6235,7 +6235,7 @@ spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podI
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexenvindexvaluefromfilekeyref">fileKeyRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexenvindexvaluefromfilekeyref">fileKeyRef</a></b></td>
         <td>object</td>
         <td>
           FileKeyRef selects a key of the env file.
@@ -6243,7 +6243,7 @@ Requires the EnvFiles feature gate to be enabled.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexenvindexvaluefromresourcefieldref">resourceFieldRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexenvindexvaluefromresourcefieldref">resourceFieldRef</a></b></td>
         <td>object</td>
         <td>
           Selects a resource of the container: only resources limits and requests
@@ -6251,7 +6251,7 @@ Requires the EnvFiles feature gate to be enabled.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexenvindexvaluefromsecretkeyref">secretKeyRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexenvindexvaluefromsecretkeyref">secretKeyRef</a></b></td>
         <td>object</td>
         <td>
           Selects a key of a secret in the pod's namespace<br/>
@@ -6261,7 +6261,7 @@ Requires the EnvFiles feature gate to be enabled.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexenvindexvaluefromconfigmapkeyref">`KamajiControlPlane.spec.deployment.extraInitContainers[index].env[index].valueFrom.configMapKeyRef`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexenvindexvaluefromconfigmapkeyref">`StewardControlPlane.spec.deployment.extraInitContainers[index].env[index].valueFrom.configMapKeyRef`</span>
 
 
 Selects a key of a ConfigMap.
@@ -6306,7 +6306,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexenvindexvaluefromfieldref">`KamajiControlPlane.spec.deployment.extraInitContainers[index].env[index].valueFrom.fieldRef`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexenvindexvaluefromfieldref">`StewardControlPlane.spec.deployment.extraInitContainers[index].env[index].valueFrom.fieldRef`</span>
 
 
 Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
@@ -6339,7 +6339,7 @@ spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podI
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexenvindexvaluefromfilekeyref">`KamajiControlPlane.spec.deployment.extraInitContainers[index].env[index].valueFrom.fileKeyRef`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexenvindexvaluefromfilekeyref">`StewardControlPlane.spec.deployment.extraInitContainers[index].env[index].valueFrom.fileKeyRef`</span>
 
 
 FileKeyRef selects a key of the env file.
@@ -6397,7 +6397,7 @@ an error will be returned during Pod creation.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexenvindexvaluefromresourcefieldref">`KamajiControlPlane.spec.deployment.extraInitContainers[index].env[index].valueFrom.resourceFieldRef`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexenvindexvaluefromresourcefieldref">`StewardControlPlane.spec.deployment.extraInitContainers[index].env[index].valueFrom.resourceFieldRef`</span>
 
 
 Selects a resource of the container: only resources limits and requests
@@ -6437,7 +6437,7 @@ Selects a resource of the container: only resources limits and requests
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexenvindexvaluefromsecretkeyref">`KamajiControlPlane.spec.deployment.extraInitContainers[index].env[index].valueFrom.secretKeyRef`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexenvindexvaluefromsecretkeyref">`StewardControlPlane.spec.deployment.extraInitContainers[index].env[index].valueFrom.secretKeyRef`</span>
 
 
 Selects a key of a secret in the pod's namespace
@@ -6482,7 +6482,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexenvfromindex">`KamajiControlPlane.spec.deployment.extraInitContainers[index].envFrom[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexenvfromindex">`StewardControlPlane.spec.deployment.extraInitContainers[index].envFrom[index]`</span>
 
 
 EnvFromSource represents the source of a set of ConfigMaps or Secrets
@@ -6497,7 +6497,7 @@ EnvFromSource represents the source of a set of ConfigMaps or Secrets
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexenvfromindexconfigmapref">configMapRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexenvfromindexconfigmapref">configMapRef</a></b></td>
         <td>object</td>
         <td>
           The ConfigMap to select from<br/>
@@ -6512,7 +6512,7 @@ May consist of any printable ASCII characters except '='.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexenvfromindexsecretref">secretRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexenvfromindexsecretref">secretRef</a></b></td>
         <td>object</td>
         <td>
           The Secret to select from<br/>
@@ -6522,7 +6522,7 @@ May consist of any printable ASCII characters except '='.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexenvfromindexconfigmapref">`KamajiControlPlane.spec.deployment.extraInitContainers[index].envFrom[index].configMapRef`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexenvfromindexconfigmapref">`StewardControlPlane.spec.deployment.extraInitContainers[index].envFrom[index].configMapRef`</span>
 
 
 The ConfigMap to select from
@@ -6560,7 +6560,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexenvfromindexsecretref">`KamajiControlPlane.spec.deployment.extraInitContainers[index].envFrom[index].secretRef`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexenvfromindexsecretref">`StewardControlPlane.spec.deployment.extraInitContainers[index].envFrom[index].secretRef`</span>
 
 
 The Secret to select from
@@ -6598,7 +6598,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexlifecycle">`KamajiControlPlane.spec.deployment.extraInitContainers[index].lifecycle`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexlifecycle">`StewardControlPlane.spec.deployment.extraInitContainers[index].lifecycle`</span>
 
 
 Actions that the management system should take in response to container lifecycle events.
@@ -6614,7 +6614,7 @@ Cannot be updated.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexlifecyclepoststart">postStart</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexlifecyclepoststart">postStart</a></b></td>
         <td>object</td>
         <td>
           PostStart is called immediately after a container is created. If the handler fails,
@@ -6624,7 +6624,7 @@ More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-ho
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexlifecycleprestop">preStop</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexlifecycleprestop">preStop</a></b></td>
         <td>object</td>
         <td>
           PreStop is called immediately before a container is terminated due to an
@@ -6651,7 +6651,7 @@ StopSignal can only be set for Pods with a non-empty .spec.os.name<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexlifecyclepoststart">`KamajiControlPlane.spec.deployment.extraInitContainers[index].lifecycle.postStart`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexlifecyclepoststart">`StewardControlPlane.spec.deployment.extraInitContainers[index].lifecycle.postStart`</span>
 
 
 PostStart is called immediately after a container is created. If the handler fails,
@@ -6669,28 +6669,28 @@ More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-ho
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexlifecyclepoststartexec">exec</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexlifecyclepoststartexec">exec</a></b></td>
         <td>object</td>
         <td>
           Exec specifies a command to execute in the container.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexlifecyclepoststarthttpget">httpGet</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexlifecyclepoststarthttpget">httpGet</a></b></td>
         <td>object</td>
         <td>
           HTTPGet specifies an HTTP GET request to perform.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexlifecyclepoststartsleep">sleep</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexlifecyclepoststartsleep">sleep</a></b></td>
         <td>object</td>
         <td>
           Sleep represents a duration that the container should sleep.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexlifecyclepoststarttcpsocket">tcpSocket</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexlifecyclepoststarttcpsocket">tcpSocket</a></b></td>
         <td>object</td>
         <td>
           Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
@@ -6702,7 +6702,7 @@ lifecycle hooks will fail at runtime when it is specified.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexlifecyclepoststartexec">`KamajiControlPlane.spec.deployment.extraInitContainers[index].lifecycle.postStart.exec`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexlifecyclepoststartexec">`StewardControlPlane.spec.deployment.extraInitContainers[index].lifecycle.postStart.exec`</span>
 
 
 Exec specifies a command to execute in the container.
@@ -6731,7 +6731,7 @@ Exit status of 0 is treated as live/healthy and non-zero is unhealthy.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexlifecyclepoststarthttpget">`KamajiControlPlane.spec.deployment.extraInitContainers[index].lifecycle.postStart.httpGet`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexlifecyclepoststarthttpget">`StewardControlPlane.spec.deployment.extraInitContainers[index].lifecycle.postStart.httpGet`</span>
 
 
 HTTPGet specifies an HTTP GET request to perform.
@@ -6763,7 +6763,7 @@ Name must be an IANA_SVC_NAME.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexlifecyclepoststarthttpgethttpheadersindex">httpHeaders</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexlifecyclepoststarthttpgethttpheadersindex">httpHeaders</a></b></td>
         <td>[]object</td>
         <td>
           Custom headers to set in the request. HTTP allows repeated headers.<br/>
@@ -6788,7 +6788,7 @@ Defaults to HTTP.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexlifecyclepoststarthttpgethttpheadersindex">`KamajiControlPlane.spec.deployment.extraInitContainers[index].lifecycle.postStart.httpGet.httpHeaders[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexlifecyclepoststarthttpgethttpheadersindex">`StewardControlPlane.spec.deployment.extraInitContainers[index].lifecycle.postStart.httpGet.httpHeaders[index]`</span>
 
 
 HTTPHeader describes a custom header to be used in HTTP probes
@@ -6821,7 +6821,7 @@ This will be canonicalized upon output, so case-variant names will be understood
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexlifecyclepoststartsleep">`KamajiControlPlane.spec.deployment.extraInitContainers[index].lifecycle.postStart.sleep`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexlifecyclepoststartsleep">`StewardControlPlane.spec.deployment.extraInitContainers[index].lifecycle.postStart.sleep`</span>
 
 
 Sleep represents a duration that the container should sleep.
@@ -6848,7 +6848,7 @@ Sleep represents a duration that the container should sleep.
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexlifecyclepoststarttcpsocket">`KamajiControlPlane.spec.deployment.extraInitContainers[index].lifecycle.postStart.tcpSocket`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexlifecyclepoststarttcpsocket">`StewardControlPlane.spec.deployment.extraInitContainers[index].lifecycle.postStart.tcpSocket`</span>
 
 
 Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
@@ -6884,7 +6884,7 @@ Name must be an IANA_SVC_NAME.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexlifecycleprestop">`KamajiControlPlane.spec.deployment.extraInitContainers[index].lifecycle.preStop`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexlifecycleprestop">`StewardControlPlane.spec.deployment.extraInitContainers[index].lifecycle.preStop`</span>
 
 
 PreStop is called immediately before a container is terminated due to an
@@ -6907,28 +6907,28 @@ More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-ho
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexlifecycleprestopexec">exec</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexlifecycleprestopexec">exec</a></b></td>
         <td>object</td>
         <td>
           Exec specifies a command to execute in the container.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexlifecycleprestophttpget">httpGet</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexlifecycleprestophttpget">httpGet</a></b></td>
         <td>object</td>
         <td>
           HTTPGet specifies an HTTP GET request to perform.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexlifecycleprestopsleep">sleep</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexlifecycleprestopsleep">sleep</a></b></td>
         <td>object</td>
         <td>
           Sleep represents a duration that the container should sleep.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexlifecycleprestoptcpsocket">tcpSocket</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexlifecycleprestoptcpsocket">tcpSocket</a></b></td>
         <td>object</td>
         <td>
           Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
@@ -6940,7 +6940,7 @@ lifecycle hooks will fail at runtime when it is specified.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexlifecycleprestopexec">`KamajiControlPlane.spec.deployment.extraInitContainers[index].lifecycle.preStop.exec`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexlifecycleprestopexec">`StewardControlPlane.spec.deployment.extraInitContainers[index].lifecycle.preStop.exec`</span>
 
 
 Exec specifies a command to execute in the container.
@@ -6969,7 +6969,7 @@ Exit status of 0 is treated as live/healthy and non-zero is unhealthy.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexlifecycleprestophttpget">`KamajiControlPlane.spec.deployment.extraInitContainers[index].lifecycle.preStop.httpGet`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexlifecycleprestophttpget">`StewardControlPlane.spec.deployment.extraInitContainers[index].lifecycle.preStop.httpGet`</span>
 
 
 HTTPGet specifies an HTTP GET request to perform.
@@ -7001,7 +7001,7 @@ Name must be an IANA_SVC_NAME.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexlifecycleprestophttpgethttpheadersindex">httpHeaders</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexlifecycleprestophttpgethttpheadersindex">httpHeaders</a></b></td>
         <td>[]object</td>
         <td>
           Custom headers to set in the request. HTTP allows repeated headers.<br/>
@@ -7026,7 +7026,7 @@ Defaults to HTTP.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexlifecycleprestophttpgethttpheadersindex">`KamajiControlPlane.spec.deployment.extraInitContainers[index].lifecycle.preStop.httpGet.httpHeaders[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexlifecycleprestophttpgethttpheadersindex">`StewardControlPlane.spec.deployment.extraInitContainers[index].lifecycle.preStop.httpGet.httpHeaders[index]`</span>
 
 
 HTTPHeader describes a custom header to be used in HTTP probes
@@ -7059,7 +7059,7 @@ This will be canonicalized upon output, so case-variant names will be understood
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexlifecycleprestopsleep">`KamajiControlPlane.spec.deployment.extraInitContainers[index].lifecycle.preStop.sleep`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexlifecycleprestopsleep">`StewardControlPlane.spec.deployment.extraInitContainers[index].lifecycle.preStop.sleep`</span>
 
 
 Sleep represents a duration that the container should sleep.
@@ -7086,7 +7086,7 @@ Sleep represents a duration that the container should sleep.
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexlifecycleprestoptcpsocket">`KamajiControlPlane.spec.deployment.extraInitContainers[index].lifecycle.preStop.tcpSocket`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexlifecycleprestoptcpsocket">`StewardControlPlane.spec.deployment.extraInitContainers[index].lifecycle.preStop.tcpSocket`</span>
 
 
 Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
@@ -7122,7 +7122,7 @@ Name must be an IANA_SVC_NAME.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexlivenessprobe">`KamajiControlPlane.spec.deployment.extraInitContainers[index].livenessProbe`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexlivenessprobe">`StewardControlPlane.spec.deployment.extraInitContainers[index].livenessProbe`</span>
 
 
 Periodic probe of container liveness.
@@ -7140,7 +7140,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexlivenessprobeexec">exec</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexlivenessprobeexec">exec</a></b></td>
         <td>object</td>
         <td>
           Exec specifies a command to execute in the container.<br/>
@@ -7157,14 +7157,14 @@ Defaults to 3. Minimum value is 1.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexlivenessprobegrpc">grpc</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexlivenessprobegrpc">grpc</a></b></td>
         <td>object</td>
         <td>
           GRPC specifies a GRPC HealthCheckRequest.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexlivenessprobehttpget">httpGet</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexlivenessprobehttpget">httpGet</a></b></td>
         <td>object</td>
         <td>
           HTTPGet specifies an HTTP GET request to perform.<br/>
@@ -7201,7 +7201,7 @@ Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexlivenessprobetcpsocket">tcpSocket</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexlivenessprobetcpsocket">tcpSocket</a></b></td>
         <td>object</td>
         <td>
           TCPSocket specifies a connection to a TCP port.<br/>
@@ -7240,7 +7240,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexlivenessprobeexec">`KamajiControlPlane.spec.deployment.extraInitContainers[index].livenessProbe.exec`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexlivenessprobeexec">`StewardControlPlane.spec.deployment.extraInitContainers[index].livenessProbe.exec`</span>
 
 
 Exec specifies a command to execute in the container.
@@ -7269,7 +7269,7 @@ Exit status of 0 is treated as live/healthy and non-zero is unhealthy.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexlivenessprobegrpc">`KamajiControlPlane.spec.deployment.extraInitContainers[index].livenessProbe.grpc`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexlivenessprobegrpc">`StewardControlPlane.spec.deployment.extraInitContainers[index].livenessProbe.grpc`</span>
 
 
 GRPC specifies a GRPC HealthCheckRequest.
@@ -7308,7 +7308,7 @@ If this is not specified, the default behavior is defined by gRPC.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexlivenessprobehttpget">`KamajiControlPlane.spec.deployment.extraInitContainers[index].livenessProbe.httpGet`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexlivenessprobehttpget">`StewardControlPlane.spec.deployment.extraInitContainers[index].livenessProbe.httpGet`</span>
 
 
 HTTPGet specifies an HTTP GET request to perform.
@@ -7340,7 +7340,7 @@ Name must be an IANA_SVC_NAME.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexlivenessprobehttpgethttpheadersindex">httpHeaders</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexlivenessprobehttpgethttpheadersindex">httpHeaders</a></b></td>
         <td>[]object</td>
         <td>
           Custom headers to set in the request. HTTP allows repeated headers.<br/>
@@ -7365,7 +7365,7 @@ Defaults to HTTP.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexlivenessprobehttpgethttpheadersindex">`KamajiControlPlane.spec.deployment.extraInitContainers[index].livenessProbe.httpGet.httpHeaders[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexlivenessprobehttpgethttpheadersindex">`StewardControlPlane.spec.deployment.extraInitContainers[index].livenessProbe.httpGet.httpHeaders[index]`</span>
 
 
 HTTPHeader describes a custom header to be used in HTTP probes
@@ -7398,7 +7398,7 @@ This will be canonicalized upon output, so case-variant names will be understood
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexlivenessprobetcpsocket">`KamajiControlPlane.spec.deployment.extraInitContainers[index].livenessProbe.tcpSocket`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexlivenessprobetcpsocket">`StewardControlPlane.spec.deployment.extraInitContainers[index].livenessProbe.tcpSocket`</span>
 
 
 TCPSocket specifies a connection to a TCP port.
@@ -7432,7 +7432,7 @@ Name must be an IANA_SVC_NAME.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexportsindex">`KamajiControlPlane.spec.deployment.extraInitContainers[index].ports[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexportsindex">`StewardControlPlane.spec.deployment.extraInitContainers[index].ports[index]`</span>
 
 
 ContainerPort represents a network port in a single container.
@@ -7498,7 +7498,7 @@ Defaults to "TCP".<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexreadinessprobe">`KamajiControlPlane.spec.deployment.extraInitContainers[index].readinessProbe`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexreadinessprobe">`StewardControlPlane.spec.deployment.extraInitContainers[index].readinessProbe`</span>
 
 
 Periodic probe of container service readiness.
@@ -7516,7 +7516,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexreadinessprobeexec">exec</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexreadinessprobeexec">exec</a></b></td>
         <td>object</td>
         <td>
           Exec specifies a command to execute in the container.<br/>
@@ -7533,14 +7533,14 @@ Defaults to 3. Minimum value is 1.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexreadinessprobegrpc">grpc</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexreadinessprobegrpc">grpc</a></b></td>
         <td>object</td>
         <td>
           GRPC specifies a GRPC HealthCheckRequest.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexreadinessprobehttpget">httpGet</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexreadinessprobehttpget">httpGet</a></b></td>
         <td>object</td>
         <td>
           HTTPGet specifies an HTTP GET request to perform.<br/>
@@ -7577,7 +7577,7 @@ Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexreadinessprobetcpsocket">tcpSocket</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexreadinessprobetcpsocket">tcpSocket</a></b></td>
         <td>object</td>
         <td>
           TCPSocket specifies a connection to a TCP port.<br/>
@@ -7616,7 +7616,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexreadinessprobeexec">`KamajiControlPlane.spec.deployment.extraInitContainers[index].readinessProbe.exec`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexreadinessprobeexec">`StewardControlPlane.spec.deployment.extraInitContainers[index].readinessProbe.exec`</span>
 
 
 Exec specifies a command to execute in the container.
@@ -7645,7 +7645,7 @@ Exit status of 0 is treated as live/healthy and non-zero is unhealthy.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexreadinessprobegrpc">`KamajiControlPlane.spec.deployment.extraInitContainers[index].readinessProbe.grpc`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexreadinessprobegrpc">`StewardControlPlane.spec.deployment.extraInitContainers[index].readinessProbe.grpc`</span>
 
 
 GRPC specifies a GRPC HealthCheckRequest.
@@ -7684,7 +7684,7 @@ If this is not specified, the default behavior is defined by gRPC.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexreadinessprobehttpget">`KamajiControlPlane.spec.deployment.extraInitContainers[index].readinessProbe.httpGet`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexreadinessprobehttpget">`StewardControlPlane.spec.deployment.extraInitContainers[index].readinessProbe.httpGet`</span>
 
 
 HTTPGet specifies an HTTP GET request to perform.
@@ -7716,7 +7716,7 @@ Name must be an IANA_SVC_NAME.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexreadinessprobehttpgethttpheadersindex">httpHeaders</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexreadinessprobehttpgethttpheadersindex">httpHeaders</a></b></td>
         <td>[]object</td>
         <td>
           Custom headers to set in the request. HTTP allows repeated headers.<br/>
@@ -7741,7 +7741,7 @@ Defaults to HTTP.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexreadinessprobehttpgethttpheadersindex">`KamajiControlPlane.spec.deployment.extraInitContainers[index].readinessProbe.httpGet.httpHeaders[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexreadinessprobehttpgethttpheadersindex">`StewardControlPlane.spec.deployment.extraInitContainers[index].readinessProbe.httpGet.httpHeaders[index]`</span>
 
 
 HTTPHeader describes a custom header to be used in HTTP probes
@@ -7774,7 +7774,7 @@ This will be canonicalized upon output, so case-variant names will be understood
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexreadinessprobetcpsocket">`KamajiControlPlane.spec.deployment.extraInitContainers[index].readinessProbe.tcpSocket`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexreadinessprobetcpsocket">`StewardControlPlane.spec.deployment.extraInitContainers[index].readinessProbe.tcpSocket`</span>
 
 
 TCPSocket specifies a connection to a TCP port.
@@ -7808,7 +7808,7 @@ Name must be an IANA_SVC_NAME.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexresizepolicyindex">`KamajiControlPlane.spec.deployment.extraInitContainers[index].resizePolicy[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexresizepolicyindex">`StewardControlPlane.spec.deployment.extraInitContainers[index].resizePolicy[index]`</span>
 
 
 ContainerResizePolicy represents resource resize policy for the container.
@@ -7842,7 +7842,7 @@ If not specified, it defaults to NotRequired.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexresources">`KamajiControlPlane.spec.deployment.extraInitContainers[index].resources`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexresources">`StewardControlPlane.spec.deployment.extraInitContainers[index].resources`</span>
 
 
 Compute Resources required by this container.
@@ -7859,7 +7859,7 @@ More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-co
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexresourcesclaimsindex">claims</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexresourcesclaimsindex">claims</a></b></td>
         <td>[]object</td>
         <td>
           Claims lists the names of resources, defined in spec.resourceClaims,
@@ -7893,7 +7893,7 @@ More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-co
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexresourcesclaimsindex">`KamajiControlPlane.spec.deployment.extraInitContainers[index].resources.claims[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexresourcesclaimsindex">`StewardControlPlane.spec.deployment.extraInitContainers[index].resources.claims[index]`</span>
 
 
 ResourceClaim references one entry in PodSpec.ResourceClaims.
@@ -7929,7 +7929,7 @@ only the result of this request.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexrestartpolicyrulesindex">`KamajiControlPlane.spec.deployment.extraInitContainers[index].restartPolicyRules[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexrestartpolicyrulesindex">`StewardControlPlane.spec.deployment.extraInitContainers[index].restartPolicyRules[index]`</span>
 
 
 ContainerRestartRule describes how a container exit is handled.
@@ -7953,7 +7953,7 @@ container.<br/>
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexrestartpolicyrulesindexexitcodes">exitCodes</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexrestartpolicyrulesindexexitcodes">exitCodes</a></b></td>
         <td>object</td>
         <td>
           Represents the exit codes to check on container exits.<br/>
@@ -7963,7 +7963,7 @@ container.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexrestartpolicyrulesindexexitcodes">`KamajiControlPlane.spec.deployment.extraInitContainers[index].restartPolicyRules[index].exitCodes`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexrestartpolicyrulesindexexitcodes">`StewardControlPlane.spec.deployment.extraInitContainers[index].restartPolicyRules[index].exitCodes`</span>
 
 
 Represents the exit codes to check on container exits.
@@ -8001,7 +8001,7 @@ At most 255 elements are allowed.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexsecuritycontext">`KamajiControlPlane.spec.deployment.extraInitContainers[index].securityContext`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexsecuritycontext">`StewardControlPlane.spec.deployment.extraInitContainers[index].securityContext`</span>
 
 
 SecurityContext defines the security options the container should be run with.
@@ -8031,7 +8031,7 @@ Note that this field cannot be set when spec.os.name is windows.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexsecuritycontextapparmorprofile">appArmorProfile</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexsecuritycontextapparmorprofile">appArmorProfile</a></b></td>
         <td>object</td>
         <td>
           appArmorProfile is the AppArmor options to use by this container. If set, this profile
@@ -8040,7 +8040,7 @@ Note that this field cannot be set when spec.os.name is windows.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexsecuritycontextcapabilities">capabilities</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexsecuritycontextcapabilities">capabilities</a></b></td>
         <td>object</td>
         <td>
           The capabilities to add/drop when running containers.
@@ -8117,7 +8117,7 @@ Note that this field cannot be set when spec.os.name is windows.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexsecuritycontextselinuxoptions">seLinuxOptions</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexsecuritycontextselinuxoptions">seLinuxOptions</a></b></td>
         <td>object</td>
         <td>
           The SELinux context to be applied to the container.
@@ -8128,7 +8128,7 @@ Note that this field cannot be set when spec.os.name is windows.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexsecuritycontextseccompprofile">seccompProfile</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexsecuritycontextseccompprofile">seccompProfile</a></b></td>
         <td>object</td>
         <td>
           The seccomp options to use by this container. If seccomp options are
@@ -8138,7 +8138,7 @@ Note that this field cannot be set when spec.os.name is windows.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexsecuritycontextwindowsoptions">windowsOptions</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexsecuritycontextwindowsoptions">windowsOptions</a></b></td>
         <td>object</td>
         <td>
           The Windows specific settings applied to all containers.
@@ -8151,7 +8151,7 @@ Note that this field cannot be set when spec.os.name is linux.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexsecuritycontextapparmorprofile">`KamajiControlPlane.spec.deployment.extraInitContainers[index].securityContext.appArmorProfile`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexsecuritycontextapparmorprofile">`StewardControlPlane.spec.deployment.extraInitContainers[index].securityContext.appArmorProfile`</span>
 
 
 appArmorProfile is the AppArmor options to use by this container. If set, this profile
@@ -8192,7 +8192,7 @@ Must be set if and only if type is "Localhost".<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexsecuritycontextcapabilities">`KamajiControlPlane.spec.deployment.extraInitContainers[index].securityContext.capabilities`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexsecuritycontextcapabilities">`StewardControlPlane.spec.deployment.extraInitContainers[index].securityContext.capabilities`</span>
 
 
 The capabilities to add/drop when running containers.
@@ -8226,7 +8226,7 @@ Note that this field cannot be set when spec.os.name is windows.
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexsecuritycontextselinuxoptions">`KamajiControlPlane.spec.deployment.extraInitContainers[index].securityContext.seLinuxOptions`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexsecuritycontextselinuxoptions">`StewardControlPlane.spec.deployment.extraInitContainers[index].securityContext.seLinuxOptions`</span>
 
 
 The SELinux context to be applied to the container.
@@ -8276,7 +8276,7 @@ Note that this field cannot be set when spec.os.name is windows.
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexsecuritycontextseccompprofile">`KamajiControlPlane.spec.deployment.extraInitContainers[index].securityContext.seccompProfile`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexsecuritycontextseccompprofile">`StewardControlPlane.spec.deployment.extraInitContainers[index].securityContext.seccompProfile`</span>
 
 
 The seccomp options to use by this container. If seccomp options are
@@ -8319,7 +8319,7 @@ Must be set if type is "Localhost". Must NOT be set for any other type.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexsecuritycontextwindowsoptions">`KamajiControlPlane.spec.deployment.extraInitContainers[index].securityContext.windowsOptions`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexsecuritycontextwindowsoptions">`StewardControlPlane.spec.deployment.extraInitContainers[index].securityContext.windowsOptions`</span>
 
 
 The Windows specific settings applied to all containers.
@@ -8376,7 +8376,7 @@ PodSecurityContext, the value specified in SecurityContext takes precedence.<br/
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexstartupprobe">`KamajiControlPlane.spec.deployment.extraInitContainers[index].startupProbe`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexstartupprobe">`StewardControlPlane.spec.deployment.extraInitContainers[index].startupProbe`</span>
 
 
 StartupProbe indicates that the Pod has successfully initialized.
@@ -8397,7 +8397,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexstartupprobeexec">exec</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexstartupprobeexec">exec</a></b></td>
         <td>object</td>
         <td>
           Exec specifies a command to execute in the container.<br/>
@@ -8414,14 +8414,14 @@ Defaults to 3. Minimum value is 1.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexstartupprobegrpc">grpc</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexstartupprobegrpc">grpc</a></b></td>
         <td>object</td>
         <td>
           GRPC specifies a GRPC HealthCheckRequest.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexstartupprobehttpget">httpGet</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexstartupprobehttpget">httpGet</a></b></td>
         <td>object</td>
         <td>
           HTTPGet specifies an HTTP GET request to perform.<br/>
@@ -8458,7 +8458,7 @@ Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexstartupprobetcpsocket">tcpSocket</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexstartupprobetcpsocket">tcpSocket</a></b></td>
         <td>object</td>
         <td>
           TCPSocket specifies a connection to a TCP port.<br/>
@@ -8497,7 +8497,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexstartupprobeexec">`KamajiControlPlane.spec.deployment.extraInitContainers[index].startupProbe.exec`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexstartupprobeexec">`StewardControlPlane.spec.deployment.extraInitContainers[index].startupProbe.exec`</span>
 
 
 Exec specifies a command to execute in the container.
@@ -8526,7 +8526,7 @@ Exit status of 0 is treated as live/healthy and non-zero is unhealthy.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexstartupprobegrpc">`KamajiControlPlane.spec.deployment.extraInitContainers[index].startupProbe.grpc`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexstartupprobegrpc">`StewardControlPlane.spec.deployment.extraInitContainers[index].startupProbe.grpc`</span>
 
 
 GRPC specifies a GRPC HealthCheckRequest.
@@ -8565,7 +8565,7 @@ If this is not specified, the default behavior is defined by gRPC.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexstartupprobehttpget">`KamajiControlPlane.spec.deployment.extraInitContainers[index].startupProbe.httpGet`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexstartupprobehttpget">`StewardControlPlane.spec.deployment.extraInitContainers[index].startupProbe.httpGet`</span>
 
 
 HTTPGet specifies an HTTP GET request to perform.
@@ -8597,7 +8597,7 @@ Name must be an IANA_SVC_NAME.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextrainitcontainersindexstartupprobehttpgethttpheadersindex">httpHeaders</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexstartupprobehttpgethttpheadersindex">httpHeaders</a></b></td>
         <td>[]object</td>
         <td>
           Custom headers to set in the request. HTTP allows repeated headers.<br/>
@@ -8622,7 +8622,7 @@ Defaults to HTTP.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexstartupprobehttpgethttpheadersindex">`KamajiControlPlane.spec.deployment.extraInitContainers[index].startupProbe.httpGet.httpHeaders[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexstartupprobehttpgethttpheadersindex">`StewardControlPlane.spec.deployment.extraInitContainers[index].startupProbe.httpGet.httpHeaders[index]`</span>
 
 
 HTTPHeader describes a custom header to be used in HTTP probes
@@ -8655,7 +8655,7 @@ This will be canonicalized upon output, so case-variant names will be understood
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexstartupprobetcpsocket">`KamajiControlPlane.spec.deployment.extraInitContainers[index].startupProbe.tcpSocket`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexstartupprobetcpsocket">`StewardControlPlane.spec.deployment.extraInitContainers[index].startupProbe.tcpSocket`</span>
 
 
 TCPSocket specifies a connection to a TCP port.
@@ -8689,7 +8689,7 @@ Name must be an IANA_SVC_NAME.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexvolumedevicesindex">`KamajiControlPlane.spec.deployment.extraInitContainers[index].volumeDevices[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexvolumedevicesindex">`StewardControlPlane.spec.deployment.extraInitContainers[index].volumeDevices[index]`</span>
 
 
 volumeDevice describes a mapping of a raw block device within a container.
@@ -8721,7 +8721,7 @@ volumeDevice describes a mapping of a raw block device within a container.
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextrainitcontainersindexvolumemountsindex">`KamajiControlPlane.spec.deployment.extraInitContainers[index].volumeMounts[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextrainitcontainersindexvolumemountsindex">`StewardControlPlane.spec.deployment.extraInitContainers[index].volumeMounts[index]`</span>
 
 
 VolumeMount describes a mounting of a Volume within a container.
@@ -8814,7 +8814,7 @@ SubPathExpr and SubPath are mutually exclusive.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindex">`KamajiControlPlane.spec.deployment.extraVolumes[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindex">`StewardControlPlane.spec.deployment.extraVolumes[index]`</span>
 
 
 Volume represents a named volume in a pod that may be accessed by any container in the pod.
@@ -8838,7 +8838,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexawselasticblockstore">awsElasticBlockStore</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexawselasticblockstore">awsElasticBlockStore</a></b></td>
         <td>object</td>
         <td>
           awsElasticBlockStore represents an AWS Disk resource that is attached to a
@@ -8849,7 +8849,7 @@ More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockst
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexazuredisk">azureDisk</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexazuredisk">azureDisk</a></b></td>
         <td>object</td>
         <td>
           azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
@@ -8858,7 +8858,7 @@ are redirected to the disk.csi.azure.com CSI driver.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexazurefile">azureFile</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexazurefile">azureFile</a></b></td>
         <td>object</td>
         <td>
           azureFile represents an Azure File Service mount on the host and bind mount to the pod.
@@ -8867,7 +8867,7 @@ are redirected to the file.csi.azure.com CSI driver.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexcephfs">cephfs</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexcephfs">cephfs</a></b></td>
         <td>object</td>
         <td>
           cephFS represents a Ceph FS mount on the host that shares a pod's lifetime.
@@ -8875,7 +8875,7 @@ Deprecated: CephFS is deprecated and the in-tree cephfs type is no longer suppor
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexcinder">cinder</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexcinder">cinder</a></b></td>
         <td>object</td>
         <td>
           cinder represents a cinder volume attached and mounted on kubelets host machine.
@@ -8885,28 +8885,28 @@ More info: https://examples.k8s.io/mysql-cinder-pd/README.md<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexconfigmap">configMap</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexconfigmap">configMap</a></b></td>
         <td>object</td>
         <td>
           configMap represents a configMap that should populate this volume<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexcsi">csi</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexcsi">csi</a></b></td>
         <td>object</td>
         <td>
           csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexdownwardapi">downwardAPI</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexdownwardapi">downwardAPI</a></b></td>
         <td>object</td>
         <td>
           downwardAPI represents downward API about the pod that should populate this volume<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexemptydir">emptyDir</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexemptydir">emptyDir</a></b></td>
         <td>object</td>
         <td>
           emptyDir represents a temporary directory that shares a pod's lifetime.
@@ -8914,7 +8914,7 @@ More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexephemeral">ephemeral</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexephemeral">ephemeral</a></b></td>
         <td>object</td>
         <td>
           ephemeral represents a volume that is handled by a cluster storage driver.
@@ -8944,14 +8944,14 @@ persistent volumes at the same time.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexfc">fc</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexfc">fc</a></b></td>
         <td>object</td>
         <td>
           fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexflexvolume">flexVolume</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexflexvolume">flexVolume</a></b></td>
         <td>object</td>
         <td>
           flexVolume represents a generic volume resource that is
@@ -8960,7 +8960,7 @@ Deprecated: FlexVolume is deprecated. Consider using a CSIDriver instead.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexflocker">flocker</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexflocker">flocker</a></b></td>
         <td>object</td>
         <td>
           flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running.
@@ -8968,7 +8968,7 @@ Deprecated: Flocker is deprecated and the in-tree flocker type is no longer supp
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexgcepersistentdisk">gcePersistentDisk</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexgcepersistentdisk">gcePersistentDisk</a></b></td>
         <td>object</td>
         <td>
           gcePersistentDisk represents a GCE Disk resource that is attached to a
@@ -8979,7 +8979,7 @@ More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexgitrepo">gitRepo</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexgitrepo">gitRepo</a></b></td>
         <td>object</td>
         <td>
           gitRepo represents a git repository at a particular revision.
@@ -8989,7 +8989,7 @@ into the Pod's container.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexglusterfs">glusterfs</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexglusterfs">glusterfs</a></b></td>
         <td>object</td>
         <td>
           glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
@@ -8997,7 +8997,7 @@ Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer 
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexhostpath">hostPath</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexhostpath">hostPath</a></b></td>
         <td>object</td>
         <td>
           hostPath represents a pre-existing file or directory on the host
@@ -9008,7 +9008,7 @@ More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindeximage">image</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindeximage">image</a></b></td>
         <td>object</td>
         <td>
           image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
@@ -9028,7 +9028,7 @@ The field spec.securityContext.fsGroupChangePolicy has no effect on this volume 
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexiscsi">iscsi</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexiscsi">iscsi</a></b></td>
         <td>object</td>
         <td>
           iscsi represents an ISCSI Disk resource that is attached to a
@@ -9037,7 +9037,7 @@ More info: https://kubernetes.io/docs/concepts/storage/volumes/#iscsi<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexnfs">nfs</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexnfs">nfs</a></b></td>
         <td>object</td>
         <td>
           nfs represents an NFS mount on the host that shares a pod's lifetime
@@ -9045,7 +9045,7 @@ More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexpersistentvolumeclaim">persistentVolumeClaim</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexpersistentvolumeclaim">persistentVolumeClaim</a></b></td>
         <td>object</td>
         <td>
           persistentVolumeClaimVolumeSource represents a reference to a
@@ -9054,7 +9054,7 @@ More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persis
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexphotonpersistentdisk">photonPersistentDisk</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexphotonpersistentdisk">photonPersistentDisk</a></b></td>
         <td>object</td>
         <td>
           photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.
@@ -9062,7 +9062,7 @@ Deprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentD
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexportworxvolume">portworxVolume</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexportworxvolume">portworxVolume</a></b></td>
         <td>object</td>
         <td>
           portworxVolume represents a portworx volume attached and mounted on kubelets host machine.
@@ -9072,14 +9072,14 @@ is on.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexprojected">projected</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexprojected">projected</a></b></td>
         <td>object</td>
         <td>
           projected items for all in one resources secrets, configmaps, and downward API<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexquobyte">quobyte</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexquobyte">quobyte</a></b></td>
         <td>object</td>
         <td>
           quobyte represents a Quobyte mount on the host that shares a pod's lifetime.
@@ -9087,7 +9087,7 @@ Deprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supp
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexrbd">rbd</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexrbd">rbd</a></b></td>
         <td>object</td>
         <td>
           rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
@@ -9095,7 +9095,7 @@ Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.<b
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexscaleio">scaleIO</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexscaleio">scaleIO</a></b></td>
         <td>object</td>
         <td>
           scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
@@ -9103,7 +9103,7 @@ Deprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supp
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexsecret">secret</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexsecret">secret</a></b></td>
         <td>object</td>
         <td>
           secret represents a secret that should populate this volume.
@@ -9111,7 +9111,7 @@ More info: https://kubernetes.io/docs/concepts/storage/volumes#secret<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexstorageos">storageos</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexstorageos">storageos</a></b></td>
         <td>object</td>
         <td>
           storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
@@ -9119,7 +9119,7 @@ Deprecated: StorageOS is deprecated and the in-tree storageos type is no longer 
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexvspherevolume">vsphereVolume</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexvspherevolume">vsphereVolume</a></b></td>
         <td>object</td>
         <td>
           vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.
@@ -9131,7 +9131,7 @@ are redirected to the csi.vsphere.vmware.com CSI driver.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexawselasticblockstore">`KamajiControlPlane.spec.deployment.extraVolumes[index].awsElasticBlockStore`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexawselasticblockstore">`StewardControlPlane.spec.deployment.extraVolumes[index].awsElasticBlockStore`</span>
 
 
 awsElasticBlockStore represents an AWS Disk resource that is attached to a
@@ -9191,7 +9191,7 @@ More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockst
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexazuredisk">`KamajiControlPlane.spec.deployment.extraVolumes[index].azureDisk`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexazuredisk">`StewardControlPlane.spec.deployment.extraVolumes[index].azureDisk`</span>
 
 
 azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
@@ -9260,7 +9260,7 @@ the ReadOnly setting in VolumeMounts.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexazurefile">`KamajiControlPlane.spec.deployment.extraVolumes[index].azureFile`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexazurefile">`StewardControlPlane.spec.deployment.extraVolumes[index].azureFile`</span>
 
 
 azureFile represents an Azure File Service mount on the host and bind mount to the pod.
@@ -9302,7 +9302,7 @@ the ReadOnly setting in VolumeMounts.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexcephfs">`KamajiControlPlane.spec.deployment.extraVolumes[index].cephfs`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexcephfs">`StewardControlPlane.spec.deployment.extraVolumes[index].cephfs`</span>
 
 
 cephFS represents a Ceph FS mount on the host that shares a pod's lifetime.
@@ -9350,7 +9350,7 @@ More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexcephfssecretref">secretRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexcephfssecretref">secretRef</a></b></td>
         <td>object</td>
         <td>
           secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
@@ -9369,7 +9369,7 @@ More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexcephfssecretref">`KamajiControlPlane.spec.deployment.extraVolumes[index].cephfs.secretRef`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexcephfssecretref">`StewardControlPlane.spec.deployment.extraVolumes[index].cephfs.secretRef`</span>
 
 
 secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
@@ -9401,7 +9401,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexcinder">`KamajiControlPlane.spec.deployment.extraVolumes[index].cinder`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexcinder">`StewardControlPlane.spec.deployment.extraVolumes[index].cinder`</span>
 
 
 cinder represents a cinder volume attached and mounted on kubelets host machine.
@@ -9446,7 +9446,7 @@ More info: https://examples.k8s.io/mysql-cinder-pd/README.md<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexcindersecretref">secretRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexcindersecretref">secretRef</a></b></td>
         <td>object</td>
         <td>
           secretRef is optional: points to a secret object containing parameters used to connect
@@ -9457,7 +9457,7 @@ to OpenStack.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexcindersecretref">`KamajiControlPlane.spec.deployment.extraVolumes[index].cinder.secretRef`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexcindersecretref">`StewardControlPlane.spec.deployment.extraVolumes[index].cinder.secretRef`</span>
 
 
 secretRef is optional: points to a secret object containing parameters used to connect
@@ -9489,7 +9489,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexconfigmap">`KamajiControlPlane.spec.deployment.extraVolumes[index].configMap`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexconfigmap">`StewardControlPlane.spec.deployment.extraVolumes[index].configMap`</span>
 
 
 configMap represents a configMap that should populate this volume
@@ -9519,7 +9519,7 @@ mode, like fsGroup, and the result can be other mode bits set.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexconfigmapitemsindex">items</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexconfigmapitemsindex">items</a></b></td>
         <td>[]object</td>
         <td>
           items if unspecified, each key-value pair in the Data field of the referenced
@@ -9555,7 +9555,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexconfigmapitemsindex">`KamajiControlPlane.spec.deployment.extraVolumes[index].configMap.items[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexconfigmapitemsindex">`StewardControlPlane.spec.deployment.extraVolumes[index].configMap.items[index]`</span>
 
 
 Maps a string key to a path within a volume.
@@ -9604,7 +9604,7 @@ mode, like fsGroup, and the result can be other mode bits set.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexcsi">`KamajiControlPlane.spec.deployment.extraVolumes[index].csi`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexcsi">`StewardControlPlane.spec.deployment.extraVolumes[index].csi`</span>
 
 
 csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers.
@@ -9636,7 +9636,7 @@ which will determine the default filesystem to apply.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexcsinodepublishsecretref">nodePublishSecretRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexcsinodepublishsecretref">nodePublishSecretRef</a></b></td>
         <td>object</td>
         <td>
           nodePublishSecretRef is a reference to the secret object containing
@@ -9666,7 +9666,7 @@ driver. Consult your driver's documentation for supported values.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexcsinodepublishsecretref">`KamajiControlPlane.spec.deployment.extraVolumes[index].csi.nodePublishSecretRef`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexcsinodepublishsecretref">`StewardControlPlane.spec.deployment.extraVolumes[index].csi.nodePublishSecretRef`</span>
 
 
 nodePublishSecretRef is a reference to the secret object containing
@@ -9701,7 +9701,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexdownwardapi">`KamajiControlPlane.spec.deployment.extraVolumes[index].downwardAPI`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexdownwardapi">`StewardControlPlane.spec.deployment.extraVolumes[index].downwardAPI`</span>
 
 
 downwardAPI represents downward API about the pod that should populate this volume
@@ -9732,7 +9732,7 @@ mode, like fsGroup, and the result can be other mode bits set.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexdownwardapiitemsindex">items</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexdownwardapiitemsindex">items</a></b></td>
         <td>[]object</td>
         <td>
           Items is a list of downward API volume file<br/>
@@ -9742,7 +9742,7 @@ mode, like fsGroup, and the result can be other mode bits set.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexdownwardapiitemsindex">`KamajiControlPlane.spec.deployment.extraVolumes[index].downwardAPI.items[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexdownwardapiitemsindex">`StewardControlPlane.spec.deployment.extraVolumes[index].downwardAPI.items[index]`</span>
 
 
 DownwardAPIVolumeFile represents information to create the file containing the pod field
@@ -9764,7 +9764,7 @@ DownwardAPIVolumeFile represents information to create the file containing the p
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexdownwardapiitemsindexfieldref">fieldRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexdownwardapiitemsindexfieldref">fieldRef</a></b></td>
         <td>object</td>
         <td>
           Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.<br/>
@@ -9785,7 +9785,7 @@ mode, like fsGroup, and the result can be other mode bits set.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexdownwardapiitemsindexresourcefieldref">resourceFieldRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexdownwardapiitemsindexresourcefieldref">resourceFieldRef</a></b></td>
         <td>object</td>
         <td>
           Selects a resource of the container: only resources limits and requests
@@ -9796,7 +9796,7 @@ mode, like fsGroup, and the result can be other mode bits set.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexdownwardapiitemsindexfieldref">`KamajiControlPlane.spec.deployment.extraVolumes[index].downwardAPI.items[index].fieldRef`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexdownwardapiitemsindexfieldref">`StewardControlPlane.spec.deployment.extraVolumes[index].downwardAPI.items[index].fieldRef`</span>
 
 
 Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
@@ -9828,7 +9828,7 @@ Required: Selects a field of the pod: only annotations, labels, name, namespace 
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexdownwardapiitemsindexresourcefieldref">`KamajiControlPlane.spec.deployment.extraVolumes[index].downwardAPI.items[index].resourceFieldRef`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexdownwardapiitemsindexresourcefieldref">`StewardControlPlane.spec.deployment.extraVolumes[index].downwardAPI.items[index].resourceFieldRef`</span>
 
 
 Selects a resource of the container: only resources limits and requests
@@ -9868,7 +9868,7 @@ Selects a resource of the container: only resources limits and requests
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexemptydir">`KamajiControlPlane.spec.deployment.extraVolumes[index].emptyDir`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexemptydir">`StewardControlPlane.spec.deployment.extraVolumes[index].emptyDir`</span>
 
 
 emptyDir represents a temporary directory that shares a pod's lifetime.
@@ -9909,7 +9909,7 @@ More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexephemeral">`KamajiControlPlane.spec.deployment.extraVolumes[index].ephemeral`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexephemeral">`StewardControlPlane.spec.deployment.extraVolumes[index].ephemeral`</span>
 
 
 ephemeral represents a volume that is handled by a cluster storage driver.
@@ -9947,7 +9947,7 @@ persistent volumes at the same time.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplate">volumeClaimTemplate</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplate">volumeClaimTemplate</a></b></td>
         <td>object</td>
         <td>
           Will be used to create a stand-alone PVC to provision the volume.
@@ -9977,7 +9977,7 @@ Required, must not be nil.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplate">`KamajiControlPlane.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplate">`StewardControlPlane.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate`</span>
 
 
 Will be used to create a stand-alone PVC to provision the volume.
@@ -10012,7 +10012,7 @@ Required, must not be nil.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespec">spec</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespec">spec</a></b></td>
         <td>object</td>
         <td>
           The specification for the PersistentVolumeClaim. The entire content is
@@ -10034,7 +10034,7 @@ validation.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespec">`KamajiControlPlane.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate.spec`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespec">`StewardControlPlane.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate.spec`</span>
 
 
 The specification for the PersistentVolumeClaim. The entire content is
@@ -10060,7 +10060,7 @@ More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecdatasource">dataSource</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecdatasource">dataSource</a></b></td>
         <td>object</td>
         <td>
           dataSource field can be used to specify either:
@@ -10074,7 +10074,7 @@ If the namespace is specified, then dataSourceRef will not be copied to dataSour
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecdatasourceref">dataSourceRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecdatasourceref">dataSourceRef</a></b></td>
         <td>object</td>
         <td>
           dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
@@ -10103,7 +10103,7 @@ There are three important differences between dataSource and dataSourceRef:
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecresources">resources</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecresources">resources</a></b></td>
         <td>object</td>
         <td>
           resources represents the minimum resources the volume should have.
@@ -10114,7 +10114,7 @@ More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resour
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecselector">selector</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecselector">selector</a></b></td>
         <td>object</td>
         <td>
           selector is a label query over volumes to consider for binding.<br/>
@@ -10163,7 +10163,7 @@ Value of Filesystem is implied when not included in claim spec.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecdatasource">`KamajiControlPlane.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate.spec.dataSource`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecdatasource">`StewardControlPlane.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate.spec.dataSource`</span>
 
 
 dataSource field can be used to specify either:
@@ -10211,7 +10211,7 @@ For any other third-party types, APIGroup is required.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecdatasourceref">`KamajiControlPlane.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate.spec.dataSourceRef`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecdatasourceref">`StewardControlPlane.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate.spec.dataSourceRef`</span>
 
 
 dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
@@ -10283,7 +10283,7 @@ Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGr
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecresources">`KamajiControlPlane.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate.spec.resources`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecresources">`StewardControlPlane.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate.spec.resources`</span>
 
 
 resources represents the minimum resources the volume should have.
@@ -10323,7 +10323,7 @@ More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-co
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecselector">`KamajiControlPlane.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate.spec.selector`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecselector">`StewardControlPlane.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate.spec.selector`</span>
 
 
 selector is a label query over volumes to consider for binding.
@@ -10338,7 +10338,7 @@ selector is a label query over volumes to consider for binding.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecselectormatchexpressionsindex">matchExpressions</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecselectormatchexpressionsindex">matchExpressions</a></b></td>
         <td>[]object</td>
         <td>
           matchExpressions is a list of label selector requirements. The requirements are ANDed.<br/>
@@ -10357,7 +10357,7 @@ operator is "In", and the values array contains only "value". The requirements a
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecselectormatchexpressionsindex">`KamajiControlPlane.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate.spec.selector.matchExpressions[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecselectormatchexpressionsindex">`StewardControlPlane.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate.spec.selector.matchExpressions[index]`</span>
 
 
 A label selector requirement is a selector that contains values, a key, and an operator that
@@ -10401,7 +10401,7 @@ merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexfc">`KamajiControlPlane.spec.deployment.extraVolumes[index].fc`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexfc">`StewardControlPlane.spec.deployment.extraVolumes[index].fc`</span>
 
 
 fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
@@ -10460,7 +10460,7 @@ Either wwids or combination of targetWWNs and lun must be set, but not both simu
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexflexvolume">`KamajiControlPlane.spec.deployment.extraVolumes[index].flexVolume`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexflexvolume">`StewardControlPlane.spec.deployment.extraVolumes[index].flexVolume`</span>
 
 
 flexVolume represents a generic volume resource that is
@@ -10508,7 +10508,7 @@ the ReadOnly setting in VolumeMounts.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexflexvolumesecretref">secretRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexflexvolumesecretref">secretRef</a></b></td>
         <td>object</td>
         <td>
           secretRef is Optional: secretRef is reference to the secret object containing
@@ -10522,7 +10522,7 @@ scripts.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexflexvolumesecretref">`KamajiControlPlane.spec.deployment.extraVolumes[index].flexVolume.secretRef`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexflexvolumesecretref">`StewardControlPlane.spec.deployment.extraVolumes[index].flexVolume.secretRef`</span>
 
 
 secretRef is Optional: secretRef is reference to the secret object containing
@@ -10557,7 +10557,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexflocker">`KamajiControlPlane.spec.deployment.extraVolumes[index].flocker`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexflocker">`StewardControlPlane.spec.deployment.extraVolumes[index].flocker`</span>
 
 
 flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running.
@@ -10591,7 +10591,7 @@ should be considered as deprecated<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexgcepersistentdisk">`KamajiControlPlane.spec.deployment.extraVolumes[index].gcePersistentDisk`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexgcepersistentdisk">`StewardControlPlane.spec.deployment.extraVolumes[index].gcePersistentDisk`</span>
 
 
 gcePersistentDisk represents a GCE Disk resource that is attached to a
@@ -10653,7 +10653,7 @@ More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexgitrepo">`KamajiControlPlane.spec.deployment.extraVolumes[index].gitRepo`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexgitrepo">`StewardControlPlane.spec.deployment.extraVolumes[index].gitRepo`</span>
 
 
 gitRepo represents a git repository at a particular revision.
@@ -10698,7 +10698,7 @@ the subdirectory with the given name.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexglusterfs">`KamajiControlPlane.spec.deployment.extraVolumes[index].glusterfs`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexglusterfs">`StewardControlPlane.spec.deployment.extraVolumes[index].glusterfs`</span>
 
 
 glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
@@ -10741,7 +10741,7 @@ More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexhostpath">`KamajiControlPlane.spec.deployment.extraVolumes[index].hostPath`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexhostpath">`StewardControlPlane.spec.deployment.extraVolumes[index].hostPath`</span>
 
 
 hostPath represents a pre-existing file or directory on the host
@@ -10781,7 +10781,7 @@ More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindeximage">`KamajiControlPlane.spec.deployment.extraVolumes[index].image`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindeximage">`StewardControlPlane.spec.deployment.extraVolumes[index].image`</span>
 
 
 image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
@@ -10835,7 +10835,7 @@ container images in workload controllers like Deployments and StatefulSets.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexiscsi">`KamajiControlPlane.spec.deployment.extraVolumes[index].iscsi`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexiscsi">`StewardControlPlane.spec.deployment.extraVolumes[index].iscsi`</span>
 
 
 iscsi represents an ISCSI Disk resource that is attached to a
@@ -10935,7 +10935,7 @@ Defaults to false.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexiscsisecretref">secretRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexiscsisecretref">secretRef</a></b></td>
         <td>object</td>
         <td>
           secretRef is the CHAP Secret for iSCSI target and initiator authentication<br/>
@@ -10945,7 +10945,7 @@ Defaults to false.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexiscsisecretref">`KamajiControlPlane.spec.deployment.extraVolumes[index].iscsi.secretRef`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexiscsisecretref">`StewardControlPlane.spec.deployment.extraVolumes[index].iscsi.secretRef`</span>
 
 
 secretRef is the CHAP Secret for iSCSI target and initiator authentication
@@ -10976,7 +10976,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexnfs">`KamajiControlPlane.spec.deployment.extraVolumes[index].nfs`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexnfs">`StewardControlPlane.spec.deployment.extraVolumes[index].nfs`</span>
 
 
 nfs represents an NFS mount on the host that shares a pod's lifetime
@@ -11020,7 +11020,7 @@ More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexpersistentvolumeclaim">`KamajiControlPlane.spec.deployment.extraVolumes[index].persistentVolumeClaim`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexpersistentvolumeclaim">`StewardControlPlane.spec.deployment.extraVolumes[index].persistentVolumeClaim`</span>
 
 
 persistentVolumeClaimVolumeSource represents a reference to a
@@ -11056,7 +11056,7 @@ Default false.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexphotonpersistentdisk">`KamajiControlPlane.spec.deployment.extraVolumes[index].photonPersistentDisk`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexphotonpersistentdisk">`StewardControlPlane.spec.deployment.extraVolumes[index].photonPersistentDisk`</span>
 
 
 photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.
@@ -11091,7 +11091,7 @@ Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexportworxvolume">`KamajiControlPlane.spec.deployment.extraVolumes[index].portworxVolume`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexportworxvolume">`StewardControlPlane.spec.deployment.extraVolumes[index].portworxVolume`</span>
 
 
 portworxVolume represents a portworx volume attached and mounted on kubelets host machine.
@@ -11136,7 +11136,7 @@ the ReadOnly setting in VolumeMounts.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexprojected">`KamajiControlPlane.spec.deployment.extraVolumes[index].projected`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexprojected">`StewardControlPlane.spec.deployment.extraVolumes[index].projected`</span>
 
 
 projected items for all in one resources secrets, configmaps, and downward API
@@ -11165,7 +11165,7 @@ mode, like fsGroup, and the result can be other mode bits set.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindex">sources</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindex">sources</a></b></td>
         <td>[]object</td>
         <td>
           sources is the list of volume projections. Each entry in this list
@@ -11176,7 +11176,7 @@ handles one source.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindex">`KamajiControlPlane.spec.deployment.extraVolumes[index].projected.sources[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindex">`StewardControlPlane.spec.deployment.extraVolumes[index].projected.sources[index]`</span>
 
 
 Projection that may be projected along with other supported volume types.
@@ -11192,7 +11192,7 @@ Exactly one of these fields must be set.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindexclustertrustbundle">clusterTrustBundle</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindexclustertrustbundle">clusterTrustBundle</a></b></td>
         <td>object</td>
         <td>
           ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
@@ -11211,21 +11211,21 @@ may change the order over time.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindexconfigmap">configMap</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindexconfigmap">configMap</a></b></td>
         <td>object</td>
         <td>
           configMap information about the configMap data to project<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindexdownwardapi">downwardAPI</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindexdownwardapi">downwardAPI</a></b></td>
         <td>object</td>
         <td>
           downwardAPI information about the downwardAPI data to project<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindexpodcertificate">podCertificate</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindexpodcertificate">podCertificate</a></b></td>
         <td>object</td>
         <td>
           Projects an auto-rotating credential bundle (private key and certificate
@@ -11265,14 +11265,14 @@ use the certificates it issues.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindexsecret">secret</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindexsecret">secret</a></b></td>
         <td>object</td>
         <td>
           secret information about the secret data to project<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindexserviceaccounttoken">serviceAccountToken</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindexserviceaccounttoken">serviceAccountToken</a></b></td>
         <td>object</td>
         <td>
           serviceAccountToken is information about the serviceAccountToken data to project<br/>
@@ -11282,7 +11282,7 @@ use the certificates it issues.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindexclustertrustbundle">`KamajiControlPlane.spec.deployment.extraVolumes[index].projected.sources[index].clusterTrustBundle`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindexclustertrustbundle">`StewardControlPlane.spec.deployment.extraVolumes[index].projected.sources[index].clusterTrustBundle`</span>
 
 
 ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
@@ -11316,7 +11316,7 @@ may change the order over time.
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindexclustertrustbundlelabelselector">labelSelector</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindexclustertrustbundlelabelselector">labelSelector</a></b></td>
         <td>object</td>
         <td>
           Select all ClusterTrustBundles that match this label selector.  Only has
@@ -11357,7 +11357,7 @@ ClusterTrustBundles will be unified and deduplicated.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindexclustertrustbundlelabelselector">`KamajiControlPlane.spec.deployment.extraVolumes[index].projected.sources[index].clusterTrustBundle.labelSelector`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindexclustertrustbundlelabelselector">`StewardControlPlane.spec.deployment.extraVolumes[index].projected.sources[index].clusterTrustBundle.labelSelector`</span>
 
 
 Select all ClusterTrustBundles that match this label selector.  Only has
@@ -11375,7 +11375,7 @@ everything".
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindexclustertrustbundlelabelselectormatchexpressionsindex">matchExpressions</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindexclustertrustbundlelabelselectormatchexpressionsindex">matchExpressions</a></b></td>
         <td>[]object</td>
         <td>
           matchExpressions is a list of label selector requirements. The requirements are ANDed.<br/>
@@ -11394,7 +11394,7 @@ operator is "In", and the values array contains only "value". The requirements a
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindexclustertrustbundlelabelselectormatchexpressionsindex">`KamajiControlPlane.spec.deployment.extraVolumes[index].projected.sources[index].clusterTrustBundle.labelSelector.matchExpressions[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindexclustertrustbundlelabelselectormatchexpressionsindex">`StewardControlPlane.spec.deployment.extraVolumes[index].projected.sources[index].clusterTrustBundle.labelSelector.matchExpressions[index]`</span>
 
 
 A label selector requirement is a selector that contains values, a key, and an operator that
@@ -11438,7 +11438,7 @@ merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindexconfigmap">`KamajiControlPlane.spec.deployment.extraVolumes[index].projected.sources[index].configMap`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindexconfigmap">`StewardControlPlane.spec.deployment.extraVolumes[index].projected.sources[index].configMap`</span>
 
 
 configMap information about the configMap data to project
@@ -11453,7 +11453,7 @@ configMap information about the configMap data to project
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindexconfigmapitemsindex">items</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindexconfigmapitemsindex">items</a></b></td>
         <td>[]object</td>
         <td>
           items if unspecified, each key-value pair in the Data field of the referenced
@@ -11489,7 +11489,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindexconfigmapitemsindex">`KamajiControlPlane.spec.deployment.extraVolumes[index].projected.sources[index].configMap.items[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindexconfigmapitemsindex">`StewardControlPlane.spec.deployment.extraVolumes[index].projected.sources[index].configMap.items[index]`</span>
 
 
 Maps a string key to a path within a volume.
@@ -11538,7 +11538,7 @@ mode, like fsGroup, and the result can be other mode bits set.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindexdownwardapi">`KamajiControlPlane.spec.deployment.extraVolumes[index].projected.sources[index].downwardAPI`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindexdownwardapi">`StewardControlPlane.spec.deployment.extraVolumes[index].projected.sources[index].downwardAPI`</span>
 
 
 downwardAPI information about the downwardAPI data to project
@@ -11553,7 +11553,7 @@ downwardAPI information about the downwardAPI data to project
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindexdownwardapiitemsindex">items</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindexdownwardapiitemsindex">items</a></b></td>
         <td>[]object</td>
         <td>
           Items is a list of DownwardAPIVolume file<br/>
@@ -11563,7 +11563,7 @@ downwardAPI information about the downwardAPI data to project
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindexdownwardapiitemsindex">`KamajiControlPlane.spec.deployment.extraVolumes[index].projected.sources[index].downwardAPI.items[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindexdownwardapiitemsindex">`StewardControlPlane.spec.deployment.extraVolumes[index].projected.sources[index].downwardAPI.items[index]`</span>
 
 
 DownwardAPIVolumeFile represents information to create the file containing the pod field
@@ -11585,7 +11585,7 @@ DownwardAPIVolumeFile represents information to create the file containing the p
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindexdownwardapiitemsindexfieldref">fieldRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindexdownwardapiitemsindexfieldref">fieldRef</a></b></td>
         <td>object</td>
         <td>
           Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.<br/>
@@ -11606,7 +11606,7 @@ mode, like fsGroup, and the result can be other mode bits set.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindexdownwardapiitemsindexresourcefieldref">resourceFieldRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindexdownwardapiitemsindexresourcefieldref">resourceFieldRef</a></b></td>
         <td>object</td>
         <td>
           Selects a resource of the container: only resources limits and requests
@@ -11617,7 +11617,7 @@ mode, like fsGroup, and the result can be other mode bits set.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindexdownwardapiitemsindexfieldref">`KamajiControlPlane.spec.deployment.extraVolumes[index].projected.sources[index].downwardAPI.items[index].fieldRef`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindexdownwardapiitemsindexfieldref">`StewardControlPlane.spec.deployment.extraVolumes[index].projected.sources[index].downwardAPI.items[index].fieldRef`</span>
 
 
 Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
@@ -11649,7 +11649,7 @@ Required: Selects a field of the pod: only annotations, labels, name, namespace 
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindexdownwardapiitemsindexresourcefieldref">`KamajiControlPlane.spec.deployment.extraVolumes[index].projected.sources[index].downwardAPI.items[index].resourceFieldRef`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindexdownwardapiitemsindexresourcefieldref">`StewardControlPlane.spec.deployment.extraVolumes[index].projected.sources[index].downwardAPI.items[index].resourceFieldRef`</span>
 
 
 Selects a resource of the container: only resources limits and requests
@@ -11689,7 +11689,7 @@ Selects a resource of the container: only resources limits and requests
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindexpodcertificate">`KamajiControlPlane.spec.deployment.extraVolumes[index].projected.sources[index].podCertificate`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindexpodcertificate">`StewardControlPlane.spec.deployment.extraVolumes[index].projected.sources[index].podCertificate`</span>
 
 
 Projects an auto-rotating credential bundle (private key and certificate
@@ -11823,7 +11823,7 @@ longer than 24 hours.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindexsecret">`KamajiControlPlane.spec.deployment.extraVolumes[index].projected.sources[index].secret`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindexsecret">`StewardControlPlane.spec.deployment.extraVolumes[index].projected.sources[index].secret`</span>
 
 
 secret information about the secret data to project
@@ -11838,7 +11838,7 @@ secret information about the secret data to project
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindexsecretitemsindex">items</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindexsecretitemsindex">items</a></b></td>
         <td>[]object</td>
         <td>
           items if unspecified, each key-value pair in the Data field of the referenced
@@ -11874,7 +11874,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindexsecretitemsindex">`KamajiControlPlane.spec.deployment.extraVolumes[index].projected.sources[index].secret.items[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindexsecretitemsindex">`StewardControlPlane.spec.deployment.extraVolumes[index].projected.sources[index].secret.items[index]`</span>
 
 
 Maps a string key to a path within a volume.
@@ -11923,7 +11923,7 @@ mode, like fsGroup, and the result can be other mode bits set.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexprojectedsourcesindexserviceaccounttoken">`KamajiControlPlane.spec.deployment.extraVolumes[index].projected.sources[index].serviceAccountToken`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexprojectedsourcesindexserviceaccounttoken">`StewardControlPlane.spec.deployment.extraVolumes[index].projected.sources[index].serviceAccountToken`</span>
 
 
 serviceAccountToken is information about the serviceAccountToken data to project
@@ -11973,7 +11973,7 @@ and must be at least 10 minutes.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexquobyte">`KamajiControlPlane.spec.deployment.extraVolumes[index].quobyte`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexquobyte">`StewardControlPlane.spec.deployment.extraVolumes[index].quobyte`</span>
 
 
 quobyte represents a Quobyte mount on the host that shares a pod's lifetime.
@@ -12040,7 +12040,7 @@ Defaults to serivceaccount user<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexrbd">`KamajiControlPlane.spec.deployment.extraVolumes[index].rbd`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexrbd">`StewardControlPlane.spec.deployment.extraVolumes[index].rbd`</span>
 
 
 rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
@@ -12113,7 +12113,7 @@ More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexrbdsecretref">secretRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexrbdsecretref">secretRef</a></b></td>
         <td>object</td>
         <td>
           secretRef is name of the authentication secret for RBDUser. If provided
@@ -12137,7 +12137,7 @@ More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexrbdsecretref">`KamajiControlPlane.spec.deployment.extraVolumes[index].rbd.secretRef`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexrbdsecretref">`StewardControlPlane.spec.deployment.extraVolumes[index].rbd.secretRef`</span>
 
 
 secretRef is name of the authentication secret for RBDUser. If provided
@@ -12171,7 +12171,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexscaleio">`KamajiControlPlane.spec.deployment.extraVolumes[index].scaleIO`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexscaleio">`StewardControlPlane.spec.deployment.extraVolumes[index].scaleIO`</span>
 
 
 scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
@@ -12194,7 +12194,7 @@ Deprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supp
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexscaleiosecretref">secretRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexscaleiosecretref">secretRef</a></b></td>
         <td>object</td>
         <td>
           secretRef references to the secret for ScaleIO user and other
@@ -12271,7 +12271,7 @@ that is associated with this volume source.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexscaleiosecretref">`KamajiControlPlane.spec.deployment.extraVolumes[index].scaleIO.secretRef`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexscaleiosecretref">`StewardControlPlane.spec.deployment.extraVolumes[index].scaleIO.secretRef`</span>
 
 
 secretRef references to the secret for ScaleIO user and other
@@ -12303,7 +12303,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexsecret">`KamajiControlPlane.spec.deployment.extraVolumes[index].secret`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexsecret">`StewardControlPlane.spec.deployment.extraVolumes[index].secret`</span>
 
 
 secret represents a secret that should populate this volume.
@@ -12334,7 +12334,7 @@ mode, like fsGroup, and the result can be other mode bits set.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexsecretitemsindex">items</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexsecretitemsindex">items</a></b></td>
         <td>[]object</td>
         <td>
           items If unspecified, each key-value pair in the Data field of the referenced
@@ -12365,7 +12365,7 @@ More info: https://kubernetes.io/docs/concepts/storage/volumes#secret<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexsecretitemsindex">`KamajiControlPlane.spec.deployment.extraVolumes[index].secret.items[index]`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexsecretitemsindex">`StewardControlPlane.spec.deployment.extraVolumes[index].secret.items[index]`</span>
 
 
 Maps a string key to a path within a volume.
@@ -12414,7 +12414,7 @@ mode, like fsGroup, and the result can be other mode bits set.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexstorageos">`KamajiControlPlane.spec.deployment.extraVolumes[index].storageos`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexstorageos">`StewardControlPlane.spec.deployment.extraVolumes[index].storageos`</span>
 
 
 storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
@@ -12447,7 +12447,7 @@ the ReadOnly setting in VolumeMounts.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentextravolumesindexstorageossecretref">secretRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentextravolumesindexstorageossecretref">secretRef</a></b></td>
         <td>object</td>
         <td>
           secretRef specifies the secret to use for obtaining the StorageOS API
@@ -12478,7 +12478,7 @@ Namespaces that do not pre-exist within StorageOS will be created.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexstorageossecretref">`KamajiControlPlane.spec.deployment.extraVolumes[index].storageos.secretRef`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexstorageossecretref">`StewardControlPlane.spec.deployment.extraVolumes[index].storageos.secretRef`</span>
 
 
 secretRef specifies the secret to use for obtaining the StorageOS API
@@ -12510,7 +12510,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentextravolumesindexvspherevolume">`KamajiControlPlane.spec.deployment.extraVolumes[index].vsphereVolume`</span>
+<span id="stewardcontrolplanespecdeploymentextravolumesindexvspherevolume">`StewardControlPlane.spec.deployment.extraVolumes[index].vsphereVolume`</span>
 
 
 vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.
@@ -12560,7 +12560,7 @@ Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentpodadditionalmetadata">`KamajiControlPlane.spec.deployment.podAdditionalMetadata`</span>
+<span id="stewardcontrolplanespecdeploymentpodadditionalmetadata">`StewardControlPlane.spec.deployment.podAdditionalMetadata`</span>
 
 
 PodAdditionalMetadata defines the additional labels and annotations that must be attached
@@ -12593,7 +12593,7 @@ to the resulting Pods managed by the Deployment.
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentstrategy">`KamajiControlPlane.spec.deployment.strategy`</span>
+<span id="stewardcontrolplanespecdeploymentstrategy">`StewardControlPlane.spec.deployment.strategy`</span>
 
 
 DeploymentStrategy describes how to replace existing pods with new ones.
@@ -12608,7 +12608,7 @@ DeploymentStrategy describes how to replace existing pods with new ones.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymentstrategyrollingupdate">rollingUpdate</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymentstrategyrollingupdate">rollingUpdate</a></b></td>
         <td>object</td>
         <td>
           Rolling update config params. Present only if DeploymentStrategyType =
@@ -12626,7 +12626,7 @@ RollingUpdate.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymentstrategyrollingupdate">`KamajiControlPlane.spec.deployment.strategy.rollingUpdate`</span>
+<span id="stewardcontrolplanespecdeploymentstrategyrollingupdate">`StewardControlPlane.spec.deployment.strategy.rollingUpdate`</span>
 
 
 Rolling update config params. Present only if DeploymentStrategyType =
@@ -12678,7 +12678,7 @@ least 70% of desired pods.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymenttolerationsindex">`KamajiControlPlane.spec.deployment.tolerations[index]`</span>
+<span id="stewardcontrolplanespecdeploymenttolerationsindex">`StewardControlPlane.spec.deployment.tolerations[index]`</span>
 
 
 The pod this Toleration is attached to tolerates any taint that matches
@@ -12743,7 +12743,7 @@ If the operator is Exists, the value should be empty, otherwise just a regular s
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymenttopologyspreadconstraintsindex">`KamajiControlPlane.spec.deployment.topologySpreadConstraints[index]`</span>
+<span id="stewardcontrolplanespecdeploymenttopologyspreadconstraintsindex">`StewardControlPlane.spec.deployment.topologySpreadConstraints[index]`</span>
 
 
 TopologySpreadConstraint specifies how to spread matching pods among the given topology.
@@ -12823,7 +12823,7 @@ It's a required field.<br/>
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymenttopologyspreadconstraintsindexlabelselector">labelSelector</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymenttopologyspreadconstraintsindexlabelselector">labelSelector</a></b></td>
         <td>object</td>
         <td>
           LabelSelector is used to find matching pods.
@@ -12903,7 +12903,7 @@ If this value is nil, the behavior is equivalent to the Ignore policy.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymenttopologyspreadconstraintsindexlabelselector">`KamajiControlPlane.spec.deployment.topologySpreadConstraints[index].labelSelector`</span>
+<span id="stewardcontrolplanespecdeploymenttopologyspreadconstraintsindexlabelselector">`StewardControlPlane.spec.deployment.topologySpreadConstraints[index].labelSelector`</span>
 
 
 LabelSelector is used to find matching pods.
@@ -12920,7 +12920,7 @@ in their corresponding topology domain.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecdeploymenttopologyspreadconstraintsindexlabelselectormatchexpressionsindex">matchExpressions</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecdeploymenttopologyspreadconstraintsindexlabelselectormatchexpressionsindex">matchExpressions</a></b></td>
         <td>[]object</td>
         <td>
           matchExpressions is a list of label selector requirements. The requirements are ANDed.<br/>
@@ -12939,7 +12939,7 @@ operator is "In", and the values array contains only "value". The requirements a
 </table>
 
 
-<span id="kamajicontrolplanespecdeploymenttopologyspreadconstraintsindexlabelselectormatchexpressionsindex">`KamajiControlPlane.spec.deployment.topologySpreadConstraints[index].labelSelector.matchExpressions[index]`</span>
+<span id="stewardcontrolplanespecdeploymenttopologyspreadconstraintsindexlabelselectormatchexpressionsindex">`StewardControlPlane.spec.deployment.topologySpreadConstraints[index].labelSelector.matchExpressions[index]`</span>
 
 
 A label selector requirement is a selector that contains values, a key, and an operator that
@@ -12983,11 +12983,11 @@ merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespeckine">`KamajiControlPlane.spec.kine`</span>
+<span id="stewardcontrolplanespeckine">`StewardControlPlane.spec.kine`</span>
 
 
 KineComponent allows the customization for the kine component of the control plane.
-Available only if Kamaji is running using Kine as backing storage.
+Available only if Steward is running using Kine as backing storage.
 
 <table>
     <thead>
@@ -13006,7 +13006,7 @@ Available only if Kamaji is running using Kine as backing storage.
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespeckineresources">resources</a></b></td>
+        <td><b><a href="#stewardcontrolplanespeckineresources">resources</a></b></td>
         <td>object</td>
         <td>
           ResourceRequirements describes the compute resource requirements.<br/>
@@ -13016,7 +13016,7 @@ Available only if Kamaji is running using Kine as backing storage.
 </table>
 
 
-<span id="kamajicontrolplanespeckineresources">`KamajiControlPlane.spec.kine.resources`</span>
+<span id="stewardcontrolplanespeckineresources">`StewardControlPlane.spec.kine.resources`</span>
 
 
 ResourceRequirements describes the compute resource requirements.
@@ -13031,7 +13031,7 @@ ResourceRequirements describes the compute resource requirements.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespeckineresourcesclaimsindex">claims</a></b></td>
+        <td><b><a href="#stewardcontrolplanespeckineresourcesclaimsindex">claims</a></b></td>
         <td>[]object</td>
         <td>
           Claims lists the names of resources, defined in spec.resourceClaims,
@@ -13065,7 +13065,7 @@ More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-co
 </table>
 
 
-<span id="kamajicontrolplanespeckineresourcesclaimsindex">`KamajiControlPlane.spec.kine.resources.claims[index]`</span>
+<span id="stewardcontrolplanespeckineresourcesclaimsindex">`StewardControlPlane.spec.kine.resources.claims[index]`</span>
 
 
 ResourceClaim references one entry in PodSpec.ResourceClaims.
@@ -13101,7 +13101,7 @@ only the result of this request.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespeckubelet">`KamajiControlPlane.spec.kubelet`</span>
+<span id="stewardcontrolplanespeckubelet">`StewardControlPlane.spec.kubelet`</span>
 
 
 Configure the Kubelet options, such as the preferred address types, or the expected cgroupfs.
@@ -13140,7 +13140,7 @@ Default to InternalIP, ExternalIP, Hostname.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecnetwork">`KamajiControlPlane.spec.network`</span>
+<span id="stewardcontrolplanespecnetwork">`StewardControlPlane.spec.network`</span>
 
 
 Configure how the TenantControlPlane should be exposed.
@@ -13168,22 +13168,22 @@ useful if the TenantControlPlane is going to be exposed behind a FQDN with NAT.<
         <td>
           DNSServiceIPs contains the DNS Service IPs.
 If the CoreDNS addon is specified, its DNSServiceIPs will be used instead.
-When set to an empty slice, Kamaji will automatically inflect it from the Service CIDR.<br/>
+When set to an empty slice, Steward will automatically inflect it from the Service CIDR.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecnetworkingress">ingress</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecnetworkingress">ingress</a></b></td>
         <td>object</td>
         <td>
-          When specified, the KamajiControlPlane will be reachable using an Ingress object
+          When specified, the StewardControlPlane will be reachable using an Ingress object
 deployed in the management cluster.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecnetworkloadbalancerconfig">loadBalancerConfig</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecnetworkloadbalancerconfig">loadBalancerConfig</a></b></td>
         <td>object</td>
         <td>
-          Optional configuration for the LoadBalancer service that exposes the Kamaji control plane.<br/>
+          Optional configuration for the LoadBalancer service that exposes the Steward control plane.<br/>
         </td>
         <td>false</td>
       </tr><tr>
@@ -13222,10 +13222,10 @@ helping when serviceType is NodePort.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecnetworkingress">`KamajiControlPlane.spec.network.ingress`</span>
+<span id="stewardcontrolplanespecnetworkingress">`StewardControlPlane.spec.network.ingress`</span>
 
 
-When specified, the KamajiControlPlane will be reachable using an Ingress object
+When specified, the StewardControlPlane will be reachable using an Ingress object
 deployed in the management cluster.
 
 <table>
@@ -13271,10 +13271,10 @@ Useful if you need to define TLS/SSL passthrough, or other Ingress Controller-sp
 </table>
 
 
-<span id="kamajicontrolplanespecnetworkloadbalancerconfig">`KamajiControlPlane.spec.network.loadBalancerConfig`</span>
+<span id="stewardcontrolplanespecnetworkloadbalancerconfig">`StewardControlPlane.spec.network.loadBalancerConfig`</span>
 
 
-Optional configuration for the LoadBalancer service that exposes the Kamaji control plane.
+Optional configuration for the LoadBalancer service that exposes the Steward control plane.
 
 <table>
     <thead>
@@ -13310,7 +13310,7 @@ Example: {"192.168.1.0/24", "10.0.0.0/8"}<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecscheduler">`KamajiControlPlane.spec.scheduler`</span>
+<span id="stewardcontrolplanespecscheduler">`StewardControlPlane.spec.scheduler`</span>
 
 
 ControlPlaneComponent allows the customization for the given component of the control plane.
@@ -13340,14 +13340,14 @@ With no value, the default images will be used.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecschedulerextravolumemountsindex">extraVolumeMounts</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecschedulerextravolumemountsindex">extraVolumeMounts</a></b></td>
         <td>[]object</td>
         <td>
           <br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanespecschedulerresources">resources</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecschedulerresources">resources</a></b></td>
         <td>object</td>
         <td>
           ResourceRequirements describes the compute resource requirements.<br/>
@@ -13357,7 +13357,7 @@ With no value, the default images will be used.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecschedulerextravolumemountsindex">`KamajiControlPlane.spec.scheduler.extraVolumeMounts[index]`</span>
+<span id="stewardcontrolplanespecschedulerextravolumemountsindex">`StewardControlPlane.spec.scheduler.extraVolumeMounts[index]`</span>
 
 
 VolumeMount describes a mounting of a Volume within a container.
@@ -13450,7 +13450,7 @@ SubPathExpr and SubPath are mutually exclusive.<br/>
 </table>
 
 
-<span id="kamajicontrolplanespecschedulerresources">`KamajiControlPlane.spec.scheduler.resources`</span>
+<span id="stewardcontrolplanespecschedulerresources">`StewardControlPlane.spec.scheduler.resources`</span>
 
 
 ResourceRequirements describes the compute resource requirements.
@@ -13465,7 +13465,7 @@ ResourceRequirements describes the compute resource requirements.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanespecschedulerresourcesclaimsindex">claims</a></b></td>
+        <td><b><a href="#stewardcontrolplanespecschedulerresourcesclaimsindex">claims</a></b></td>
         <td>[]object</td>
         <td>
           Claims lists the names of resources, defined in spec.resourceClaims,
@@ -13499,7 +13499,7 @@ More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-co
 </table>
 
 
-<span id="kamajicontrolplanespecschedulerresourcesclaimsindex">`KamajiControlPlane.spec.scheduler.resources.claims[index]`</span>
+<span id="stewardcontrolplanespecschedulerresourcesclaimsindex">`StewardControlPlane.spec.scheduler.resources.claims[index]`</span>
 
 
 ResourceClaim references one entry in PodSpec.ResourceClaims.
@@ -13535,10 +13535,10 @@ only the result of this request.<br/>
 </table>
 
 
-<span id="kamajicontrolplanestatus">`KamajiControlPlane.status`</span>
+<span id="stewardcontrolplanestatus">`StewardControlPlane.status`</span>
 
 
-KamajiControlPlaneStatus defines the observed state of KamajiControlPlane.
+StewardControlPlaneStatus defines the observed state of StewardControlPlane.
 
 <table>
     <thead>
@@ -13554,7 +13554,7 @@ KamajiControlPlaneStatus defines the observed state of KamajiControlPlane.
         <td>boolean</td>
         <td>
           ExternalManagedControlPlane indicates to Cluster API that the Control Plane
-is externally managed by Kamaji.<br/>
+is externally managed by Steward.<br/>
           <br/>
             <i>Default</i>: true<br/>
         </td>
@@ -13570,7 +13570,7 @@ is externally managed by Kamaji.<br/>
         <td><b>ready</b></td>
         <td>boolean</td>
         <td>
-          The Kamaji Control Plane is ready to link Cluster API with the Tenant Control Plane.<br/>
+          The Steward Control Plane is ready to link Cluster API with the Tenant Control Plane.<br/>
         </td>
         <td>true</td>
       </tr><tr>
@@ -13625,7 +13625,7 @@ equal to the desired number of control plane instances - ready instances.<br/>
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanestatusconditionsindex">conditions</a></b></td>
+        <td><b><a href="#stewardcontrolplanestatusconditionsindex">conditions</a></b></td>
         <td>[]object</td>
         <td>
           <br/>
@@ -13642,14 +13642,14 @@ equal to the desired number of control plane instances - ready instances.<br/>
         <td><b>failureReason</b></td>
         <td>string</td>
         <td>
-          Share the failed process of the KamajiControlPlane provider which wasn't able to complete the reconciliation for the given resource.<br/>
+          Share the failed process of the StewardControlPlane provider which wasn't able to complete the reconciliation for the given resource.<br/>
         </td>
         <td>false</td>
       </tr></tbody>
 </table>
 
 
-<span id="kamajicontrolplanestatusconditionsindex">`KamajiControlPlane.status.conditions[index]`</span>
+<span id="stewardcontrolplanestatusconditionsindex">`StewardControlPlane.status.conditions[index]`</span>
 
 
 Condition contains details for one aspect of the current state of this API Resource.
@@ -13723,13 +13723,13 @@ with respect to the current state of the instance.<br/>
       </tr></tbody>
 </table>
 
-### KamajiControlPlaneTemplate
+### StewardControlPlaneTemplate
 
 
 
 
 
-KamajiControlPlaneTemplate is the Schema for the kamajicontrolplanetemplates API.
+StewardControlPlaneTemplate is the Schema for the stewardcontrolplanetemplates API.
 
 <table>
     <thead>
@@ -13749,7 +13749,7 @@ KamajiControlPlaneTemplate is the Schema for the kamajicontrolplanetemplates API
       <tr>
       <td><b>kind</b></td>
       <td>string</td>
-      <td>KamajiControlPlaneTemplate</td>
+      <td>StewardControlPlaneTemplate</td>
       <td>true</td>
       </tr>
       <tr>
@@ -13758,20 +13758,20 @@ KamajiControlPlaneTemplate is the Schema for the kamajicontrolplanetemplates API
       <td>Refer to the Kubernetes API documentation for the fields of the `metadata` field.</td>
       <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespec">spec</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespec">spec</a></b></td>
         <td>object</td>
         <td>
-          KamajiControlPlaneTemplateSpec defines the desired state of KamajiControlPlaneTemplate.<br/>
+          StewardControlPlaneTemplateSpec defines the desired state of StewardControlPlaneTemplate.<br/>
         </td>
         <td>false</td>
       </tr></tbody>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespec">`KamajiControlPlaneTemplate.spec`</span>
+<span id="stewardcontrolplanetemplatespec">`StewardControlPlaneTemplate.spec`</span>
 
 
-KamajiControlPlaneTemplateSpec defines the desired state of KamajiControlPlaneTemplate.
+StewardControlPlaneTemplateSpec defines the desired state of StewardControlPlaneTemplate.
 
 <table>
     <thead>
@@ -13783,20 +13783,20 @@ KamajiControlPlaneTemplateSpec defines the desired state of KamajiControlPlaneTe
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplate">template</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplate">template</a></b></td>
         <td>object</td>
         <td>
-          KamajiControlPlaneTemplateResource describes the data needed to create a KamajiControlPlane from a template.<br/>
+          StewardControlPlaneTemplateResource describes the data needed to create a StewardControlPlane from a template.<br/>
         </td>
         <td>true</td>
       </tr></tbody>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplate">`KamajiControlPlaneTemplate.spec.template`</span>
+<span id="stewardcontrolplanetemplatespectemplate">`StewardControlPlaneTemplate.spec.template`</span>
 
 
-KamajiControlPlaneTemplateResource describes the data needed to create a KamajiControlPlane from a template.
+StewardControlPlaneTemplateResource describes the data needed to create a StewardControlPlane from a template.
 
 <table>
     <thead>
@@ -13808,14 +13808,14 @@ KamajiControlPlaneTemplateResource describes the data needed to create a KamajiC
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespec">spec</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespec">spec</a></b></td>
         <td>object</td>
         <td>
           <br/>
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatemetadata">metadata</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatemetadata">metadata</a></b></td>
         <td>object</td>
         <td>
           Standard object's metadata.
@@ -13826,7 +13826,7 @@ More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespec">`KamajiControlPlaneTemplate.spec.template.spec`</span>
+<span id="stewardcontrolplanetemplatespectemplatespec">`StewardControlPlaneTemplate.spec.template.spec`</span>
 
 
 
@@ -13841,10 +13841,10 @@ More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecaddons">addons</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecaddons">addons</a></b></td>
         <td>object</td>
         <td>
-          The addons that must be managed by Kamaji, such as CoreDNS, kube-proxy, and konnectivity.<br/>
+          The addons that must be managed by Steward, such as CoreDNS, kube-proxy, and konnectivity.<br/>
         </td>
         <td>false</td>
       </tr><tr>
@@ -13860,14 +13860,14 @@ More info: https://kubernetes.io/docs/reference/access-authn-authz/admission-con
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecapiserver">apiServer</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecapiserver">apiServer</a></b></td>
         <td>object</td>
         <td>
           ControlPlaneComponent allows the customization for the given component of the control plane.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespeccontrollermanager">controllerManager</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespeccontrollermanager">controllerManager</a></b></td>
         <td>object</td>
         <td>
           ControlPlaneComponent allows the customization for the given component of the control plane.<br/>
@@ -13877,8 +13877,8 @@ More info: https://kubernetes.io/docs/reference/access-authn-authz/admission-con
         <td><b>dataStoreName</b></td>
         <td>string</td>
         <td>
-          The Kamaji DataStore to use for the given TenantControlPlane.
-Retrieve the list of the allowed ones by issuing "kubectl get datastores.kamaji.clastix.io".<br/>
+          The Steward DataStore to use for the given TenantControlPlane.
+Retrieve the list of the allowed ones by issuing "kubectl get datastores.steward.butlerlabs.io".<br/>
         </td>
         <td>false</td>
       </tr><tr>
@@ -13893,28 +13893,28 @@ Retrieve the list of the allowed ones by issuing "kubectl get datastores.kamaji.
         <td>string</td>
         <td>
           DataStoreUsername allows to specify the username of the database (for relational DataStores). This
-value is optional and immutable. Note that Kamaji currently doesn't ensure that DataStoreUsername values are unique. It's up
-to the user to avoid clashes between different TenantControlPlanes. If not set upon creation, Kamaji will default the
+value is optional and immutable. Note that Steward currently doesn't ensure that DataStoreUsername values are unique. It's up
+to the user to avoid clashes between different TenantControlPlanes. If not set upon creation, Steward will default the
 DataStoreUsername by concatenating the namespace and name of the TenantControlPlane.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeployment">deployment</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeployment">deployment</a></b></td>
         <td>object</td>
         <td>
           Configure how the TenantControlPlane Deployment object should be configured.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespeckine">kine</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespeckine">kine</a></b></td>
         <td>object</td>
         <td>
           KineComponent allows the customization for the kine component of the control plane.
-Available only if Kamaji is running using Kine as backing storage.<br/>
+Available only if Steward is running using Kine as backing storage.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespeckubelet">kubelet</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespeckubelet">kubelet</a></b></td>
         <td>object</td>
         <td>
           Configure the Kubelet options, such as the preferred address types, or the expected cgroupfs.<br/>
@@ -13923,7 +13923,7 @@ Available only if Kamaji is running using Kine as backing storage.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecnetwork">network</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecnetwork">network</a></b></td>
         <td>object</td>
         <td>
           Configure how the TenantControlPlane should be exposed.<br/>
@@ -13942,7 +13942,7 @@ Helpful if running in an air-gapped environment.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecscheduler">scheduler</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecscheduler">scheduler</a></b></td>
         <td>object</td>
         <td>
           ControlPlaneComponent allows the customization for the given component of the control plane.<br/>
@@ -13952,10 +13952,10 @@ Helpful if running in an air-gapped environment.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecaddons">`KamajiControlPlaneTemplate.spec.template.spec.addons`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecaddons">`StewardControlPlaneTemplate.spec.template.spec.addons`</span>
 
 
-The addons that must be managed by Kamaji, such as CoreDNS, kube-proxy, and konnectivity.
+The addons that must be managed by Steward, such as CoreDNS, kube-proxy, and konnectivity.
 
 <table>
     <thead>
@@ -13967,7 +13967,7 @@ The addons that must be managed by Kamaji, such as CoreDNS, kube-proxy, and konn
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecaddonscoredns">coreDNS</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecaddonscoredns">coreDNS</a></b></td>
         <td>object</td>
         <td>
           Enables the DNS addon in the Tenant Cluster.
@@ -13975,14 +13975,14 @@ The registry and the tag are configurable, the image is hard-coded to `coredns`.
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecaddonskonnectivity">konnectivity</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecaddonskonnectivity">konnectivity</a></b></td>
         <td>object</td>
         <td>
           Enables the Konnectivity addon in the Tenant Cluster, required if the worker nodes are in a different network.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecaddonskubeproxy">kubeProxy</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecaddonskubeproxy">kubeProxy</a></b></td>
         <td>object</td>
         <td>
           Enables the kube-proxy addon in the Tenant Cluster.
@@ -13993,7 +13993,7 @@ The registry and the tag are configurable, the image is hard-coded to `kube-prox
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecaddonscoredns">`KamajiControlPlaneTemplate.spec.template.spec.addons.coreDNS`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecaddonscoredns">`StewardControlPlaneTemplate.spec.template.spec.addons.coreDNS`</span>
 
 
 Enables the DNS addon in the Tenant Cluster.
@@ -14013,7 +14013,7 @@ The registry and the tag are configurable, the image is hard-coded to `coredns`.
         <td>[]string</td>
         <td>
           DNSServiceIPs contains the CoreDNS Service IPs.
-When set to an empty slice, Kamaji will automatically inflect it from the Service CIDR.<br/>
+When set to an empty slice, Steward will automatically inflect it from the Service CIDR.<br/>
         </td>
         <td>false</td>
       </tr><tr>
@@ -14036,7 +14036,7 @@ In case this value is set, kubeadm does not change automatically the version of 
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecaddonskonnectivity">`KamajiControlPlaneTemplate.spec.template.spec.addons.konnectivity`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecaddonskonnectivity">`StewardControlPlaneTemplate.spec.template.spec.addons.konnectivity`</span>
 
 
 Enables the Konnectivity addon in the Tenant Cluster, required if the worker nodes are in a different network.
@@ -14051,7 +14051,7 @@ Enables the Konnectivity addon in the Tenant Cluster, required if the worker nod
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecaddonskonnectivityagent">agent</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecaddonskonnectivityagent">agent</a></b></td>
         <td>object</td>
         <td>
           <br/>
@@ -14060,7 +14060,7 @@ Enables the Konnectivity addon in the Tenant Cluster, required if the worker nod
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecaddonskonnectivityserver">server</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecaddonskonnectivityserver">server</a></b></td>
         <td>object</td>
         <td>
           <br/>
@@ -14072,7 +14072,7 @@ Enables the Konnectivity addon in the Tenant Cluster, required if the worker nod
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecaddonskonnectivityagent">`KamajiControlPlaneTemplate.spec.template.spec.addons.konnectivity.agent`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecaddonskonnectivityagent">`StewardControlPlaneTemplate.spec.template.spec.addons.konnectivity.agent`</span>
 
 
 
@@ -14138,7 +14138,7 @@ Must be 0 if Mode is DaemonSet.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecaddonskonnectivityagenttolerationsindex">tolerations</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecaddonskonnectivityagenttolerationsindex">tolerations</a></b></td>
         <td>[]object</td>
         <td>
           Tolerations for the deployed agent.
@@ -14152,7 +14152,7 @@ Can be customized to start the konnectivity-agent even if the nodes are not read
         <td>string</td>
         <td>
           Version for Konnectivity agent.
-If left empty, Kamaji will automatically inflect the version from the deployed Tenant Control Plane.
+If left empty, Steward will automatically inflect the version from the deployed Tenant Control Plane.
 
 WARNING: for last cut-off releases, the container image could be not available.<br/>
         </td>
@@ -14161,7 +14161,7 @@ WARNING: for last cut-off releases, the container image could be not available.<
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecaddonskonnectivityagenttolerationsindex">`KamajiControlPlaneTemplate.spec.template.spec.addons.konnectivity.agent.tolerations[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecaddonskonnectivityagenttolerationsindex">`StewardControlPlaneTemplate.spec.template.spec.addons.konnectivity.agent.tolerations[index]`</span>
 
 
 The pod this Toleration is attached to tolerates any taint that matches
@@ -14226,7 +14226,7 @@ If the operator is Exists, the value should be empty, otherwise just a regular s
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecaddonskonnectivityserver">`KamajiControlPlaneTemplate.spec.template.spec.addons.konnectivity.server`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecaddonskonnectivityserver">`StewardControlPlaneTemplate.spec.template.spec.addons.konnectivity.server`</span>
 
 
 
@@ -14269,7 +14269,7 @@ unxpected ways. Only modify if you know what you are doing.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecaddonskonnectivityserverresources">resources</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecaddonskonnectivityserverresources">resources</a></b></td>
         <td>object</td>
         <td>
           Resources define the amount of CPU and memory to allocate to the Konnectivity server.<br/>
@@ -14280,7 +14280,7 @@ unxpected ways. Only modify if you know what you are doing.<br/>
         <td>string</td>
         <td>
           Container image version of the Konnectivity server.
-If left empty, Kamaji will automatically inflect the version from the deployed Tenant Control Plane.
+If left empty, Steward will automatically inflect the version from the deployed Tenant Control Plane.
 
 WARNING: for last cut-off releases, the container image could be not available.<br/>
         </td>
@@ -14289,7 +14289,7 @@ WARNING: for last cut-off releases, the container image could be not available.<
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecaddonskonnectivityserverresources">`KamajiControlPlaneTemplate.spec.template.spec.addons.konnectivity.server.resources`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecaddonskonnectivityserverresources">`StewardControlPlaneTemplate.spec.template.spec.addons.konnectivity.server.resources`</span>
 
 
 Resources define the amount of CPU and memory to allocate to the Konnectivity server.
@@ -14304,7 +14304,7 @@ Resources define the amount of CPU and memory to allocate to the Konnectivity se
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecaddonskonnectivityserverresourcesclaimsindex">claims</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecaddonskonnectivityserverresourcesclaimsindex">claims</a></b></td>
         <td>[]object</td>
         <td>
           Claims lists the names of resources, defined in spec.resourceClaims,
@@ -14338,7 +14338,7 @@ More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-co
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecaddonskonnectivityserverresourcesclaimsindex">`KamajiControlPlaneTemplate.spec.template.spec.addons.konnectivity.server.resources.claims[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecaddonskonnectivityserverresourcesclaimsindex">`StewardControlPlaneTemplate.spec.template.spec.addons.konnectivity.server.resources.claims[index]`</span>
 
 
 ResourceClaim references one entry in PodSpec.ResourceClaims.
@@ -14374,7 +14374,7 @@ only the result of this request.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecaddonskubeproxy">`KamajiControlPlaneTemplate.spec.template.spec.addons.kubeProxy`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecaddonskubeproxy">`StewardControlPlaneTemplate.spec.template.spec.addons.kubeProxy`</span>
 
 
 Enables the kube-proxy addon in the Tenant Cluster.
@@ -14409,7 +14409,7 @@ In case this value is set, kubeadm does not change automatically the version of 
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecapiserver">`KamajiControlPlaneTemplate.spec.template.spec.apiServer`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecapiserver">`StewardControlPlaneTemplate.spec.template.spec.apiServer`</span>
 
 
 ControlPlaneComponent allows the customization for the given component of the control plane.
@@ -14439,14 +14439,14 @@ With no value, the default images will be used.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecapiserverextravolumemountsindex">extraVolumeMounts</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecapiserverextravolumemountsindex">extraVolumeMounts</a></b></td>
         <td>[]object</td>
         <td>
           <br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecapiserverresources">resources</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecapiserverresources">resources</a></b></td>
         <td>object</td>
         <td>
           ResourceRequirements describes the compute resource requirements.<br/>
@@ -14456,7 +14456,7 @@ With no value, the default images will be used.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecapiserverextravolumemountsindex">`KamajiControlPlaneTemplate.spec.template.spec.apiServer.extraVolumeMounts[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecapiserverextravolumemountsindex">`StewardControlPlaneTemplate.spec.template.spec.apiServer.extraVolumeMounts[index]`</span>
 
 
 VolumeMount describes a mounting of a Volume within a container.
@@ -14549,7 +14549,7 @@ SubPathExpr and SubPath are mutually exclusive.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecapiserverresources">`KamajiControlPlaneTemplate.spec.template.spec.apiServer.resources`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecapiserverresources">`StewardControlPlaneTemplate.spec.template.spec.apiServer.resources`</span>
 
 
 ResourceRequirements describes the compute resource requirements.
@@ -14564,7 +14564,7 @@ ResourceRequirements describes the compute resource requirements.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecapiserverresourcesclaimsindex">claims</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecapiserverresourcesclaimsindex">claims</a></b></td>
         <td>[]object</td>
         <td>
           Claims lists the names of resources, defined in spec.resourceClaims,
@@ -14598,7 +14598,7 @@ More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-co
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecapiserverresourcesclaimsindex">`KamajiControlPlaneTemplate.spec.template.spec.apiServer.resources.claims[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecapiserverresourcesclaimsindex">`StewardControlPlaneTemplate.spec.template.spec.apiServer.resources.claims[index]`</span>
 
 
 ResourceClaim references one entry in PodSpec.ResourceClaims.
@@ -14634,7 +14634,7 @@ only the result of this request.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespeccontrollermanager">`KamajiControlPlaneTemplate.spec.template.spec.controllerManager`</span>
+<span id="stewardcontrolplanetemplatespectemplatespeccontrollermanager">`StewardControlPlaneTemplate.spec.template.spec.controllerManager`</span>
 
 
 ControlPlaneComponent allows the customization for the given component of the control plane.
@@ -14664,14 +14664,14 @@ With no value, the default images will be used.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespeccontrollermanagerextravolumemountsindex">extraVolumeMounts</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespeccontrollermanagerextravolumemountsindex">extraVolumeMounts</a></b></td>
         <td>[]object</td>
         <td>
           <br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespeccontrollermanagerresources">resources</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespeccontrollermanagerresources">resources</a></b></td>
         <td>object</td>
         <td>
           ResourceRequirements describes the compute resource requirements.<br/>
@@ -14681,7 +14681,7 @@ With no value, the default images will be used.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespeccontrollermanagerextravolumemountsindex">`KamajiControlPlaneTemplate.spec.template.spec.controllerManager.extraVolumeMounts[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespeccontrollermanagerextravolumemountsindex">`StewardControlPlaneTemplate.spec.template.spec.controllerManager.extraVolumeMounts[index]`</span>
 
 
 VolumeMount describes a mounting of a Volume within a container.
@@ -14774,7 +14774,7 @@ SubPathExpr and SubPath are mutually exclusive.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespeccontrollermanagerresources">`KamajiControlPlaneTemplate.spec.template.spec.controllerManager.resources`</span>
+<span id="stewardcontrolplanetemplatespectemplatespeccontrollermanagerresources">`StewardControlPlaneTemplate.spec.template.spec.controllerManager.resources`</span>
 
 
 ResourceRequirements describes the compute resource requirements.
@@ -14789,7 +14789,7 @@ ResourceRequirements describes the compute resource requirements.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespeccontrollermanagerresourcesclaimsindex">claims</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespeccontrollermanagerresourcesclaimsindex">claims</a></b></td>
         <td>[]object</td>
         <td>
           Claims lists the names of resources, defined in spec.resourceClaims,
@@ -14823,7 +14823,7 @@ More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-co
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespeccontrollermanagerresourcesclaimsindex">`KamajiControlPlaneTemplate.spec.template.spec.controllerManager.resources.claims[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespeccontrollermanagerresourcesclaimsindex">`StewardControlPlaneTemplate.spec.template.spec.controllerManager.resources.claims[index]`</span>
 
 
 ResourceClaim references one entry in PodSpec.ResourceClaims.
@@ -14859,7 +14859,7 @@ only the result of this request.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeployment">`KamajiControlPlaneTemplate.spec.template.spec.deployment`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeployment">`StewardControlPlaneTemplate.spec.template.spec.deployment`</span>
 
 
 Configure how the TenantControlPlane Deployment object should be configured.
@@ -14874,22 +14874,22 @@ Configure how the TenantControlPlane Deployment object should be configured.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentadditionalmetadata">additionalMetadata</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentadditionalmetadata">additionalMetadata</a></b></td>
         <td>object</td>
         <td>
           AdditionalMetadata refers to the additional labels and annotations attached
-to the resulting Deployment managed by Kamaji.<br/>
+to the resulting Deployment managed by Steward.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinity">affinity</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinity">affinity</a></b></td>
         <td>object</td>
         <td>
           Affinity is a group of affinity scheduling rules.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentexternalclusterreference">externalClusterReference</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentexternalclusterreference">externalClusterReference</a></b></td>
         <td>object</td>
         <td>
           ExternalClusterReference allows defining the target Cluster where the Tenant Control Plane components must be deployed.
@@ -14898,21 +14898,21 @@ The ExternalClusterReference feature gate must be enabled with one of the availa
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindex">extraContainers</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindex">extraContainers</a></b></td>
         <td>[]object</td>
         <td>
           <br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindex">extraInitContainers</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindex">extraInitContainers</a></b></td>
         <td>[]object</td>
         <td>
           <br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindex">extraVolumes</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindex">extraVolumes</a></b></td>
         <td>[]object</td>
         <td>
           <br/>
@@ -14926,7 +14926,7 @@ The ExternalClusterReference feature gate must be enabled with one of the availa
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentpodadditionalmetadata">podAdditionalMetadata</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentpodadditionalmetadata">podAdditionalMetadata</a></b></td>
         <td>object</td>
         <td>
           PodAdditionalMetadata defines the additional labels and annotations that must be attached
@@ -14948,21 +14948,21 @@ to the resulting Pods managed by the Deployment.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentstrategy">strategy</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentstrategy">strategy</a></b></td>
         <td>object</td>
         <td>
           DeploymentStrategy describes how to replace existing pods with new ones.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymenttolerationsindex">tolerations</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymenttolerationsindex">tolerations</a></b></td>
         <td>[]object</td>
         <td>
           <br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymenttopologyspreadconstraintsindex">topologySpreadConstraints</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymenttopologyspreadconstraintsindex">topologySpreadConstraints</a></b></td>
         <td>[]object</td>
         <td>
           <br/>
@@ -14972,11 +14972,11 @@ to the resulting Pods managed by the Deployment.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentadditionalmetadata">`KamajiControlPlaneTemplate.spec.template.spec.deployment.additionalMetadata`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentadditionalmetadata">`StewardControlPlaneTemplate.spec.template.spec.deployment.additionalMetadata`</span>
 
 
 AdditionalMetadata refers to the additional labels and annotations attached
-to the resulting Deployment managed by Kamaji.
+to the resulting Deployment managed by Steward.
 
 <table>
     <thead>
@@ -15005,7 +15005,7 @@ to the resulting Deployment managed by Kamaji.
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinity">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinity">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity`</span>
 
 
 Affinity is a group of affinity scheduling rules.
@@ -15020,21 +15020,21 @@ Affinity is a group of affinity scheduling rules.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinity">nodeAffinity</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinity">nodeAffinity</a></b></td>
         <td>object</td>
         <td>
           Describes node affinity scheduling rules for the pod.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinity">podAffinity</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinity">podAffinity</a></b></td>
         <td>object</td>
         <td>
           Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinity">podAntiAffinity</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinity">podAntiAffinity</a></b></td>
         <td>object</td>
         <td>
           Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).<br/>
@@ -15044,7 +15044,7 @@ Affinity is a group of affinity scheduling rules.
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinity">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.nodeAffinity`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinity">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.nodeAffinity`</span>
 
 
 Describes node affinity scheduling rules for the pod.
@@ -15059,7 +15059,7 @@ Describes node affinity scheduling rules for the pod.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindex">preferredDuringSchedulingIgnoredDuringExecution</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindex">preferredDuringSchedulingIgnoredDuringExecution</a></b></td>
         <td>[]object</td>
         <td>
           The scheduler will prefer to schedule pods to nodes that satisfy
@@ -15074,7 +15074,7 @@ node(s) with the highest sum are the most preferred.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecution">requiredDuringSchedulingIgnoredDuringExecution</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecution">requiredDuringSchedulingIgnoredDuringExecution</a></b></td>
         <td>object</td>
         <td>
           If the affinity requirements specified by this field are not met at
@@ -15088,7 +15088,7 @@ may or may not try to eventually evict the pod from its node.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[index]`</span>
 
 
 An empty preferred scheduling term matches all objects with implicit weight 0
@@ -15104,7 +15104,7 @@ An empty preferred scheduling term matches all objects with implicit weight 0
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindexpreference">preference</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindexpreference">preference</a></b></td>
         <td>object</td>
         <td>
           A node selector term, associated with the corresponding weight.<br/>
@@ -15123,7 +15123,7 @@ An empty preferred scheduling term matches all objects with implicit weight 0
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindexpreference">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].preference`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindexpreference">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].preference`</span>
 
 
 A node selector term, associated with the corresponding weight.
@@ -15138,14 +15138,14 @@ A node selector term, associated with the corresponding weight.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindexpreferencematchexpressionsindex">matchExpressions</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindexpreferencematchexpressionsindex">matchExpressions</a></b></td>
         <td>[]object</td>
         <td>
           A list of node selector requirements by node's labels.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindexpreferencematchfieldsindex">matchFields</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindexpreferencematchfieldsindex">matchFields</a></b></td>
         <td>[]object</td>
         <td>
           A list of node selector requirements by node's fields.<br/>
@@ -15155,7 +15155,7 @@ A node selector term, associated with the corresponding weight.
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindexpreferencematchexpressionsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].preference.matchExpressions[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindexpreferencematchexpressionsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].preference.matchExpressions[index]`</span>
 
 
 A node selector requirement is a selector that contains values, a key, and an operator
@@ -15200,7 +15200,7 @@ This array is replaced during a strategic merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindexpreferencematchfieldsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].preference.matchFields[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinitypreferredduringschedulingignoredduringexecutionindexpreferencematchfieldsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].preference.matchFields[index]`</span>
 
 
 A node selector requirement is a selector that contains values, a key, and an operator
@@ -15245,7 +15245,7 @@ This array is replaced during a strategic merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecution">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecution">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution`</span>
 
 
 If the affinity requirements specified by this field are not met at
@@ -15264,7 +15264,7 @@ may or may not try to eventually evict the pod from its node.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecutionnodeselectortermsindex">nodeSelectorTerms</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecutionnodeselectortermsindex">nodeSelectorTerms</a></b></td>
         <td>[]object</td>
         <td>
           Required. A list of node selector terms. The terms are ORed.<br/>
@@ -15274,7 +15274,7 @@ may or may not try to eventually evict the pod from its node.
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecutionnodeselectortermsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecutionnodeselectortermsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[index]`</span>
 
 
 A null or empty node selector term matches no objects. The requirements of
@@ -15291,14 +15291,14 @@ The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecutionnodeselectortermsindexmatchexpressionsindex">matchExpressions</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecutionnodeselectortermsindexmatchexpressionsindex">matchExpressions</a></b></td>
         <td>[]object</td>
         <td>
           A list of node selector requirements by node's labels.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecutionnodeselectortermsindexmatchfieldsindex">matchFields</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecutionnodeselectortermsindexmatchfieldsindex">matchFields</a></b></td>
         <td>[]object</td>
         <td>
           A list of node selector requirements by node's fields.<br/>
@@ -15308,7 +15308,7 @@ The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecutionnodeselectortermsindexmatchexpressionsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[index].matchExpressions[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecutionnodeselectortermsindexmatchexpressionsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[index].matchExpressions[index]`</span>
 
 
 A node selector requirement is a selector that contains values, a key, and an operator
@@ -15353,7 +15353,7 @@ This array is replaced during a strategic merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecutionnodeselectortermsindexmatchfieldsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[index].matchFields[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitynodeaffinityrequiredduringschedulingignoredduringexecutionnodeselectortermsindexmatchfieldsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[index].matchFields[index]`</span>
 
 
 A node selector requirement is a selector that contains values, a key, and an operator
@@ -15398,7 +15398,7 @@ This array is replaced during a strategic merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinity">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.podAffinity`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinity">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.podAffinity`</span>
 
 
 Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
@@ -15413,7 +15413,7 @@ Describes pod affinity scheduling rules (e.g. co-locate this pod in the same nod
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindex">preferredDuringSchedulingIgnoredDuringExecution</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindex">preferredDuringSchedulingIgnoredDuringExecution</a></b></td>
         <td>[]object</td>
         <td>
           The scheduler will prefer to schedule pods to nodes that satisfy
@@ -15428,7 +15428,7 @@ node(s) with the highest sum are the most preferred.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindex">requiredDuringSchedulingIgnoredDuringExecution</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindex">requiredDuringSchedulingIgnoredDuringExecution</a></b></td>
         <td>[]object</td>
         <td>
           If the affinity requirements specified by this field are not met at
@@ -15444,7 +15444,7 @@ podAffinityTerm are intersected, i.e. all terms must be satisfied.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.podAffinity.preferredDuringSchedulingIgnoredDuringExecution[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.podAffinity.preferredDuringSchedulingIgnoredDuringExecution[index]`</span>
 
 
 The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -15459,7 +15459,7 @@ The weights of all of the matched WeightedPodAffinityTerm fields are added per-n
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinityterm">podAffinityTerm</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinityterm">podAffinityTerm</a></b></td>
         <td>object</td>
         <td>
           Required. A pod affinity term, associated with the corresponding weight.<br/>
@@ -15479,7 +15479,7 @@ in the range 1-100.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinityterm">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.podAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinityterm">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.podAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm`</span>
 
 
 Required. A pod affinity term, associated with the corresponding weight.
@@ -15505,7 +15505,7 @@ Empty topologyKey is not allowed.<br/>
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselector">labelSelector</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselector">labelSelector</a></b></td>
         <td>object</td>
         <td>
           A label query over a set of resources, in this case pods.
@@ -15541,7 +15541,7 @@ Also, mismatchLabelKeys cannot be set when labelSelector isn't set.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselector">namespaceSelector</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselector">namespaceSelector</a></b></td>
         <td>object</td>
         <td>
           A label query over the set of namespaces that the term applies to.
@@ -15565,7 +15565,7 @@ null or empty namespaces list and null namespaceSelector means "this pod's names
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselector">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.podAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.labelSelector`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselector">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.podAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.labelSelector`</span>
 
 
 A label query over a set of resources, in this case pods.
@@ -15581,7 +15581,7 @@ If it's null, this PodAffinityTerm matches with no Pods.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselectormatchexpressionsindex">matchExpressions</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselectormatchexpressionsindex">matchExpressions</a></b></td>
         <td>[]object</td>
         <td>
           matchExpressions is a list of label selector requirements. The requirements are ANDed.<br/>
@@ -15600,7 +15600,7 @@ operator is "In", and the values array contains only "value". The requirements a
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselectormatchexpressionsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.podAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.labelSelector.matchExpressions[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselectormatchexpressionsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.podAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.labelSelector.matchExpressions[index]`</span>
 
 
 A label selector requirement is a selector that contains values, a key, and an operator that
@@ -15644,7 +15644,7 @@ merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselector">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.podAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.namespaceSelector`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselector">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.podAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.namespaceSelector`</span>
 
 
 A label query over the set of namespaces that the term applies to.
@@ -15663,7 +15663,7 @@ An empty selector ({}) matches all namespaces.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselectormatchexpressionsindex">matchExpressions</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselectormatchexpressionsindex">matchExpressions</a></b></td>
         <td>[]object</td>
         <td>
           matchExpressions is a list of label selector requirements. The requirements are ANDed.<br/>
@@ -15682,7 +15682,7 @@ operator is "In", and the values array contains only "value". The requirements a
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselectormatchexpressionsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.podAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.namespaceSelector.matchExpressions[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselectormatchexpressionsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.podAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.namespaceSelector.matchExpressions[index]`</span>
 
 
 A label selector requirement is a selector that contains values, a key, and an operator that
@@ -15726,7 +15726,7 @@ merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[index]`</span>
 
 
 Defines a set of pods (namely those matching the labelSelector
@@ -15757,7 +15757,7 @@ Empty topologyKey is not allowed.<br/>
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexlabelselector">labelSelector</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexlabelselector">labelSelector</a></b></td>
         <td>object</td>
         <td>
           A label query over a set of resources, in this case pods.
@@ -15793,7 +15793,7 @@ Also, mismatchLabelKeys cannot be set when labelSelector isn't set.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselector">namespaceSelector</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselector">namespaceSelector</a></b></td>
         <td>object</td>
         <td>
           A label query over the set of namespaces that the term applies to.
@@ -15817,7 +15817,7 @@ null or empty namespaces list and null namespaceSelector means "this pod's names
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexlabelselector">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].labelSelector`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexlabelselector">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].labelSelector`</span>
 
 
 A label query over a set of resources, in this case pods.
@@ -15833,7 +15833,7 @@ If it's null, this PodAffinityTerm matches with no Pods.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexlabelselectormatchexpressionsindex">matchExpressions</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexlabelselectormatchexpressionsindex">matchExpressions</a></b></td>
         <td>[]object</td>
         <td>
           matchExpressions is a list of label selector requirements. The requirements are ANDed.<br/>
@@ -15852,7 +15852,7 @@ operator is "In", and the values array contains only "value". The requirements a
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexlabelselectormatchexpressionsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].labelSelector.matchExpressions[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexlabelselectormatchexpressionsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].labelSelector.matchExpressions[index]`</span>
 
 
 A label selector requirement is a selector that contains values, a key, and an operator that
@@ -15896,7 +15896,7 @@ merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselector">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].namespaceSelector`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselector">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].namespaceSelector`</span>
 
 
 A label query over the set of namespaces that the term applies to.
@@ -15915,7 +15915,7 @@ An empty selector ({}) matches all namespaces.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselectormatchexpressionsindex">matchExpressions</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselectormatchexpressionsindex">matchExpressions</a></b></td>
         <td>[]object</td>
         <td>
           matchExpressions is a list of label selector requirements. The requirements are ANDed.<br/>
@@ -15934,7 +15934,7 @@ operator is "In", and the values array contains only "value". The requirements a
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselectormatchexpressionsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].namespaceSelector.matchExpressions[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselectormatchexpressionsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].namespaceSelector.matchExpressions[index]`</span>
 
 
 A label selector requirement is a selector that contains values, a key, and an operator that
@@ -15978,7 +15978,7 @@ merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinity">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.podAntiAffinity`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinity">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.podAntiAffinity`</span>
 
 
 Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
@@ -15993,7 +15993,7 @@ Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindex">preferredDuringSchedulingIgnoredDuringExecution</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindex">preferredDuringSchedulingIgnoredDuringExecution</a></b></td>
         <td>[]object</td>
         <td>
           The scheduler will prefer to schedule pods to nodes that satisfy
@@ -16008,7 +16008,7 @@ node(s) with the highest sum are the most preferred.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindex">requiredDuringSchedulingIgnoredDuringExecution</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindex">requiredDuringSchedulingIgnoredDuringExecution</a></b></td>
         <td>[]object</td>
         <td>
           If the anti-affinity requirements specified by this field are not met at
@@ -16024,7 +16024,7 @@ podAffinityTerm are intersected, i.e. all terms must be satisfied.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[index]`</span>
 
 
 The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -16039,7 +16039,7 @@ The weights of all of the matched WeightedPodAffinityTerm fields are added per-n
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinityterm">podAffinityTerm</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinityterm">podAffinityTerm</a></b></td>
         <td>object</td>
         <td>
           Required. A pod affinity term, associated with the corresponding weight.<br/>
@@ -16059,7 +16059,7 @@ in the range 1-100.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinityterm">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinityterm">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm`</span>
 
 
 Required. A pod affinity term, associated with the corresponding weight.
@@ -16085,7 +16085,7 @@ Empty topologyKey is not allowed.<br/>
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselector">labelSelector</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselector">labelSelector</a></b></td>
         <td>object</td>
         <td>
           A label query over a set of resources, in this case pods.
@@ -16121,7 +16121,7 @@ Also, mismatchLabelKeys cannot be set when labelSelector isn't set.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselector">namespaceSelector</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselector">namespaceSelector</a></b></td>
         <td>object</td>
         <td>
           A label query over the set of namespaces that the term applies to.
@@ -16145,7 +16145,7 @@ null or empty namespaces list and null namespaceSelector means "this pod's names
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselector">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.labelSelector`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselector">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.labelSelector`</span>
 
 
 A label query over a set of resources, in this case pods.
@@ -16161,7 +16161,7 @@ If it's null, this PodAffinityTerm matches with no Pods.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselectormatchexpressionsindex">matchExpressions</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselectormatchexpressionsindex">matchExpressions</a></b></td>
         <td>[]object</td>
         <td>
           matchExpressions is a list of label selector requirements. The requirements are ANDed.<br/>
@@ -16180,7 +16180,7 @@ operator is "In", and the values array contains only "value". The requirements a
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselectormatchexpressionsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.labelSelector.matchExpressions[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermlabelselectormatchexpressionsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.labelSelector.matchExpressions[index]`</span>
 
 
 A label selector requirement is a selector that contains values, a key, and an operator that
@@ -16224,7 +16224,7 @@ merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselector">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.namespaceSelector`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselector">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.namespaceSelector`</span>
 
 
 A label query over the set of namespaces that the term applies to.
@@ -16243,7 +16243,7 @@ An empty selector ({}) matches all namespaces.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselectormatchexpressionsindex">matchExpressions</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselectormatchexpressionsindex">matchExpressions</a></b></td>
         <td>[]object</td>
         <td>
           matchExpressions is a list of label selector requirements. The requirements are ANDed.<br/>
@@ -16262,7 +16262,7 @@ operator is "In", and the values array contains only "value". The requirements a
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselectormatchexpressionsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.namespaceSelector.matchExpressions[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinitypreferredduringschedulingignoredduringexecutionindexpodaffinitytermnamespaceselectormatchexpressionsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[index].podAffinityTerm.namespaceSelector.matchExpressions[index]`</span>
 
 
 A label selector requirement is a selector that contains values, a key, and an operator that
@@ -16306,7 +16306,7 @@ merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[index]`</span>
 
 
 Defines a set of pods (namely those matching the labelSelector
@@ -16337,7 +16337,7 @@ Empty topologyKey is not allowed.<br/>
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexlabelselector">labelSelector</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexlabelselector">labelSelector</a></b></td>
         <td>object</td>
         <td>
           A label query over a set of resources, in this case pods.
@@ -16373,7 +16373,7 @@ Also, mismatchLabelKeys cannot be set when labelSelector isn't set.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselector">namespaceSelector</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselector">namespaceSelector</a></b></td>
         <td>object</td>
         <td>
           A label query over the set of namespaces that the term applies to.
@@ -16397,7 +16397,7 @@ null or empty namespaces list and null namespaceSelector means "this pod's names
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexlabelselector">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].labelSelector`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexlabelselector">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].labelSelector`</span>
 
 
 A label query over a set of resources, in this case pods.
@@ -16413,7 +16413,7 @@ If it's null, this PodAffinityTerm matches with no Pods.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexlabelselectormatchexpressionsindex">matchExpressions</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexlabelselectormatchexpressionsindex">matchExpressions</a></b></td>
         <td>[]object</td>
         <td>
           matchExpressions is a list of label selector requirements. The requirements are ANDed.<br/>
@@ -16432,7 +16432,7 @@ operator is "In", and the values array contains only "value". The requirements a
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexlabelselectormatchexpressionsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].labelSelector.matchExpressions[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexlabelselectormatchexpressionsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].labelSelector.matchExpressions[index]`</span>
 
 
 A label selector requirement is a selector that contains values, a key, and an operator that
@@ -16476,7 +16476,7 @@ merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselector">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].namespaceSelector`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselector">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].namespaceSelector`</span>
 
 
 A label query over the set of namespaces that the term applies to.
@@ -16495,7 +16495,7 @@ An empty selector ({}) matches all namespaces.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselectormatchexpressionsindex">matchExpressions</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselectormatchexpressionsindex">matchExpressions</a></b></td>
         <td>[]object</td>
         <td>
           matchExpressions is a list of label selector requirements. The requirements are ANDed.<br/>
@@ -16514,7 +16514,7 @@ operator is "In", and the values array contains only "value". The requirements a
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselectormatchexpressionsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].namespaceSelector.matchExpressions[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentaffinitypodantiaffinityrequiredduringschedulingignoredduringexecutionindexnamespaceselectormatchexpressionsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[index].namespaceSelector.matchExpressions[index]`</span>
 
 
 A label selector requirement is a selector that contains values, a key, and an operator that
@@ -16558,7 +16558,7 @@ merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentexternalclusterreference">`KamajiControlPlaneTemplate.spec.template.spec.deployment.externalClusterReference`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentexternalclusterreference">`StewardControlPlaneTemplate.spec.template.spec.deployment.externalClusterReference`</span>
 
 
 ExternalClusterReference allows defining the target Cluster where the Tenant Control Plane components must be deployed.
@@ -16601,14 +16601,14 @@ the Tenant Control Plane resources generated by the Control Plane Provider.<br/>
         <td>string</td>
         <td>
           When ExternalClusterReferenceCrossNamespace is enabled allows specifying a different Namespace where the kubeconfig can be retrieved.
-With ExternalClusterReference this value can be left empty since the KamajiControlPlane object Namespace will be used.<br/>
+With ExternalClusterReference this value can be left empty since the StewardControlPlane object Namespace will be used.<br/>
         </td>
         <td>false</td>
       </tr></tbody>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index]`</span>
 
 
 A single application container that you want to run within a pod.
@@ -16660,7 +16660,7 @@ More info: https://kubernetes.io/docs/tasks/inject-data-application/define-comma
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindex">env</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindex">env</a></b></td>
         <td>[]object</td>
         <td>
           List of environment variables to set in the container.
@@ -16668,7 +16668,7 @@ Cannot be updated.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvfromindex">envFrom</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvfromindex">envFrom</a></b></td>
         <td>[]object</td>
         <td>
           List of sources to populate environment variables in the container.
@@ -16701,7 +16701,7 @@ More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycle">lifecycle</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycle">lifecycle</a></b></td>
         <td>object</td>
         <td>
           Actions that the management system should take in response to container lifecycle events.
@@ -16709,7 +16709,7 @@ Cannot be updated.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlivenessprobe">livenessProbe</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlivenessprobe">livenessProbe</a></b></td>
         <td>object</td>
         <td>
           Periodic probe of container liveness.
@@ -16719,7 +16719,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexportsindex">ports</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexportsindex">ports</a></b></td>
         <td>[]object</td>
         <td>
           List of ports to expose from the container. Not specifying a port here
@@ -16732,7 +16732,7 @@ Cannot be updated.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexreadinessprobe">readinessProbe</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexreadinessprobe">readinessProbe</a></b></td>
         <td>object</td>
         <td>
           Periodic probe of container service readiness.
@@ -16742,14 +16742,14 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexresizepolicyindex">resizePolicy</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexresizepolicyindex">resizePolicy</a></b></td>
         <td>[]object</td>
         <td>
           Resources resize policy for the container.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexresources">resources</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexresources">resources</a></b></td>
         <td>object</td>
         <td>
           Compute Resources required by this container.
@@ -16779,7 +16779,7 @@ completed.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexrestartpolicyrulesindex">restartPolicyRules</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexrestartpolicyrulesindex">restartPolicyRules</a></b></td>
         <td>[]object</td>
         <td>
           Represents a list of rules to be checked to determine if the
@@ -16796,7 +16796,7 @@ even it if matches the Pod's RestartPolicy.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexsecuritycontext">securityContext</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexsecuritycontext">securityContext</a></b></td>
         <td>object</td>
         <td>
           SecurityContext defines the security options the container should be run with.
@@ -16805,7 +16805,7 @@ More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-con
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexstartupprobe">startupProbe</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexstartupprobe">startupProbe</a></b></td>
         <td>object</td>
         <td>
           StartupProbe indicates that the Pod has successfully initialized.
@@ -16874,14 +16874,14 @@ Default is false.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexvolumedevicesindex">volumeDevices</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexvolumedevicesindex">volumeDevices</a></b></td>
         <td>[]object</td>
         <td>
           volumeDevices is the list of block devices to be used by the container.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexvolumemountsindex">volumeMounts</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexvolumemountsindex">volumeMounts</a></b></td>
         <td>[]object</td>
         <td>
           Pod volumes to mount into the container's filesystem.
@@ -16902,7 +16902,7 @@ Cannot be updated.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].env[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].env[index]`</span>
 
 
 EnvVar represents an environment variable present in a Container.
@@ -16940,7 +16940,7 @@ Defaults to "".<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindexvaluefrom">valueFrom</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindexvaluefrom">valueFrom</a></b></td>
         <td>object</td>
         <td>
           Source for the environment variable's value. Cannot be used if value is not empty.<br/>
@@ -16950,7 +16950,7 @@ Defaults to "".<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindexvaluefrom">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].env[index].valueFrom`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindexvaluefrom">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].env[index].valueFrom`</span>
 
 
 Source for the environment variable's value. Cannot be used if value is not empty.
@@ -16965,14 +16965,14 @@ Source for the environment variable's value. Cannot be used if value is not empt
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindexvaluefromconfigmapkeyref">configMapKeyRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindexvaluefromconfigmapkeyref">configMapKeyRef</a></b></td>
         <td>object</td>
         <td>
           Selects a key of a ConfigMap.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindexvaluefromfieldref">fieldRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindexvaluefromfieldref">fieldRef</a></b></td>
         <td>object</td>
         <td>
           Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
@@ -16980,7 +16980,7 @@ spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podI
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindexvaluefromfilekeyref">fileKeyRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindexvaluefromfilekeyref">fileKeyRef</a></b></td>
         <td>object</td>
         <td>
           FileKeyRef selects a key of the env file.
@@ -16988,7 +16988,7 @@ Requires the EnvFiles feature gate to be enabled.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindexvaluefromresourcefieldref">resourceFieldRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindexvaluefromresourcefieldref">resourceFieldRef</a></b></td>
         <td>object</td>
         <td>
           Selects a resource of the container: only resources limits and requests
@@ -16996,7 +16996,7 @@ Requires the EnvFiles feature gate to be enabled.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindexvaluefromsecretkeyref">secretKeyRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindexvaluefromsecretkeyref">secretKeyRef</a></b></td>
         <td>object</td>
         <td>
           Selects a key of a secret in the pod's namespace<br/>
@@ -17006,7 +17006,7 @@ Requires the EnvFiles feature gate to be enabled.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindexvaluefromconfigmapkeyref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].env[index].valueFrom.configMapKeyRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindexvaluefromconfigmapkeyref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].env[index].valueFrom.configMapKeyRef`</span>
 
 
 Selects a key of a ConfigMap.
@@ -17051,7 +17051,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindexvaluefromfieldref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].env[index].valueFrom.fieldRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindexvaluefromfieldref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].env[index].valueFrom.fieldRef`</span>
 
 
 Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
@@ -17084,7 +17084,7 @@ spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podI
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindexvaluefromfilekeyref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].env[index].valueFrom.fileKeyRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindexvaluefromfilekeyref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].env[index].valueFrom.fileKeyRef`</span>
 
 
 FileKeyRef selects a key of the env file.
@@ -17142,7 +17142,7 @@ an error will be returned during Pod creation.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindexvaluefromresourcefieldref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].env[index].valueFrom.resourceFieldRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindexvaluefromresourcefieldref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].env[index].valueFrom.resourceFieldRef`</span>
 
 
 Selects a resource of the container: only resources limits and requests
@@ -17182,7 +17182,7 @@ Selects a resource of the container: only resources limits and requests
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindexvaluefromsecretkeyref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].env[index].valueFrom.secretKeyRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvindexvaluefromsecretkeyref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].env[index].valueFrom.secretKeyRef`</span>
 
 
 Selects a key of a secret in the pod's namespace
@@ -17227,7 +17227,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvfromindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].envFrom[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvfromindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].envFrom[index]`</span>
 
 
 EnvFromSource represents the source of a set of ConfigMaps or Secrets
@@ -17242,7 +17242,7 @@ EnvFromSource represents the source of a set of ConfigMaps or Secrets
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvfromindexconfigmapref">configMapRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvfromindexconfigmapref">configMapRef</a></b></td>
         <td>object</td>
         <td>
           The ConfigMap to select from<br/>
@@ -17257,7 +17257,7 @@ May consist of any printable ASCII characters except '='.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvfromindexsecretref">secretRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvfromindexsecretref">secretRef</a></b></td>
         <td>object</td>
         <td>
           The Secret to select from<br/>
@@ -17267,7 +17267,7 @@ May consist of any printable ASCII characters except '='.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvfromindexconfigmapref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].envFrom[index].configMapRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvfromindexconfigmapref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].envFrom[index].configMapRef`</span>
 
 
 The ConfigMap to select from
@@ -17305,7 +17305,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvfromindexsecretref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].envFrom[index].secretRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexenvfromindexsecretref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].envFrom[index].secretRef`</span>
 
 
 The Secret to select from
@@ -17343,7 +17343,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycle">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].lifecycle`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycle">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].lifecycle`</span>
 
 
 Actions that the management system should take in response to container lifecycle events.
@@ -17359,7 +17359,7 @@ Cannot be updated.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecyclepoststart">postStart</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecyclepoststart">postStart</a></b></td>
         <td>object</td>
         <td>
           PostStart is called immediately after a container is created. If the handler fails,
@@ -17369,7 +17369,7 @@ More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-ho
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycleprestop">preStop</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycleprestop">preStop</a></b></td>
         <td>object</td>
         <td>
           PreStop is called immediately before a container is terminated due to an
@@ -17396,7 +17396,7 @@ StopSignal can only be set for Pods with a non-empty .spec.os.name<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecyclepoststart">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].lifecycle.postStart`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecyclepoststart">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].lifecycle.postStart`</span>
 
 
 PostStart is called immediately after a container is created. If the handler fails,
@@ -17414,28 +17414,28 @@ More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-ho
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecyclepoststartexec">exec</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecyclepoststartexec">exec</a></b></td>
         <td>object</td>
         <td>
           Exec specifies a command to execute in the container.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecyclepoststarthttpget">httpGet</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecyclepoststarthttpget">httpGet</a></b></td>
         <td>object</td>
         <td>
           HTTPGet specifies an HTTP GET request to perform.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecyclepoststartsleep">sleep</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecyclepoststartsleep">sleep</a></b></td>
         <td>object</td>
         <td>
           Sleep represents a duration that the container should sleep.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecyclepoststarttcpsocket">tcpSocket</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecyclepoststarttcpsocket">tcpSocket</a></b></td>
         <td>object</td>
         <td>
           Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
@@ -17447,7 +17447,7 @@ lifecycle hooks will fail at runtime when it is specified.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecyclepoststartexec">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].lifecycle.postStart.exec`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecyclepoststartexec">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].lifecycle.postStart.exec`</span>
 
 
 Exec specifies a command to execute in the container.
@@ -17476,7 +17476,7 @@ Exit status of 0 is treated as live/healthy and non-zero is unhealthy.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecyclepoststarthttpget">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].lifecycle.postStart.httpGet`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecyclepoststarthttpget">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].lifecycle.postStart.httpGet`</span>
 
 
 HTTPGet specifies an HTTP GET request to perform.
@@ -17508,7 +17508,7 @@ Name must be an IANA_SVC_NAME.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecyclepoststarthttpgethttpheadersindex">httpHeaders</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecyclepoststarthttpgethttpheadersindex">httpHeaders</a></b></td>
         <td>[]object</td>
         <td>
           Custom headers to set in the request. HTTP allows repeated headers.<br/>
@@ -17533,7 +17533,7 @@ Defaults to HTTP.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecyclepoststarthttpgethttpheadersindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].lifecycle.postStart.httpGet.httpHeaders[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecyclepoststarthttpgethttpheadersindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].lifecycle.postStart.httpGet.httpHeaders[index]`</span>
 
 
 HTTPHeader describes a custom header to be used in HTTP probes
@@ -17566,7 +17566,7 @@ This will be canonicalized upon output, so case-variant names will be understood
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecyclepoststartsleep">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].lifecycle.postStart.sleep`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecyclepoststartsleep">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].lifecycle.postStart.sleep`</span>
 
 
 Sleep represents a duration that the container should sleep.
@@ -17593,7 +17593,7 @@ Sleep represents a duration that the container should sleep.
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecyclepoststarttcpsocket">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].lifecycle.postStart.tcpSocket`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecyclepoststarttcpsocket">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].lifecycle.postStart.tcpSocket`</span>
 
 
 Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
@@ -17629,7 +17629,7 @@ Name must be an IANA_SVC_NAME.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycleprestop">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].lifecycle.preStop`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycleprestop">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].lifecycle.preStop`</span>
 
 
 PreStop is called immediately before a container is terminated due to an
@@ -17652,28 +17652,28 @@ More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-ho
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycleprestopexec">exec</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycleprestopexec">exec</a></b></td>
         <td>object</td>
         <td>
           Exec specifies a command to execute in the container.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycleprestophttpget">httpGet</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycleprestophttpget">httpGet</a></b></td>
         <td>object</td>
         <td>
           HTTPGet specifies an HTTP GET request to perform.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycleprestopsleep">sleep</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycleprestopsleep">sleep</a></b></td>
         <td>object</td>
         <td>
           Sleep represents a duration that the container should sleep.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycleprestoptcpsocket">tcpSocket</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycleprestoptcpsocket">tcpSocket</a></b></td>
         <td>object</td>
         <td>
           Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
@@ -17685,7 +17685,7 @@ lifecycle hooks will fail at runtime when it is specified.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycleprestopexec">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].lifecycle.preStop.exec`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycleprestopexec">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].lifecycle.preStop.exec`</span>
 
 
 Exec specifies a command to execute in the container.
@@ -17714,7 +17714,7 @@ Exit status of 0 is treated as live/healthy and non-zero is unhealthy.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycleprestophttpget">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].lifecycle.preStop.httpGet`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycleprestophttpget">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].lifecycle.preStop.httpGet`</span>
 
 
 HTTPGet specifies an HTTP GET request to perform.
@@ -17746,7 +17746,7 @@ Name must be an IANA_SVC_NAME.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycleprestophttpgethttpheadersindex">httpHeaders</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycleprestophttpgethttpheadersindex">httpHeaders</a></b></td>
         <td>[]object</td>
         <td>
           Custom headers to set in the request. HTTP allows repeated headers.<br/>
@@ -17771,7 +17771,7 @@ Defaults to HTTP.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycleprestophttpgethttpheadersindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].lifecycle.preStop.httpGet.httpHeaders[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycleprestophttpgethttpheadersindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].lifecycle.preStop.httpGet.httpHeaders[index]`</span>
 
 
 HTTPHeader describes a custom header to be used in HTTP probes
@@ -17804,7 +17804,7 @@ This will be canonicalized upon output, so case-variant names will be understood
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycleprestopsleep">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].lifecycle.preStop.sleep`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycleprestopsleep">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].lifecycle.preStop.sleep`</span>
 
 
 Sleep represents a duration that the container should sleep.
@@ -17831,7 +17831,7 @@ Sleep represents a duration that the container should sleep.
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycleprestoptcpsocket">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].lifecycle.preStop.tcpSocket`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlifecycleprestoptcpsocket">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].lifecycle.preStop.tcpSocket`</span>
 
 
 Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
@@ -17867,7 +17867,7 @@ Name must be an IANA_SVC_NAME.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlivenessprobe">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].livenessProbe`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlivenessprobe">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].livenessProbe`</span>
 
 
 Periodic probe of container liveness.
@@ -17885,7 +17885,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlivenessprobeexec">exec</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlivenessprobeexec">exec</a></b></td>
         <td>object</td>
         <td>
           Exec specifies a command to execute in the container.<br/>
@@ -17902,14 +17902,14 @@ Defaults to 3. Minimum value is 1.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlivenessprobegrpc">grpc</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlivenessprobegrpc">grpc</a></b></td>
         <td>object</td>
         <td>
           GRPC specifies a GRPC HealthCheckRequest.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlivenessprobehttpget">httpGet</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlivenessprobehttpget">httpGet</a></b></td>
         <td>object</td>
         <td>
           HTTPGet specifies an HTTP GET request to perform.<br/>
@@ -17946,7 +17946,7 @@ Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlivenessprobetcpsocket">tcpSocket</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlivenessprobetcpsocket">tcpSocket</a></b></td>
         <td>object</td>
         <td>
           TCPSocket specifies a connection to a TCP port.<br/>
@@ -17985,7 +17985,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlivenessprobeexec">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].livenessProbe.exec`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlivenessprobeexec">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].livenessProbe.exec`</span>
 
 
 Exec specifies a command to execute in the container.
@@ -18014,7 +18014,7 @@ Exit status of 0 is treated as live/healthy and non-zero is unhealthy.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlivenessprobegrpc">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].livenessProbe.grpc`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlivenessprobegrpc">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].livenessProbe.grpc`</span>
 
 
 GRPC specifies a GRPC HealthCheckRequest.
@@ -18053,7 +18053,7 @@ If this is not specified, the default behavior is defined by gRPC.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlivenessprobehttpget">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].livenessProbe.httpGet`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlivenessprobehttpget">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].livenessProbe.httpGet`</span>
 
 
 HTTPGet specifies an HTTP GET request to perform.
@@ -18085,7 +18085,7 @@ Name must be an IANA_SVC_NAME.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlivenessprobehttpgethttpheadersindex">httpHeaders</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlivenessprobehttpgethttpheadersindex">httpHeaders</a></b></td>
         <td>[]object</td>
         <td>
           Custom headers to set in the request. HTTP allows repeated headers.<br/>
@@ -18110,7 +18110,7 @@ Defaults to HTTP.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlivenessprobehttpgethttpheadersindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].livenessProbe.httpGet.httpHeaders[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlivenessprobehttpgethttpheadersindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].livenessProbe.httpGet.httpHeaders[index]`</span>
 
 
 HTTPHeader describes a custom header to be used in HTTP probes
@@ -18143,7 +18143,7 @@ This will be canonicalized upon output, so case-variant names will be understood
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexlivenessprobetcpsocket">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].livenessProbe.tcpSocket`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexlivenessprobetcpsocket">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].livenessProbe.tcpSocket`</span>
 
 
 TCPSocket specifies a connection to a TCP port.
@@ -18177,7 +18177,7 @@ Name must be an IANA_SVC_NAME.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexportsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].ports[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexportsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].ports[index]`</span>
 
 
 ContainerPort represents a network port in a single container.
@@ -18243,7 +18243,7 @@ Defaults to "TCP".<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexreadinessprobe">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].readinessProbe`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexreadinessprobe">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].readinessProbe`</span>
 
 
 Periodic probe of container service readiness.
@@ -18261,7 +18261,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexreadinessprobeexec">exec</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexreadinessprobeexec">exec</a></b></td>
         <td>object</td>
         <td>
           Exec specifies a command to execute in the container.<br/>
@@ -18278,14 +18278,14 @@ Defaults to 3. Minimum value is 1.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexreadinessprobegrpc">grpc</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexreadinessprobegrpc">grpc</a></b></td>
         <td>object</td>
         <td>
           GRPC specifies a GRPC HealthCheckRequest.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexreadinessprobehttpget">httpGet</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexreadinessprobehttpget">httpGet</a></b></td>
         <td>object</td>
         <td>
           HTTPGet specifies an HTTP GET request to perform.<br/>
@@ -18322,7 +18322,7 @@ Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexreadinessprobetcpsocket">tcpSocket</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexreadinessprobetcpsocket">tcpSocket</a></b></td>
         <td>object</td>
         <td>
           TCPSocket specifies a connection to a TCP port.<br/>
@@ -18361,7 +18361,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexreadinessprobeexec">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].readinessProbe.exec`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexreadinessprobeexec">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].readinessProbe.exec`</span>
 
 
 Exec specifies a command to execute in the container.
@@ -18390,7 +18390,7 @@ Exit status of 0 is treated as live/healthy and non-zero is unhealthy.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexreadinessprobegrpc">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].readinessProbe.grpc`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexreadinessprobegrpc">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].readinessProbe.grpc`</span>
 
 
 GRPC specifies a GRPC HealthCheckRequest.
@@ -18429,7 +18429,7 @@ If this is not specified, the default behavior is defined by gRPC.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexreadinessprobehttpget">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].readinessProbe.httpGet`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexreadinessprobehttpget">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].readinessProbe.httpGet`</span>
 
 
 HTTPGet specifies an HTTP GET request to perform.
@@ -18461,7 +18461,7 @@ Name must be an IANA_SVC_NAME.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexreadinessprobehttpgethttpheadersindex">httpHeaders</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexreadinessprobehttpgethttpheadersindex">httpHeaders</a></b></td>
         <td>[]object</td>
         <td>
           Custom headers to set in the request. HTTP allows repeated headers.<br/>
@@ -18486,7 +18486,7 @@ Defaults to HTTP.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexreadinessprobehttpgethttpheadersindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].readinessProbe.httpGet.httpHeaders[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexreadinessprobehttpgethttpheadersindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].readinessProbe.httpGet.httpHeaders[index]`</span>
 
 
 HTTPHeader describes a custom header to be used in HTTP probes
@@ -18519,7 +18519,7 @@ This will be canonicalized upon output, so case-variant names will be understood
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexreadinessprobetcpsocket">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].readinessProbe.tcpSocket`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexreadinessprobetcpsocket">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].readinessProbe.tcpSocket`</span>
 
 
 TCPSocket specifies a connection to a TCP port.
@@ -18553,7 +18553,7 @@ Name must be an IANA_SVC_NAME.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexresizepolicyindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].resizePolicy[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexresizepolicyindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].resizePolicy[index]`</span>
 
 
 ContainerResizePolicy represents resource resize policy for the container.
@@ -18587,7 +18587,7 @@ If not specified, it defaults to NotRequired.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexresources">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].resources`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexresources">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].resources`</span>
 
 
 Compute Resources required by this container.
@@ -18604,7 +18604,7 @@ More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-co
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexresourcesclaimsindex">claims</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexresourcesclaimsindex">claims</a></b></td>
         <td>[]object</td>
         <td>
           Claims lists the names of resources, defined in spec.resourceClaims,
@@ -18638,7 +18638,7 @@ More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-co
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexresourcesclaimsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].resources.claims[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexresourcesclaimsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].resources.claims[index]`</span>
 
 
 ResourceClaim references one entry in PodSpec.ResourceClaims.
@@ -18674,7 +18674,7 @@ only the result of this request.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexrestartpolicyrulesindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].restartPolicyRules[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexrestartpolicyrulesindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].restartPolicyRules[index]`</span>
 
 
 ContainerRestartRule describes how a container exit is handled.
@@ -18698,7 +18698,7 @@ container.<br/>
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexrestartpolicyrulesindexexitcodes">exitCodes</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexrestartpolicyrulesindexexitcodes">exitCodes</a></b></td>
         <td>object</td>
         <td>
           Represents the exit codes to check on container exits.<br/>
@@ -18708,7 +18708,7 @@ container.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexrestartpolicyrulesindexexitcodes">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].restartPolicyRules[index].exitCodes`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexrestartpolicyrulesindexexitcodes">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].restartPolicyRules[index].exitCodes`</span>
 
 
 Represents the exit codes to check on container exits.
@@ -18746,7 +18746,7 @@ At most 255 elements are allowed.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexsecuritycontext">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].securityContext`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexsecuritycontext">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].securityContext`</span>
 
 
 SecurityContext defines the security options the container should be run with.
@@ -18776,7 +18776,7 @@ Note that this field cannot be set when spec.os.name is windows.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexsecuritycontextapparmorprofile">appArmorProfile</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexsecuritycontextapparmorprofile">appArmorProfile</a></b></td>
         <td>object</td>
         <td>
           appArmorProfile is the AppArmor options to use by this container. If set, this profile
@@ -18785,7 +18785,7 @@ Note that this field cannot be set when spec.os.name is windows.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexsecuritycontextcapabilities">capabilities</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexsecuritycontextcapabilities">capabilities</a></b></td>
         <td>object</td>
         <td>
           The capabilities to add/drop when running containers.
@@ -18862,7 +18862,7 @@ Note that this field cannot be set when spec.os.name is windows.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexsecuritycontextselinuxoptions">seLinuxOptions</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexsecuritycontextselinuxoptions">seLinuxOptions</a></b></td>
         <td>object</td>
         <td>
           The SELinux context to be applied to the container.
@@ -18873,7 +18873,7 @@ Note that this field cannot be set when spec.os.name is windows.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexsecuritycontextseccompprofile">seccompProfile</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexsecuritycontextseccompprofile">seccompProfile</a></b></td>
         <td>object</td>
         <td>
           The seccomp options to use by this container. If seccomp options are
@@ -18883,7 +18883,7 @@ Note that this field cannot be set when spec.os.name is windows.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexsecuritycontextwindowsoptions">windowsOptions</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexsecuritycontextwindowsoptions">windowsOptions</a></b></td>
         <td>object</td>
         <td>
           The Windows specific settings applied to all containers.
@@ -18896,7 +18896,7 @@ Note that this field cannot be set when spec.os.name is linux.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexsecuritycontextapparmorprofile">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].securityContext.appArmorProfile`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexsecuritycontextapparmorprofile">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].securityContext.appArmorProfile`</span>
 
 
 appArmorProfile is the AppArmor options to use by this container. If set, this profile
@@ -18937,7 +18937,7 @@ Must be set if and only if type is "Localhost".<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexsecuritycontextcapabilities">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].securityContext.capabilities`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexsecuritycontextcapabilities">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].securityContext.capabilities`</span>
 
 
 The capabilities to add/drop when running containers.
@@ -18971,7 +18971,7 @@ Note that this field cannot be set when spec.os.name is windows.
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexsecuritycontextselinuxoptions">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].securityContext.seLinuxOptions`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexsecuritycontextselinuxoptions">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].securityContext.seLinuxOptions`</span>
 
 
 The SELinux context to be applied to the container.
@@ -19021,7 +19021,7 @@ Note that this field cannot be set when spec.os.name is windows.
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexsecuritycontextseccompprofile">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].securityContext.seccompProfile`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexsecuritycontextseccompprofile">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].securityContext.seccompProfile`</span>
 
 
 The seccomp options to use by this container. If seccomp options are
@@ -19064,7 +19064,7 @@ Must be set if type is "Localhost". Must NOT be set for any other type.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexsecuritycontextwindowsoptions">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].securityContext.windowsOptions`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexsecuritycontextwindowsoptions">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].securityContext.windowsOptions`</span>
 
 
 The Windows specific settings applied to all containers.
@@ -19121,7 +19121,7 @@ PodSecurityContext, the value specified in SecurityContext takes precedence.<br/
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexstartupprobe">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].startupProbe`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexstartupprobe">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].startupProbe`</span>
 
 
 StartupProbe indicates that the Pod has successfully initialized.
@@ -19142,7 +19142,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexstartupprobeexec">exec</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexstartupprobeexec">exec</a></b></td>
         <td>object</td>
         <td>
           Exec specifies a command to execute in the container.<br/>
@@ -19159,14 +19159,14 @@ Defaults to 3. Minimum value is 1.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexstartupprobegrpc">grpc</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexstartupprobegrpc">grpc</a></b></td>
         <td>object</td>
         <td>
           GRPC specifies a GRPC HealthCheckRequest.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexstartupprobehttpget">httpGet</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexstartupprobehttpget">httpGet</a></b></td>
         <td>object</td>
         <td>
           HTTPGet specifies an HTTP GET request to perform.<br/>
@@ -19203,7 +19203,7 @@ Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexstartupprobetcpsocket">tcpSocket</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexstartupprobetcpsocket">tcpSocket</a></b></td>
         <td>object</td>
         <td>
           TCPSocket specifies a connection to a TCP port.<br/>
@@ -19242,7 +19242,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexstartupprobeexec">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].startupProbe.exec`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexstartupprobeexec">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].startupProbe.exec`</span>
 
 
 Exec specifies a command to execute in the container.
@@ -19271,7 +19271,7 @@ Exit status of 0 is treated as live/healthy and non-zero is unhealthy.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexstartupprobegrpc">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].startupProbe.grpc`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexstartupprobegrpc">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].startupProbe.grpc`</span>
 
 
 GRPC specifies a GRPC HealthCheckRequest.
@@ -19310,7 +19310,7 @@ If this is not specified, the default behavior is defined by gRPC.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexstartupprobehttpget">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].startupProbe.httpGet`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexstartupprobehttpget">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].startupProbe.httpGet`</span>
 
 
 HTTPGet specifies an HTTP GET request to perform.
@@ -19342,7 +19342,7 @@ Name must be an IANA_SVC_NAME.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexstartupprobehttpgethttpheadersindex">httpHeaders</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexstartupprobehttpgethttpheadersindex">httpHeaders</a></b></td>
         <td>[]object</td>
         <td>
           Custom headers to set in the request. HTTP allows repeated headers.<br/>
@@ -19367,7 +19367,7 @@ Defaults to HTTP.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexstartupprobehttpgethttpheadersindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].startupProbe.httpGet.httpHeaders[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexstartupprobehttpgethttpheadersindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].startupProbe.httpGet.httpHeaders[index]`</span>
 
 
 HTTPHeader describes a custom header to be used in HTTP probes
@@ -19400,7 +19400,7 @@ This will be canonicalized upon output, so case-variant names will be understood
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexstartupprobetcpsocket">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].startupProbe.tcpSocket`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexstartupprobetcpsocket">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].startupProbe.tcpSocket`</span>
 
 
 TCPSocket specifies a connection to a TCP port.
@@ -19434,7 +19434,7 @@ Name must be an IANA_SVC_NAME.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexvolumedevicesindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].volumeDevices[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexvolumedevicesindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].volumeDevices[index]`</span>
 
 
 volumeDevice describes a mapping of a raw block device within a container.
@@ -19466,7 +19466,7 @@ volumeDevice describes a mapping of a raw block device within a container.
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextracontainersindexvolumemountsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].volumeMounts[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexvolumemountsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraContainers[index].volumeMounts[index]`</span>
 
 
 VolumeMount describes a mounting of a Volume within a container.
@@ -19559,7 +19559,7 @@ SubPathExpr and SubPath are mutually exclusive.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index]`</span>
 
 
 A single application container that you want to run within a pod.
@@ -19611,7 +19611,7 @@ More info: https://kubernetes.io/docs/tasks/inject-data-application/define-comma
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindex">env</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindex">env</a></b></td>
         <td>[]object</td>
         <td>
           List of environment variables to set in the container.
@@ -19619,7 +19619,7 @@ Cannot be updated.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvfromindex">envFrom</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvfromindex">envFrom</a></b></td>
         <td>[]object</td>
         <td>
           List of sources to populate environment variables in the container.
@@ -19652,7 +19652,7 @@ More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycle">lifecycle</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycle">lifecycle</a></b></td>
         <td>object</td>
         <td>
           Actions that the management system should take in response to container lifecycle events.
@@ -19660,7 +19660,7 @@ Cannot be updated.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlivenessprobe">livenessProbe</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlivenessprobe">livenessProbe</a></b></td>
         <td>object</td>
         <td>
           Periodic probe of container liveness.
@@ -19670,7 +19670,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexportsindex">ports</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexportsindex">ports</a></b></td>
         <td>[]object</td>
         <td>
           List of ports to expose from the container. Not specifying a port here
@@ -19683,7 +19683,7 @@ Cannot be updated.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexreadinessprobe">readinessProbe</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexreadinessprobe">readinessProbe</a></b></td>
         <td>object</td>
         <td>
           Periodic probe of container service readiness.
@@ -19693,14 +19693,14 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexresizepolicyindex">resizePolicy</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexresizepolicyindex">resizePolicy</a></b></td>
         <td>[]object</td>
         <td>
           Resources resize policy for the container.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexresources">resources</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexresources">resources</a></b></td>
         <td>object</td>
         <td>
           Compute Resources required by this container.
@@ -19730,7 +19730,7 @@ completed.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexrestartpolicyrulesindex">restartPolicyRules</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexrestartpolicyrulesindex">restartPolicyRules</a></b></td>
         <td>[]object</td>
         <td>
           Represents a list of rules to be checked to determine if the
@@ -19747,7 +19747,7 @@ even it if matches the Pod's RestartPolicy.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexsecuritycontext">securityContext</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexsecuritycontext">securityContext</a></b></td>
         <td>object</td>
         <td>
           SecurityContext defines the security options the container should be run with.
@@ -19756,7 +19756,7 @@ More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-con
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexstartupprobe">startupProbe</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexstartupprobe">startupProbe</a></b></td>
         <td>object</td>
         <td>
           StartupProbe indicates that the Pod has successfully initialized.
@@ -19825,14 +19825,14 @@ Default is false.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexvolumedevicesindex">volumeDevices</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexvolumedevicesindex">volumeDevices</a></b></td>
         <td>[]object</td>
         <td>
           volumeDevices is the list of block devices to be used by the container.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexvolumemountsindex">volumeMounts</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexvolumemountsindex">volumeMounts</a></b></td>
         <td>[]object</td>
         <td>
           Pod volumes to mount into the container's filesystem.
@@ -19853,7 +19853,7 @@ Cannot be updated.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].env[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].env[index]`</span>
 
 
 EnvVar represents an environment variable present in a Container.
@@ -19891,7 +19891,7 @@ Defaults to "".<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindexvaluefrom">valueFrom</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindexvaluefrom">valueFrom</a></b></td>
         <td>object</td>
         <td>
           Source for the environment variable's value. Cannot be used if value is not empty.<br/>
@@ -19901,7 +19901,7 @@ Defaults to "".<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindexvaluefrom">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].env[index].valueFrom`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindexvaluefrom">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].env[index].valueFrom`</span>
 
 
 Source for the environment variable's value. Cannot be used if value is not empty.
@@ -19916,14 +19916,14 @@ Source for the environment variable's value. Cannot be used if value is not empt
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindexvaluefromconfigmapkeyref">configMapKeyRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindexvaluefromconfigmapkeyref">configMapKeyRef</a></b></td>
         <td>object</td>
         <td>
           Selects a key of a ConfigMap.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindexvaluefromfieldref">fieldRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindexvaluefromfieldref">fieldRef</a></b></td>
         <td>object</td>
         <td>
           Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
@@ -19931,7 +19931,7 @@ spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podI
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindexvaluefromfilekeyref">fileKeyRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindexvaluefromfilekeyref">fileKeyRef</a></b></td>
         <td>object</td>
         <td>
           FileKeyRef selects a key of the env file.
@@ -19939,7 +19939,7 @@ Requires the EnvFiles feature gate to be enabled.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindexvaluefromresourcefieldref">resourceFieldRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindexvaluefromresourcefieldref">resourceFieldRef</a></b></td>
         <td>object</td>
         <td>
           Selects a resource of the container: only resources limits and requests
@@ -19947,7 +19947,7 @@ Requires the EnvFiles feature gate to be enabled.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindexvaluefromsecretkeyref">secretKeyRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindexvaluefromsecretkeyref">secretKeyRef</a></b></td>
         <td>object</td>
         <td>
           Selects a key of a secret in the pod's namespace<br/>
@@ -19957,7 +19957,7 @@ Requires the EnvFiles feature gate to be enabled.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindexvaluefromconfigmapkeyref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].env[index].valueFrom.configMapKeyRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindexvaluefromconfigmapkeyref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].env[index].valueFrom.configMapKeyRef`</span>
 
 
 Selects a key of a ConfigMap.
@@ -20002,7 +20002,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindexvaluefromfieldref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].env[index].valueFrom.fieldRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindexvaluefromfieldref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].env[index].valueFrom.fieldRef`</span>
 
 
 Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
@@ -20035,7 +20035,7 @@ spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podI
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindexvaluefromfilekeyref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].env[index].valueFrom.fileKeyRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindexvaluefromfilekeyref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].env[index].valueFrom.fileKeyRef`</span>
 
 
 FileKeyRef selects a key of the env file.
@@ -20093,7 +20093,7 @@ an error will be returned during Pod creation.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindexvaluefromresourcefieldref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].env[index].valueFrom.resourceFieldRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindexvaluefromresourcefieldref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].env[index].valueFrom.resourceFieldRef`</span>
 
 
 Selects a resource of the container: only resources limits and requests
@@ -20133,7 +20133,7 @@ Selects a resource of the container: only resources limits and requests
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindexvaluefromsecretkeyref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].env[index].valueFrom.secretKeyRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvindexvaluefromsecretkeyref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].env[index].valueFrom.secretKeyRef`</span>
 
 
 Selects a key of a secret in the pod's namespace
@@ -20178,7 +20178,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvfromindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].envFrom[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvfromindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].envFrom[index]`</span>
 
 
 EnvFromSource represents the source of a set of ConfigMaps or Secrets
@@ -20193,7 +20193,7 @@ EnvFromSource represents the source of a set of ConfigMaps or Secrets
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvfromindexconfigmapref">configMapRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvfromindexconfigmapref">configMapRef</a></b></td>
         <td>object</td>
         <td>
           The ConfigMap to select from<br/>
@@ -20208,7 +20208,7 @@ May consist of any printable ASCII characters except '='.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvfromindexsecretref">secretRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvfromindexsecretref">secretRef</a></b></td>
         <td>object</td>
         <td>
           The Secret to select from<br/>
@@ -20218,7 +20218,7 @@ May consist of any printable ASCII characters except '='.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvfromindexconfigmapref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].envFrom[index].configMapRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvfromindexconfigmapref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].envFrom[index].configMapRef`</span>
 
 
 The ConfigMap to select from
@@ -20256,7 +20256,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvfromindexsecretref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].envFrom[index].secretRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexenvfromindexsecretref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].envFrom[index].secretRef`</span>
 
 
 The Secret to select from
@@ -20294,7 +20294,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycle">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].lifecycle`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycle">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].lifecycle`</span>
 
 
 Actions that the management system should take in response to container lifecycle events.
@@ -20310,7 +20310,7 @@ Cannot be updated.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecyclepoststart">postStart</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecyclepoststart">postStart</a></b></td>
         <td>object</td>
         <td>
           PostStart is called immediately after a container is created. If the handler fails,
@@ -20320,7 +20320,7 @@ More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-ho
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycleprestop">preStop</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycleprestop">preStop</a></b></td>
         <td>object</td>
         <td>
           PreStop is called immediately before a container is terminated due to an
@@ -20347,7 +20347,7 @@ StopSignal can only be set for Pods with a non-empty .spec.os.name<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecyclepoststart">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].lifecycle.postStart`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecyclepoststart">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].lifecycle.postStart`</span>
 
 
 PostStart is called immediately after a container is created. If the handler fails,
@@ -20365,28 +20365,28 @@ More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-ho
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecyclepoststartexec">exec</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecyclepoststartexec">exec</a></b></td>
         <td>object</td>
         <td>
           Exec specifies a command to execute in the container.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecyclepoststarthttpget">httpGet</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecyclepoststarthttpget">httpGet</a></b></td>
         <td>object</td>
         <td>
           HTTPGet specifies an HTTP GET request to perform.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecyclepoststartsleep">sleep</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecyclepoststartsleep">sleep</a></b></td>
         <td>object</td>
         <td>
           Sleep represents a duration that the container should sleep.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecyclepoststarttcpsocket">tcpSocket</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecyclepoststarttcpsocket">tcpSocket</a></b></td>
         <td>object</td>
         <td>
           Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
@@ -20398,7 +20398,7 @@ lifecycle hooks will fail at runtime when it is specified.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecyclepoststartexec">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].lifecycle.postStart.exec`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecyclepoststartexec">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].lifecycle.postStart.exec`</span>
 
 
 Exec specifies a command to execute in the container.
@@ -20427,7 +20427,7 @@ Exit status of 0 is treated as live/healthy and non-zero is unhealthy.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecyclepoststarthttpget">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].lifecycle.postStart.httpGet`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecyclepoststarthttpget">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].lifecycle.postStart.httpGet`</span>
 
 
 HTTPGet specifies an HTTP GET request to perform.
@@ -20459,7 +20459,7 @@ Name must be an IANA_SVC_NAME.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecyclepoststarthttpgethttpheadersindex">httpHeaders</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecyclepoststarthttpgethttpheadersindex">httpHeaders</a></b></td>
         <td>[]object</td>
         <td>
           Custom headers to set in the request. HTTP allows repeated headers.<br/>
@@ -20484,7 +20484,7 @@ Defaults to HTTP.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecyclepoststarthttpgethttpheadersindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].lifecycle.postStart.httpGet.httpHeaders[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecyclepoststarthttpgethttpheadersindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].lifecycle.postStart.httpGet.httpHeaders[index]`</span>
 
 
 HTTPHeader describes a custom header to be used in HTTP probes
@@ -20517,7 +20517,7 @@ This will be canonicalized upon output, so case-variant names will be understood
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecyclepoststartsleep">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].lifecycle.postStart.sleep`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecyclepoststartsleep">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].lifecycle.postStart.sleep`</span>
 
 
 Sleep represents a duration that the container should sleep.
@@ -20544,7 +20544,7 @@ Sleep represents a duration that the container should sleep.
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecyclepoststarttcpsocket">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].lifecycle.postStart.tcpSocket`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecyclepoststarttcpsocket">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].lifecycle.postStart.tcpSocket`</span>
 
 
 Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
@@ -20580,7 +20580,7 @@ Name must be an IANA_SVC_NAME.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycleprestop">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].lifecycle.preStop`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycleprestop">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].lifecycle.preStop`</span>
 
 
 PreStop is called immediately before a container is terminated due to an
@@ -20603,28 +20603,28 @@ More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-ho
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycleprestopexec">exec</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycleprestopexec">exec</a></b></td>
         <td>object</td>
         <td>
           Exec specifies a command to execute in the container.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycleprestophttpget">httpGet</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycleprestophttpget">httpGet</a></b></td>
         <td>object</td>
         <td>
           HTTPGet specifies an HTTP GET request to perform.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycleprestopsleep">sleep</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycleprestopsleep">sleep</a></b></td>
         <td>object</td>
         <td>
           Sleep represents a duration that the container should sleep.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycleprestoptcpsocket">tcpSocket</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycleprestoptcpsocket">tcpSocket</a></b></td>
         <td>object</td>
         <td>
           Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
@@ -20636,7 +20636,7 @@ lifecycle hooks will fail at runtime when it is specified.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycleprestopexec">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].lifecycle.preStop.exec`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycleprestopexec">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].lifecycle.preStop.exec`</span>
 
 
 Exec specifies a command to execute in the container.
@@ -20665,7 +20665,7 @@ Exit status of 0 is treated as live/healthy and non-zero is unhealthy.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycleprestophttpget">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].lifecycle.preStop.httpGet`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycleprestophttpget">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].lifecycle.preStop.httpGet`</span>
 
 
 HTTPGet specifies an HTTP GET request to perform.
@@ -20697,7 +20697,7 @@ Name must be an IANA_SVC_NAME.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycleprestophttpgethttpheadersindex">httpHeaders</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycleprestophttpgethttpheadersindex">httpHeaders</a></b></td>
         <td>[]object</td>
         <td>
           Custom headers to set in the request. HTTP allows repeated headers.<br/>
@@ -20722,7 +20722,7 @@ Defaults to HTTP.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycleprestophttpgethttpheadersindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].lifecycle.preStop.httpGet.httpHeaders[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycleprestophttpgethttpheadersindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].lifecycle.preStop.httpGet.httpHeaders[index]`</span>
 
 
 HTTPHeader describes a custom header to be used in HTTP probes
@@ -20755,7 +20755,7 @@ This will be canonicalized upon output, so case-variant names will be understood
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycleprestopsleep">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].lifecycle.preStop.sleep`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycleprestopsleep">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].lifecycle.preStop.sleep`</span>
 
 
 Sleep represents a duration that the container should sleep.
@@ -20782,7 +20782,7 @@ Sleep represents a duration that the container should sleep.
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycleprestoptcpsocket">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].lifecycle.preStop.tcpSocket`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlifecycleprestoptcpsocket">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].lifecycle.preStop.tcpSocket`</span>
 
 
 Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
@@ -20818,7 +20818,7 @@ Name must be an IANA_SVC_NAME.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlivenessprobe">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].livenessProbe`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlivenessprobe">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].livenessProbe`</span>
 
 
 Periodic probe of container liveness.
@@ -20836,7 +20836,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlivenessprobeexec">exec</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlivenessprobeexec">exec</a></b></td>
         <td>object</td>
         <td>
           Exec specifies a command to execute in the container.<br/>
@@ -20853,14 +20853,14 @@ Defaults to 3. Minimum value is 1.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlivenessprobegrpc">grpc</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlivenessprobegrpc">grpc</a></b></td>
         <td>object</td>
         <td>
           GRPC specifies a GRPC HealthCheckRequest.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlivenessprobehttpget">httpGet</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlivenessprobehttpget">httpGet</a></b></td>
         <td>object</td>
         <td>
           HTTPGet specifies an HTTP GET request to perform.<br/>
@@ -20897,7 +20897,7 @@ Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlivenessprobetcpsocket">tcpSocket</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlivenessprobetcpsocket">tcpSocket</a></b></td>
         <td>object</td>
         <td>
           TCPSocket specifies a connection to a TCP port.<br/>
@@ -20936,7 +20936,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlivenessprobeexec">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].livenessProbe.exec`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlivenessprobeexec">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].livenessProbe.exec`</span>
 
 
 Exec specifies a command to execute in the container.
@@ -20965,7 +20965,7 @@ Exit status of 0 is treated as live/healthy and non-zero is unhealthy.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlivenessprobegrpc">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].livenessProbe.grpc`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlivenessprobegrpc">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].livenessProbe.grpc`</span>
 
 
 GRPC specifies a GRPC HealthCheckRequest.
@@ -21004,7 +21004,7 @@ If this is not specified, the default behavior is defined by gRPC.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlivenessprobehttpget">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].livenessProbe.httpGet`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlivenessprobehttpget">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].livenessProbe.httpGet`</span>
 
 
 HTTPGet specifies an HTTP GET request to perform.
@@ -21036,7 +21036,7 @@ Name must be an IANA_SVC_NAME.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlivenessprobehttpgethttpheadersindex">httpHeaders</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlivenessprobehttpgethttpheadersindex">httpHeaders</a></b></td>
         <td>[]object</td>
         <td>
           Custom headers to set in the request. HTTP allows repeated headers.<br/>
@@ -21061,7 +21061,7 @@ Defaults to HTTP.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlivenessprobehttpgethttpheadersindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].livenessProbe.httpGet.httpHeaders[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlivenessprobehttpgethttpheadersindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].livenessProbe.httpGet.httpHeaders[index]`</span>
 
 
 HTTPHeader describes a custom header to be used in HTTP probes
@@ -21094,7 +21094,7 @@ This will be canonicalized upon output, so case-variant names will be understood
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlivenessprobetcpsocket">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].livenessProbe.tcpSocket`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexlivenessprobetcpsocket">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].livenessProbe.tcpSocket`</span>
 
 
 TCPSocket specifies a connection to a TCP port.
@@ -21128,7 +21128,7 @@ Name must be an IANA_SVC_NAME.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexportsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].ports[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexportsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].ports[index]`</span>
 
 
 ContainerPort represents a network port in a single container.
@@ -21194,7 +21194,7 @@ Defaults to "TCP".<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexreadinessprobe">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].readinessProbe`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexreadinessprobe">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].readinessProbe`</span>
 
 
 Periodic probe of container service readiness.
@@ -21212,7 +21212,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexreadinessprobeexec">exec</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexreadinessprobeexec">exec</a></b></td>
         <td>object</td>
         <td>
           Exec specifies a command to execute in the container.<br/>
@@ -21229,14 +21229,14 @@ Defaults to 3. Minimum value is 1.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexreadinessprobegrpc">grpc</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexreadinessprobegrpc">grpc</a></b></td>
         <td>object</td>
         <td>
           GRPC specifies a GRPC HealthCheckRequest.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexreadinessprobehttpget">httpGet</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexreadinessprobehttpget">httpGet</a></b></td>
         <td>object</td>
         <td>
           HTTPGet specifies an HTTP GET request to perform.<br/>
@@ -21273,7 +21273,7 @@ Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexreadinessprobetcpsocket">tcpSocket</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexreadinessprobetcpsocket">tcpSocket</a></b></td>
         <td>object</td>
         <td>
           TCPSocket specifies a connection to a TCP port.<br/>
@@ -21312,7 +21312,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexreadinessprobeexec">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].readinessProbe.exec`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexreadinessprobeexec">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].readinessProbe.exec`</span>
 
 
 Exec specifies a command to execute in the container.
@@ -21341,7 +21341,7 @@ Exit status of 0 is treated as live/healthy and non-zero is unhealthy.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexreadinessprobegrpc">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].readinessProbe.grpc`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexreadinessprobegrpc">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].readinessProbe.grpc`</span>
 
 
 GRPC specifies a GRPC HealthCheckRequest.
@@ -21380,7 +21380,7 @@ If this is not specified, the default behavior is defined by gRPC.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexreadinessprobehttpget">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].readinessProbe.httpGet`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexreadinessprobehttpget">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].readinessProbe.httpGet`</span>
 
 
 HTTPGet specifies an HTTP GET request to perform.
@@ -21412,7 +21412,7 @@ Name must be an IANA_SVC_NAME.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexreadinessprobehttpgethttpheadersindex">httpHeaders</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexreadinessprobehttpgethttpheadersindex">httpHeaders</a></b></td>
         <td>[]object</td>
         <td>
           Custom headers to set in the request. HTTP allows repeated headers.<br/>
@@ -21437,7 +21437,7 @@ Defaults to HTTP.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexreadinessprobehttpgethttpheadersindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].readinessProbe.httpGet.httpHeaders[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexreadinessprobehttpgethttpheadersindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].readinessProbe.httpGet.httpHeaders[index]`</span>
 
 
 HTTPHeader describes a custom header to be used in HTTP probes
@@ -21470,7 +21470,7 @@ This will be canonicalized upon output, so case-variant names will be understood
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexreadinessprobetcpsocket">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].readinessProbe.tcpSocket`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexreadinessprobetcpsocket">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].readinessProbe.tcpSocket`</span>
 
 
 TCPSocket specifies a connection to a TCP port.
@@ -21504,7 +21504,7 @@ Name must be an IANA_SVC_NAME.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexresizepolicyindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].resizePolicy[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexresizepolicyindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].resizePolicy[index]`</span>
 
 
 ContainerResizePolicy represents resource resize policy for the container.
@@ -21538,7 +21538,7 @@ If not specified, it defaults to NotRequired.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexresources">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].resources`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexresources">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].resources`</span>
 
 
 Compute Resources required by this container.
@@ -21555,7 +21555,7 @@ More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-co
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexresourcesclaimsindex">claims</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexresourcesclaimsindex">claims</a></b></td>
         <td>[]object</td>
         <td>
           Claims lists the names of resources, defined in spec.resourceClaims,
@@ -21589,7 +21589,7 @@ More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-co
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexresourcesclaimsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].resources.claims[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexresourcesclaimsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].resources.claims[index]`</span>
 
 
 ResourceClaim references one entry in PodSpec.ResourceClaims.
@@ -21625,7 +21625,7 @@ only the result of this request.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexrestartpolicyrulesindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].restartPolicyRules[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexrestartpolicyrulesindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].restartPolicyRules[index]`</span>
 
 
 ContainerRestartRule describes how a container exit is handled.
@@ -21649,7 +21649,7 @@ container.<br/>
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexrestartpolicyrulesindexexitcodes">exitCodes</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexrestartpolicyrulesindexexitcodes">exitCodes</a></b></td>
         <td>object</td>
         <td>
           Represents the exit codes to check on container exits.<br/>
@@ -21659,7 +21659,7 @@ container.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexrestartpolicyrulesindexexitcodes">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].restartPolicyRules[index].exitCodes`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexrestartpolicyrulesindexexitcodes">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].restartPolicyRules[index].exitCodes`</span>
 
 
 Represents the exit codes to check on container exits.
@@ -21697,7 +21697,7 @@ At most 255 elements are allowed.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexsecuritycontext">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].securityContext`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexsecuritycontext">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].securityContext`</span>
 
 
 SecurityContext defines the security options the container should be run with.
@@ -21727,7 +21727,7 @@ Note that this field cannot be set when spec.os.name is windows.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexsecuritycontextapparmorprofile">appArmorProfile</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexsecuritycontextapparmorprofile">appArmorProfile</a></b></td>
         <td>object</td>
         <td>
           appArmorProfile is the AppArmor options to use by this container. If set, this profile
@@ -21736,7 +21736,7 @@ Note that this field cannot be set when spec.os.name is windows.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexsecuritycontextcapabilities">capabilities</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexsecuritycontextcapabilities">capabilities</a></b></td>
         <td>object</td>
         <td>
           The capabilities to add/drop when running containers.
@@ -21813,7 +21813,7 @@ Note that this field cannot be set when spec.os.name is windows.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexsecuritycontextselinuxoptions">seLinuxOptions</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexsecuritycontextselinuxoptions">seLinuxOptions</a></b></td>
         <td>object</td>
         <td>
           The SELinux context to be applied to the container.
@@ -21824,7 +21824,7 @@ Note that this field cannot be set when spec.os.name is windows.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexsecuritycontextseccompprofile">seccompProfile</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexsecuritycontextseccompprofile">seccompProfile</a></b></td>
         <td>object</td>
         <td>
           The seccomp options to use by this container. If seccomp options are
@@ -21834,7 +21834,7 @@ Note that this field cannot be set when spec.os.name is windows.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexsecuritycontextwindowsoptions">windowsOptions</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexsecuritycontextwindowsoptions">windowsOptions</a></b></td>
         <td>object</td>
         <td>
           The Windows specific settings applied to all containers.
@@ -21847,7 +21847,7 @@ Note that this field cannot be set when spec.os.name is linux.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexsecuritycontextapparmorprofile">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].securityContext.appArmorProfile`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexsecuritycontextapparmorprofile">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].securityContext.appArmorProfile`</span>
 
 
 appArmorProfile is the AppArmor options to use by this container. If set, this profile
@@ -21888,7 +21888,7 @@ Must be set if and only if type is "Localhost".<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexsecuritycontextcapabilities">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].securityContext.capabilities`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexsecuritycontextcapabilities">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].securityContext.capabilities`</span>
 
 
 The capabilities to add/drop when running containers.
@@ -21922,7 +21922,7 @@ Note that this field cannot be set when spec.os.name is windows.
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexsecuritycontextselinuxoptions">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].securityContext.seLinuxOptions`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexsecuritycontextselinuxoptions">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].securityContext.seLinuxOptions`</span>
 
 
 The SELinux context to be applied to the container.
@@ -21972,7 +21972,7 @@ Note that this field cannot be set when spec.os.name is windows.
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexsecuritycontextseccompprofile">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].securityContext.seccompProfile`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexsecuritycontextseccompprofile">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].securityContext.seccompProfile`</span>
 
 
 The seccomp options to use by this container. If seccomp options are
@@ -22015,7 +22015,7 @@ Must be set if type is "Localhost". Must NOT be set for any other type.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexsecuritycontextwindowsoptions">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].securityContext.windowsOptions`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexsecuritycontextwindowsoptions">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].securityContext.windowsOptions`</span>
 
 
 The Windows specific settings applied to all containers.
@@ -22072,7 +22072,7 @@ PodSecurityContext, the value specified in SecurityContext takes precedence.<br/
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexstartupprobe">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].startupProbe`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexstartupprobe">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].startupProbe`</span>
 
 
 StartupProbe indicates that the Pod has successfully initialized.
@@ -22093,7 +22093,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexstartupprobeexec">exec</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexstartupprobeexec">exec</a></b></td>
         <td>object</td>
         <td>
           Exec specifies a command to execute in the container.<br/>
@@ -22110,14 +22110,14 @@ Defaults to 3. Minimum value is 1.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexstartupprobegrpc">grpc</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexstartupprobegrpc">grpc</a></b></td>
         <td>object</td>
         <td>
           GRPC specifies a GRPC HealthCheckRequest.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexstartupprobehttpget">httpGet</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexstartupprobehttpget">httpGet</a></b></td>
         <td>object</td>
         <td>
           HTTPGet specifies an HTTP GET request to perform.<br/>
@@ -22154,7 +22154,7 @@ Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexstartupprobetcpsocket">tcpSocket</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexstartupprobetcpsocket">tcpSocket</a></b></td>
         <td>object</td>
         <td>
           TCPSocket specifies a connection to a TCP port.<br/>
@@ -22193,7 +22193,7 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexstartupprobeexec">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].startupProbe.exec`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexstartupprobeexec">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].startupProbe.exec`</span>
 
 
 Exec specifies a command to execute in the container.
@@ -22222,7 +22222,7 @@ Exit status of 0 is treated as live/healthy and non-zero is unhealthy.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexstartupprobegrpc">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].startupProbe.grpc`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexstartupprobegrpc">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].startupProbe.grpc`</span>
 
 
 GRPC specifies a GRPC HealthCheckRequest.
@@ -22261,7 +22261,7 @@ If this is not specified, the default behavior is defined by gRPC.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexstartupprobehttpget">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].startupProbe.httpGet`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexstartupprobehttpget">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].startupProbe.httpGet`</span>
 
 
 HTTPGet specifies an HTTP GET request to perform.
@@ -22293,7 +22293,7 @@ Name must be an IANA_SVC_NAME.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexstartupprobehttpgethttpheadersindex">httpHeaders</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexstartupprobehttpgethttpheadersindex">httpHeaders</a></b></td>
         <td>[]object</td>
         <td>
           Custom headers to set in the request. HTTP allows repeated headers.<br/>
@@ -22318,7 +22318,7 @@ Defaults to HTTP.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexstartupprobehttpgethttpheadersindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].startupProbe.httpGet.httpHeaders[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexstartupprobehttpgethttpheadersindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].startupProbe.httpGet.httpHeaders[index]`</span>
 
 
 HTTPHeader describes a custom header to be used in HTTP probes
@@ -22351,7 +22351,7 @@ This will be canonicalized upon output, so case-variant names will be understood
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexstartupprobetcpsocket">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].startupProbe.tcpSocket`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexstartupprobetcpsocket">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].startupProbe.tcpSocket`</span>
 
 
 TCPSocket specifies a connection to a TCP port.
@@ -22385,7 +22385,7 @@ Name must be an IANA_SVC_NAME.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexvolumedevicesindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].volumeDevices[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexvolumedevicesindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].volumeDevices[index]`</span>
 
 
 volumeDevice describes a mapping of a raw block device within a container.
@@ -22417,7 +22417,7 @@ volumeDevice describes a mapping of a raw block device within a container.
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexvolumemountsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].volumeMounts[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexvolumemountsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraInitContainers[index].volumeMounts[index]`</span>
 
 
 VolumeMount describes a mounting of a Volume within a container.
@@ -22510,7 +22510,7 @@ SubPathExpr and SubPath are mutually exclusive.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index]`</span>
 
 
 Volume represents a named volume in a pod that may be accessed by any container in the pod.
@@ -22534,7 +22534,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexawselasticblockstore">awsElasticBlockStore</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexawselasticblockstore">awsElasticBlockStore</a></b></td>
         <td>object</td>
         <td>
           awsElasticBlockStore represents an AWS Disk resource that is attached to a
@@ -22545,7 +22545,7 @@ More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockst
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexazuredisk">azureDisk</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexazuredisk">azureDisk</a></b></td>
         <td>object</td>
         <td>
           azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
@@ -22554,7 +22554,7 @@ are redirected to the disk.csi.azure.com CSI driver.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexazurefile">azureFile</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexazurefile">azureFile</a></b></td>
         <td>object</td>
         <td>
           azureFile represents an Azure File Service mount on the host and bind mount to the pod.
@@ -22563,7 +22563,7 @@ are redirected to the file.csi.azure.com CSI driver.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexcephfs">cephfs</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexcephfs">cephfs</a></b></td>
         <td>object</td>
         <td>
           cephFS represents a Ceph FS mount on the host that shares a pod's lifetime.
@@ -22571,7 +22571,7 @@ Deprecated: CephFS is deprecated and the in-tree cephfs type is no longer suppor
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexcinder">cinder</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexcinder">cinder</a></b></td>
         <td>object</td>
         <td>
           cinder represents a cinder volume attached and mounted on kubelets host machine.
@@ -22581,28 +22581,28 @@ More info: https://examples.k8s.io/mysql-cinder-pd/README.md<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexconfigmap">configMap</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexconfigmap">configMap</a></b></td>
         <td>object</td>
         <td>
           configMap represents a configMap that should populate this volume<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexcsi">csi</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexcsi">csi</a></b></td>
         <td>object</td>
         <td>
           csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexdownwardapi">downwardAPI</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexdownwardapi">downwardAPI</a></b></td>
         <td>object</td>
         <td>
           downwardAPI represents downward API about the pod that should populate this volume<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexemptydir">emptyDir</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexemptydir">emptyDir</a></b></td>
         <td>object</td>
         <td>
           emptyDir represents a temporary directory that shares a pod's lifetime.
@@ -22610,7 +22610,7 @@ More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeral">ephemeral</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeral">ephemeral</a></b></td>
         <td>object</td>
         <td>
           ephemeral represents a volume that is handled by a cluster storage driver.
@@ -22640,14 +22640,14 @@ persistent volumes at the same time.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexfc">fc</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexfc">fc</a></b></td>
         <td>object</td>
         <td>
           fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexflexvolume">flexVolume</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexflexvolume">flexVolume</a></b></td>
         <td>object</td>
         <td>
           flexVolume represents a generic volume resource that is
@@ -22656,7 +22656,7 @@ Deprecated: FlexVolume is deprecated. Consider using a CSIDriver instead.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexflocker">flocker</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexflocker">flocker</a></b></td>
         <td>object</td>
         <td>
           flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running.
@@ -22664,7 +22664,7 @@ Deprecated: Flocker is deprecated and the in-tree flocker type is no longer supp
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexgcepersistentdisk">gcePersistentDisk</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexgcepersistentdisk">gcePersistentDisk</a></b></td>
         <td>object</td>
         <td>
           gcePersistentDisk represents a GCE Disk resource that is attached to a
@@ -22675,7 +22675,7 @@ More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexgitrepo">gitRepo</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexgitrepo">gitRepo</a></b></td>
         <td>object</td>
         <td>
           gitRepo represents a git repository at a particular revision.
@@ -22685,7 +22685,7 @@ into the Pod's container.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexglusterfs">glusterfs</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexglusterfs">glusterfs</a></b></td>
         <td>object</td>
         <td>
           glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
@@ -22693,7 +22693,7 @@ Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer 
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexhostpath">hostPath</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexhostpath">hostPath</a></b></td>
         <td>object</td>
         <td>
           hostPath represents a pre-existing file or directory on the host
@@ -22704,7 +22704,7 @@ More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindeximage">image</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindeximage">image</a></b></td>
         <td>object</td>
         <td>
           image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
@@ -22724,7 +22724,7 @@ The field spec.securityContext.fsGroupChangePolicy has no effect on this volume 
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexiscsi">iscsi</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexiscsi">iscsi</a></b></td>
         <td>object</td>
         <td>
           iscsi represents an ISCSI Disk resource that is attached to a
@@ -22733,7 +22733,7 @@ More info: https://kubernetes.io/docs/concepts/storage/volumes/#iscsi<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexnfs">nfs</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexnfs">nfs</a></b></td>
         <td>object</td>
         <td>
           nfs represents an NFS mount on the host that shares a pod's lifetime
@@ -22741,7 +22741,7 @@ More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexpersistentvolumeclaim">persistentVolumeClaim</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexpersistentvolumeclaim">persistentVolumeClaim</a></b></td>
         <td>object</td>
         <td>
           persistentVolumeClaimVolumeSource represents a reference to a
@@ -22750,7 +22750,7 @@ More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persis
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexphotonpersistentdisk">photonPersistentDisk</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexphotonpersistentdisk">photonPersistentDisk</a></b></td>
         <td>object</td>
         <td>
           photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.
@@ -22758,7 +22758,7 @@ Deprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentD
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexportworxvolume">portworxVolume</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexportworxvolume">portworxVolume</a></b></td>
         <td>object</td>
         <td>
           portworxVolume represents a portworx volume attached and mounted on kubelets host machine.
@@ -22768,14 +22768,14 @@ is on.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojected">projected</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojected">projected</a></b></td>
         <td>object</td>
         <td>
           projected items for all in one resources secrets, configmaps, and downward API<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexquobyte">quobyte</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexquobyte">quobyte</a></b></td>
         <td>object</td>
         <td>
           quobyte represents a Quobyte mount on the host that shares a pod's lifetime.
@@ -22783,7 +22783,7 @@ Deprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supp
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexrbd">rbd</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexrbd">rbd</a></b></td>
         <td>object</td>
         <td>
           rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
@@ -22791,7 +22791,7 @@ Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.<b
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexscaleio">scaleIO</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexscaleio">scaleIO</a></b></td>
         <td>object</td>
         <td>
           scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
@@ -22799,7 +22799,7 @@ Deprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supp
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexsecret">secret</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexsecret">secret</a></b></td>
         <td>object</td>
         <td>
           secret represents a secret that should populate this volume.
@@ -22807,7 +22807,7 @@ More info: https://kubernetes.io/docs/concepts/storage/volumes#secret<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexstorageos">storageos</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexstorageos">storageos</a></b></td>
         <td>object</td>
         <td>
           storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
@@ -22815,7 +22815,7 @@ Deprecated: StorageOS is deprecated and the in-tree storageos type is no longer 
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexvspherevolume">vsphereVolume</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexvspherevolume">vsphereVolume</a></b></td>
         <td>object</td>
         <td>
           vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.
@@ -22827,7 +22827,7 @@ are redirected to the csi.vsphere.vmware.com CSI driver.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexawselasticblockstore">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].awsElasticBlockStore`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexawselasticblockstore">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].awsElasticBlockStore`</span>
 
 
 awsElasticBlockStore represents an AWS Disk resource that is attached to a
@@ -22887,7 +22887,7 @@ More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockst
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexazuredisk">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].azureDisk`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexazuredisk">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].azureDisk`</span>
 
 
 azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
@@ -22956,7 +22956,7 @@ the ReadOnly setting in VolumeMounts.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexazurefile">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].azureFile`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexazurefile">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].azureFile`</span>
 
 
 azureFile represents an Azure File Service mount on the host and bind mount to the pod.
@@ -22998,7 +22998,7 @@ the ReadOnly setting in VolumeMounts.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexcephfs">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].cephfs`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexcephfs">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].cephfs`</span>
 
 
 cephFS represents a Ceph FS mount on the host that shares a pod's lifetime.
@@ -23046,7 +23046,7 @@ More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexcephfssecretref">secretRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexcephfssecretref">secretRef</a></b></td>
         <td>object</td>
         <td>
           secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
@@ -23065,7 +23065,7 @@ More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexcephfssecretref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].cephfs.secretRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexcephfssecretref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].cephfs.secretRef`</span>
 
 
 secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
@@ -23097,7 +23097,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexcinder">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].cinder`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexcinder">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].cinder`</span>
 
 
 cinder represents a cinder volume attached and mounted on kubelets host machine.
@@ -23142,7 +23142,7 @@ More info: https://examples.k8s.io/mysql-cinder-pd/README.md<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexcindersecretref">secretRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexcindersecretref">secretRef</a></b></td>
         <td>object</td>
         <td>
           secretRef is optional: points to a secret object containing parameters used to connect
@@ -23153,7 +23153,7 @@ to OpenStack.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexcindersecretref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].cinder.secretRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexcindersecretref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].cinder.secretRef`</span>
 
 
 secretRef is optional: points to a secret object containing parameters used to connect
@@ -23185,7 +23185,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexconfigmap">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].configMap`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexconfigmap">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].configMap`</span>
 
 
 configMap represents a configMap that should populate this volume
@@ -23215,7 +23215,7 @@ mode, like fsGroup, and the result can be other mode bits set.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexconfigmapitemsindex">items</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexconfigmapitemsindex">items</a></b></td>
         <td>[]object</td>
         <td>
           items if unspecified, each key-value pair in the Data field of the referenced
@@ -23251,7 +23251,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexconfigmapitemsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].configMap.items[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexconfigmapitemsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].configMap.items[index]`</span>
 
 
 Maps a string key to a path within a volume.
@@ -23300,7 +23300,7 @@ mode, like fsGroup, and the result can be other mode bits set.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexcsi">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].csi`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexcsi">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].csi`</span>
 
 
 csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers.
@@ -23332,7 +23332,7 @@ which will determine the default filesystem to apply.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexcsinodepublishsecretref">nodePublishSecretRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexcsinodepublishsecretref">nodePublishSecretRef</a></b></td>
         <td>object</td>
         <td>
           nodePublishSecretRef is a reference to the secret object containing
@@ -23362,7 +23362,7 @@ driver. Consult your driver's documentation for supported values.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexcsinodepublishsecretref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].csi.nodePublishSecretRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexcsinodepublishsecretref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].csi.nodePublishSecretRef`</span>
 
 
 nodePublishSecretRef is a reference to the secret object containing
@@ -23397,7 +23397,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexdownwardapi">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].downwardAPI`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexdownwardapi">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].downwardAPI`</span>
 
 
 downwardAPI represents downward API about the pod that should populate this volume
@@ -23428,7 +23428,7 @@ mode, like fsGroup, and the result can be other mode bits set.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexdownwardapiitemsindex">items</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexdownwardapiitemsindex">items</a></b></td>
         <td>[]object</td>
         <td>
           Items is a list of downward API volume file<br/>
@@ -23438,7 +23438,7 @@ mode, like fsGroup, and the result can be other mode bits set.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexdownwardapiitemsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].downwardAPI.items[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexdownwardapiitemsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].downwardAPI.items[index]`</span>
 
 
 DownwardAPIVolumeFile represents information to create the file containing the pod field
@@ -23460,7 +23460,7 @@ DownwardAPIVolumeFile represents information to create the file containing the p
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexdownwardapiitemsindexfieldref">fieldRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexdownwardapiitemsindexfieldref">fieldRef</a></b></td>
         <td>object</td>
         <td>
           Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.<br/>
@@ -23481,7 +23481,7 @@ mode, like fsGroup, and the result can be other mode bits set.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexdownwardapiitemsindexresourcefieldref">resourceFieldRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexdownwardapiitemsindexresourcefieldref">resourceFieldRef</a></b></td>
         <td>object</td>
         <td>
           Selects a resource of the container: only resources limits and requests
@@ -23492,7 +23492,7 @@ mode, like fsGroup, and the result can be other mode bits set.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexdownwardapiitemsindexfieldref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].downwardAPI.items[index].fieldRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexdownwardapiitemsindexfieldref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].downwardAPI.items[index].fieldRef`</span>
 
 
 Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
@@ -23524,7 +23524,7 @@ Required: Selects a field of the pod: only annotations, labels, name, namespace 
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexdownwardapiitemsindexresourcefieldref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].downwardAPI.items[index].resourceFieldRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexdownwardapiitemsindexresourcefieldref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].downwardAPI.items[index].resourceFieldRef`</span>
 
 
 Selects a resource of the container: only resources limits and requests
@@ -23564,7 +23564,7 @@ Selects a resource of the container: only resources limits and requests
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexemptydir">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].emptyDir`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexemptydir">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].emptyDir`</span>
 
 
 emptyDir represents a temporary directory that shares a pod's lifetime.
@@ -23605,7 +23605,7 @@ More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeral">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].ephemeral`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeral">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].ephemeral`</span>
 
 
 ephemeral represents a volume that is handled by a cluster storage driver.
@@ -23643,7 +23643,7 @@ persistent volumes at the same time.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplate">volumeClaimTemplate</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplate">volumeClaimTemplate</a></b></td>
         <td>object</td>
         <td>
           Will be used to create a stand-alone PVC to provision the volume.
@@ -23673,7 +23673,7 @@ Required, must not be nil.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplate">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplate">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate`</span>
 
 
 Will be used to create a stand-alone PVC to provision the volume.
@@ -23708,7 +23708,7 @@ Required, must not be nil.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespec">spec</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespec">spec</a></b></td>
         <td>object</td>
         <td>
           The specification for the PersistentVolumeClaim. The entire content is
@@ -23730,7 +23730,7 @@ validation.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespec">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate.spec`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespec">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate.spec`</span>
 
 
 The specification for the PersistentVolumeClaim. The entire content is
@@ -23756,7 +23756,7 @@ More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecdatasource">dataSource</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecdatasource">dataSource</a></b></td>
         <td>object</td>
         <td>
           dataSource field can be used to specify either:
@@ -23770,7 +23770,7 @@ If the namespace is specified, then dataSourceRef will not be copied to dataSour
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecdatasourceref">dataSourceRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecdatasourceref">dataSourceRef</a></b></td>
         <td>object</td>
         <td>
           dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
@@ -23799,7 +23799,7 @@ There are three important differences between dataSource and dataSourceRef:
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecresources">resources</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecresources">resources</a></b></td>
         <td>object</td>
         <td>
           resources represents the minimum resources the volume should have.
@@ -23810,7 +23810,7 @@ More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resour
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecselector">selector</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecselector">selector</a></b></td>
         <td>object</td>
         <td>
           selector is a label query over volumes to consider for binding.<br/>
@@ -23859,7 +23859,7 @@ Value of Filesystem is implied when not included in claim spec.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecdatasource">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate.spec.dataSource`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecdatasource">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate.spec.dataSource`</span>
 
 
 dataSource field can be used to specify either:
@@ -23907,7 +23907,7 @@ For any other third-party types, APIGroup is required.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecdatasourceref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate.spec.dataSourceRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecdatasourceref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate.spec.dataSourceRef`</span>
 
 
 dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
@@ -23979,7 +23979,7 @@ Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGr
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecresources">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate.spec.resources`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecresources">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate.spec.resources`</span>
 
 
 resources represents the minimum resources the volume should have.
@@ -24019,7 +24019,7 @@ More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-co
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecselector">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate.spec.selector`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecselector">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate.spec.selector`</span>
 
 
 selector is a label query over volumes to consider for binding.
@@ -24034,7 +24034,7 @@ selector is a label query over volumes to consider for binding.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecselectormatchexpressionsindex">matchExpressions</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecselectormatchexpressionsindex">matchExpressions</a></b></td>
         <td>[]object</td>
         <td>
           matchExpressions is a list of label selector requirements. The requirements are ANDed.<br/>
@@ -24053,7 +24053,7 @@ operator is "In", and the values array contains only "value". The requirements a
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecselectormatchexpressionsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate.spec.selector.matchExpressions[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexephemeralvolumeclaimtemplatespecselectormatchexpressionsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].ephemeral.volumeClaimTemplate.spec.selector.matchExpressions[index]`</span>
 
 
 A label selector requirement is a selector that contains values, a key, and an operator that
@@ -24097,7 +24097,7 @@ merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexfc">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].fc`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexfc">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].fc`</span>
 
 
 fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
@@ -24156,7 +24156,7 @@ Either wwids or combination of targetWWNs and lun must be set, but not both simu
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexflexvolume">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].flexVolume`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexflexvolume">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].flexVolume`</span>
 
 
 flexVolume represents a generic volume resource that is
@@ -24204,7 +24204,7 @@ the ReadOnly setting in VolumeMounts.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexflexvolumesecretref">secretRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexflexvolumesecretref">secretRef</a></b></td>
         <td>object</td>
         <td>
           secretRef is Optional: secretRef is reference to the secret object containing
@@ -24218,7 +24218,7 @@ scripts.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexflexvolumesecretref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].flexVolume.secretRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexflexvolumesecretref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].flexVolume.secretRef`</span>
 
 
 secretRef is Optional: secretRef is reference to the secret object containing
@@ -24253,7 +24253,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexflocker">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].flocker`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexflocker">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].flocker`</span>
 
 
 flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running.
@@ -24287,7 +24287,7 @@ should be considered as deprecated<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexgcepersistentdisk">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].gcePersistentDisk`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexgcepersistentdisk">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].gcePersistentDisk`</span>
 
 
 gcePersistentDisk represents a GCE Disk resource that is attached to a
@@ -24349,7 +24349,7 @@ More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexgitrepo">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].gitRepo`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexgitrepo">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].gitRepo`</span>
 
 
 gitRepo represents a git repository at a particular revision.
@@ -24394,7 +24394,7 @@ the subdirectory with the given name.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexglusterfs">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].glusterfs`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexglusterfs">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].glusterfs`</span>
 
 
 glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
@@ -24437,7 +24437,7 @@ More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexhostpath">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].hostPath`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexhostpath">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].hostPath`</span>
 
 
 hostPath represents a pre-existing file or directory on the host
@@ -24477,7 +24477,7 @@ More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindeximage">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].image`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindeximage">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].image`</span>
 
 
 image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
@@ -24531,7 +24531,7 @@ container images in workload controllers like Deployments and StatefulSets.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexiscsi">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].iscsi`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexiscsi">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].iscsi`</span>
 
 
 iscsi represents an ISCSI Disk resource that is attached to a
@@ -24631,7 +24631,7 @@ Defaults to false.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexiscsisecretref">secretRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexiscsisecretref">secretRef</a></b></td>
         <td>object</td>
         <td>
           secretRef is the CHAP Secret for iSCSI target and initiator authentication<br/>
@@ -24641,7 +24641,7 @@ Defaults to false.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexiscsisecretref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].iscsi.secretRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexiscsisecretref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].iscsi.secretRef`</span>
 
 
 secretRef is the CHAP Secret for iSCSI target and initiator authentication
@@ -24672,7 +24672,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexnfs">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].nfs`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexnfs">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].nfs`</span>
 
 
 nfs represents an NFS mount on the host that shares a pod's lifetime
@@ -24716,7 +24716,7 @@ More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexpersistentvolumeclaim">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].persistentVolumeClaim`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexpersistentvolumeclaim">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].persistentVolumeClaim`</span>
 
 
 persistentVolumeClaimVolumeSource represents a reference to a
@@ -24752,7 +24752,7 @@ Default false.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexphotonpersistentdisk">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].photonPersistentDisk`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexphotonpersistentdisk">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].photonPersistentDisk`</span>
 
 
 photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.
@@ -24787,7 +24787,7 @@ Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexportworxvolume">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].portworxVolume`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexportworxvolume">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].portworxVolume`</span>
 
 
 portworxVolume represents a portworx volume attached and mounted on kubelets host machine.
@@ -24832,7 +24832,7 @@ the ReadOnly setting in VolumeMounts.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojected">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojected">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected`</span>
 
 
 projected items for all in one resources secrets, configmaps, and downward API
@@ -24861,7 +24861,7 @@ mode, like fsGroup, and the result can be other mode bits set.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindex">sources</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindex">sources</a></b></td>
         <td>[]object</td>
         <td>
           sources is the list of volume projections. Each entry in this list
@@ -24872,7 +24872,7 @@ handles one source.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index]`</span>
 
 
 Projection that may be projected along with other supported volume types.
@@ -24888,7 +24888,7 @@ Exactly one of these fields must be set.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexclustertrustbundle">clusterTrustBundle</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexclustertrustbundle">clusterTrustBundle</a></b></td>
         <td>object</td>
         <td>
           ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
@@ -24907,21 +24907,21 @@ may change the order over time.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexconfigmap">configMap</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexconfigmap">configMap</a></b></td>
         <td>object</td>
         <td>
           configMap information about the configMap data to project<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexdownwardapi">downwardAPI</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexdownwardapi">downwardAPI</a></b></td>
         <td>object</td>
         <td>
           downwardAPI information about the downwardAPI data to project<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexpodcertificate">podCertificate</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexpodcertificate">podCertificate</a></b></td>
         <td>object</td>
         <td>
           Projects an auto-rotating credential bundle (private key and certificate
@@ -24961,14 +24961,14 @@ use the certificates it issues.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexsecret">secret</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexsecret">secret</a></b></td>
         <td>object</td>
         <td>
           secret information about the secret data to project<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexserviceaccounttoken">serviceAccountToken</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexserviceaccounttoken">serviceAccountToken</a></b></td>
         <td>object</td>
         <td>
           serviceAccountToken is information about the serviceAccountToken data to project<br/>
@@ -24978,7 +24978,7 @@ use the certificates it issues.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexclustertrustbundle">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index].clusterTrustBundle`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexclustertrustbundle">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index].clusterTrustBundle`</span>
 
 
 ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
@@ -25012,7 +25012,7 @@ may change the order over time.
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexclustertrustbundlelabelselector">labelSelector</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexclustertrustbundlelabelselector">labelSelector</a></b></td>
         <td>object</td>
         <td>
           Select all ClusterTrustBundles that match this label selector.  Only has
@@ -25053,7 +25053,7 @@ ClusterTrustBundles will be unified and deduplicated.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexclustertrustbundlelabelselector">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index].clusterTrustBundle.labelSelector`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexclustertrustbundlelabelselector">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index].clusterTrustBundle.labelSelector`</span>
 
 
 Select all ClusterTrustBundles that match this label selector.  Only has
@@ -25071,7 +25071,7 @@ everything".
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexclustertrustbundlelabelselectormatchexpressionsindex">matchExpressions</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexclustertrustbundlelabelselectormatchexpressionsindex">matchExpressions</a></b></td>
         <td>[]object</td>
         <td>
           matchExpressions is a list of label selector requirements. The requirements are ANDed.<br/>
@@ -25090,7 +25090,7 @@ operator is "In", and the values array contains only "value". The requirements a
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexclustertrustbundlelabelselectormatchexpressionsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index].clusterTrustBundle.labelSelector.matchExpressions[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexclustertrustbundlelabelselectormatchexpressionsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index].clusterTrustBundle.labelSelector.matchExpressions[index]`</span>
 
 
 A label selector requirement is a selector that contains values, a key, and an operator that
@@ -25134,7 +25134,7 @@ merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexconfigmap">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index].configMap`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexconfigmap">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index].configMap`</span>
 
 
 configMap information about the configMap data to project
@@ -25149,7 +25149,7 @@ configMap information about the configMap data to project
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexconfigmapitemsindex">items</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexconfigmapitemsindex">items</a></b></td>
         <td>[]object</td>
         <td>
           items if unspecified, each key-value pair in the Data field of the referenced
@@ -25185,7 +25185,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexconfigmapitemsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index].configMap.items[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexconfigmapitemsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index].configMap.items[index]`</span>
 
 
 Maps a string key to a path within a volume.
@@ -25234,7 +25234,7 @@ mode, like fsGroup, and the result can be other mode bits set.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexdownwardapi">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index].downwardAPI`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexdownwardapi">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index].downwardAPI`</span>
 
 
 downwardAPI information about the downwardAPI data to project
@@ -25249,7 +25249,7 @@ downwardAPI information about the downwardAPI data to project
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexdownwardapiitemsindex">items</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexdownwardapiitemsindex">items</a></b></td>
         <td>[]object</td>
         <td>
           Items is a list of DownwardAPIVolume file<br/>
@@ -25259,7 +25259,7 @@ downwardAPI information about the downwardAPI data to project
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexdownwardapiitemsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index].downwardAPI.items[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexdownwardapiitemsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index].downwardAPI.items[index]`</span>
 
 
 DownwardAPIVolumeFile represents information to create the file containing the pod field
@@ -25281,7 +25281,7 @@ DownwardAPIVolumeFile represents information to create the file containing the p
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexdownwardapiitemsindexfieldref">fieldRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexdownwardapiitemsindexfieldref">fieldRef</a></b></td>
         <td>object</td>
         <td>
           Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.<br/>
@@ -25302,7 +25302,7 @@ mode, like fsGroup, and the result can be other mode bits set.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexdownwardapiitemsindexresourcefieldref">resourceFieldRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexdownwardapiitemsindexresourcefieldref">resourceFieldRef</a></b></td>
         <td>object</td>
         <td>
           Selects a resource of the container: only resources limits and requests
@@ -25313,7 +25313,7 @@ mode, like fsGroup, and the result can be other mode bits set.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexdownwardapiitemsindexfieldref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index].downwardAPI.items[index].fieldRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexdownwardapiitemsindexfieldref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index].downwardAPI.items[index].fieldRef`</span>
 
 
 Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
@@ -25345,7 +25345,7 @@ Required: Selects a field of the pod: only annotations, labels, name, namespace 
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexdownwardapiitemsindexresourcefieldref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index].downwardAPI.items[index].resourceFieldRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexdownwardapiitemsindexresourcefieldref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index].downwardAPI.items[index].resourceFieldRef`</span>
 
 
 Selects a resource of the container: only resources limits and requests
@@ -25385,7 +25385,7 @@ Selects a resource of the container: only resources limits and requests
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexpodcertificate">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index].podCertificate`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexpodcertificate">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index].podCertificate`</span>
 
 
 Projects an auto-rotating credential bundle (private key and certificate
@@ -25519,7 +25519,7 @@ longer than 24 hours.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexsecret">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index].secret`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexsecret">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index].secret`</span>
 
 
 secret information about the secret data to project
@@ -25534,7 +25534,7 @@ secret information about the secret data to project
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexsecretitemsindex">items</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexsecretitemsindex">items</a></b></td>
         <td>[]object</td>
         <td>
           items if unspecified, each key-value pair in the Data field of the referenced
@@ -25570,7 +25570,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexsecretitemsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index].secret.items[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexsecretitemsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index].secret.items[index]`</span>
 
 
 Maps a string key to a path within a volume.
@@ -25619,7 +25619,7 @@ mode, like fsGroup, and the result can be other mode bits set.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexserviceaccounttoken">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index].serviceAccountToken`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexprojectedsourcesindexserviceaccounttoken">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].projected.sources[index].serviceAccountToken`</span>
 
 
 serviceAccountToken is information about the serviceAccountToken data to project
@@ -25669,7 +25669,7 @@ and must be at least 10 minutes.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexquobyte">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].quobyte`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexquobyte">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].quobyte`</span>
 
 
 quobyte represents a Quobyte mount on the host that shares a pod's lifetime.
@@ -25736,7 +25736,7 @@ Defaults to serivceaccount user<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexrbd">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].rbd`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexrbd">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].rbd`</span>
 
 
 rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
@@ -25809,7 +25809,7 @@ More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexrbdsecretref">secretRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexrbdsecretref">secretRef</a></b></td>
         <td>object</td>
         <td>
           secretRef is name of the authentication secret for RBDUser. If provided
@@ -25833,7 +25833,7 @@ More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexrbdsecretref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].rbd.secretRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexrbdsecretref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].rbd.secretRef`</span>
 
 
 secretRef is name of the authentication secret for RBDUser. If provided
@@ -25867,7 +25867,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexscaleio">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].scaleIO`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexscaleio">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].scaleIO`</span>
 
 
 scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
@@ -25890,7 +25890,7 @@ Deprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supp
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexscaleiosecretref">secretRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexscaleiosecretref">secretRef</a></b></td>
         <td>object</td>
         <td>
           secretRef references to the secret for ScaleIO user and other
@@ -25967,7 +25967,7 @@ that is associated with this volume source.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexscaleiosecretref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].scaleIO.secretRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexscaleiosecretref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].scaleIO.secretRef`</span>
 
 
 secretRef references to the secret for ScaleIO user and other
@@ -25999,7 +25999,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexsecret">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].secret`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexsecret">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].secret`</span>
 
 
 secret represents a secret that should populate this volume.
@@ -26030,7 +26030,7 @@ mode, like fsGroup, and the result can be other mode bits set.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexsecretitemsindex">items</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexsecretitemsindex">items</a></b></td>
         <td>[]object</td>
         <td>
           items If unspecified, each key-value pair in the Data field of the referenced
@@ -26061,7 +26061,7 @@ More info: https://kubernetes.io/docs/concepts/storage/volumes#secret<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexsecretitemsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].secret.items[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexsecretitemsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].secret.items[index]`</span>
 
 
 Maps a string key to a path within a volume.
@@ -26110,7 +26110,7 @@ mode, like fsGroup, and the result can be other mode bits set.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexstorageos">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].storageos`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexstorageos">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].storageos`</span>
 
 
 storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
@@ -26143,7 +26143,7 @@ the ReadOnly setting in VolumeMounts.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexstorageossecretref">secretRef</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexstorageossecretref">secretRef</a></b></td>
         <td>object</td>
         <td>
           secretRef specifies the secret to use for obtaining the StorageOS API
@@ -26174,7 +26174,7 @@ Namespaces that do not pre-exist within StorageOS will be created.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexstorageossecretref">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].storageos.secretRef`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexstorageossecretref">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].storageos.secretRef`</span>
 
 
 secretRef specifies the secret to use for obtaining the StorageOS API
@@ -26206,7 +26206,7 @@ More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/nam
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentextravolumesindexvspherevolume">`KamajiControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].vsphereVolume`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentextravolumesindexvspherevolume">`StewardControlPlaneTemplate.spec.template.spec.deployment.extraVolumes[index].vsphereVolume`</span>
 
 
 vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.
@@ -26256,7 +26256,7 @@ Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentpodadditionalmetadata">`KamajiControlPlaneTemplate.spec.template.spec.deployment.podAdditionalMetadata`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentpodadditionalmetadata">`StewardControlPlaneTemplate.spec.template.spec.deployment.podAdditionalMetadata`</span>
 
 
 PodAdditionalMetadata defines the additional labels and annotations that must be attached
@@ -26289,7 +26289,7 @@ to the resulting Pods managed by the Deployment.
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentstrategy">`KamajiControlPlaneTemplate.spec.template.spec.deployment.strategy`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentstrategy">`StewardControlPlaneTemplate.spec.template.spec.deployment.strategy`</span>
 
 
 DeploymentStrategy describes how to replace existing pods with new ones.
@@ -26304,7 +26304,7 @@ DeploymentStrategy describes how to replace existing pods with new ones.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymentstrategyrollingupdate">rollingUpdate</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentstrategyrollingupdate">rollingUpdate</a></b></td>
         <td>object</td>
         <td>
           Rolling update config params. Present only if DeploymentStrategyType =
@@ -26322,7 +26322,7 @@ RollingUpdate.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymentstrategyrollingupdate">`KamajiControlPlaneTemplate.spec.template.spec.deployment.strategy.rollingUpdate`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymentstrategyrollingupdate">`StewardControlPlaneTemplate.spec.template.spec.deployment.strategy.rollingUpdate`</span>
 
 
 Rolling update config params. Present only if DeploymentStrategyType =
@@ -26374,7 +26374,7 @@ least 70% of desired pods.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymenttolerationsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.tolerations[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymenttolerationsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.tolerations[index]`</span>
 
 
 The pod this Toleration is attached to tolerates any taint that matches
@@ -26439,7 +26439,7 @@ If the operator is Exists, the value should be empty, otherwise just a regular s
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymenttopologyspreadconstraintsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.topologySpreadConstraints[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymenttopologyspreadconstraintsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.topologySpreadConstraints[index]`</span>
 
 
 TopologySpreadConstraint specifies how to spread matching pods among the given topology.
@@ -26519,7 +26519,7 @@ It's a required field.<br/>
         </td>
         <td>true</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymenttopologyspreadconstraintsindexlabelselector">labelSelector</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymenttopologyspreadconstraintsindexlabelselector">labelSelector</a></b></td>
         <td>object</td>
         <td>
           LabelSelector is used to find matching pods.
@@ -26599,7 +26599,7 @@ If this value is nil, the behavior is equivalent to the Ignore policy.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymenttopologyspreadconstraintsindexlabelselector">`KamajiControlPlaneTemplate.spec.template.spec.deployment.topologySpreadConstraints[index].labelSelector`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymenttopologyspreadconstraintsindexlabelselector">`StewardControlPlaneTemplate.spec.template.spec.deployment.topologySpreadConstraints[index].labelSelector`</span>
 
 
 LabelSelector is used to find matching pods.
@@ -26616,7 +26616,7 @@ in their corresponding topology domain.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecdeploymenttopologyspreadconstraintsindexlabelselectormatchexpressionsindex">matchExpressions</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymenttopologyspreadconstraintsindexlabelselectormatchexpressionsindex">matchExpressions</a></b></td>
         <td>[]object</td>
         <td>
           matchExpressions is a list of label selector requirements. The requirements are ANDed.<br/>
@@ -26635,7 +26635,7 @@ operator is "In", and the values array contains only "value". The requirements a
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecdeploymenttopologyspreadconstraintsindexlabelselectormatchexpressionsindex">`KamajiControlPlaneTemplate.spec.template.spec.deployment.topologySpreadConstraints[index].labelSelector.matchExpressions[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecdeploymenttopologyspreadconstraintsindexlabelselectormatchexpressionsindex">`StewardControlPlaneTemplate.spec.template.spec.deployment.topologySpreadConstraints[index].labelSelector.matchExpressions[index]`</span>
 
 
 A label selector requirement is a selector that contains values, a key, and an operator that
@@ -26679,11 +26679,11 @@ merge patch.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespeckine">`KamajiControlPlaneTemplate.spec.template.spec.kine`</span>
+<span id="stewardcontrolplanetemplatespectemplatespeckine">`StewardControlPlaneTemplate.spec.template.spec.kine`</span>
 
 
 KineComponent allows the customization for the kine component of the control plane.
-Available only if Kamaji is running using Kine as backing storage.
+Available only if Steward is running using Kine as backing storage.
 
 <table>
     <thead>
@@ -26702,7 +26702,7 @@ Available only if Kamaji is running using Kine as backing storage.
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespeckineresources">resources</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespeckineresources">resources</a></b></td>
         <td>object</td>
         <td>
           ResourceRequirements describes the compute resource requirements.<br/>
@@ -26712,7 +26712,7 @@ Available only if Kamaji is running using Kine as backing storage.
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespeckineresources">`KamajiControlPlaneTemplate.spec.template.spec.kine.resources`</span>
+<span id="stewardcontrolplanetemplatespectemplatespeckineresources">`StewardControlPlaneTemplate.spec.template.spec.kine.resources`</span>
 
 
 ResourceRequirements describes the compute resource requirements.
@@ -26727,7 +26727,7 @@ ResourceRequirements describes the compute resource requirements.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespeckineresourcesclaimsindex">claims</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespeckineresourcesclaimsindex">claims</a></b></td>
         <td>[]object</td>
         <td>
           Claims lists the names of resources, defined in spec.resourceClaims,
@@ -26761,7 +26761,7 @@ More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-co
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespeckineresourcesclaimsindex">`KamajiControlPlaneTemplate.spec.template.spec.kine.resources.claims[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespeckineresourcesclaimsindex">`StewardControlPlaneTemplate.spec.template.spec.kine.resources.claims[index]`</span>
 
 
 ResourceClaim references one entry in PodSpec.ResourceClaims.
@@ -26797,7 +26797,7 @@ only the result of this request.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespeckubelet">`KamajiControlPlaneTemplate.spec.template.spec.kubelet`</span>
+<span id="stewardcontrolplanetemplatespectemplatespeckubelet">`StewardControlPlaneTemplate.spec.template.spec.kubelet`</span>
 
 
 Configure the Kubelet options, such as the preferred address types, or the expected cgroupfs.
@@ -26836,7 +26836,7 @@ Default to InternalIP, ExternalIP, Hostname.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecnetwork">`KamajiControlPlaneTemplate.spec.template.spec.network`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecnetwork">`StewardControlPlaneTemplate.spec.template.spec.network`</span>
 
 
 Configure how the TenantControlPlane should be exposed.
@@ -26864,22 +26864,22 @@ useful if the TenantControlPlane is going to be exposed behind a FQDN with NAT.<
         <td>
           DNSServiceIPs contains the DNS Service IPs.
 If the CoreDNS addon is specified, its DNSServiceIPs will be used instead.
-When set to an empty slice, Kamaji will automatically inflect it from the Service CIDR.<br/>
+When set to an empty slice, Steward will automatically inflect it from the Service CIDR.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecnetworkingress">ingress</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecnetworkingress">ingress</a></b></td>
         <td>object</td>
         <td>
-          When specified, the KamajiControlPlane will be reachable using an Ingress object
+          When specified, the StewardControlPlane will be reachable using an Ingress object
 deployed in the management cluster.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecnetworkloadbalancerconfig">loadBalancerConfig</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecnetworkloadbalancerconfig">loadBalancerConfig</a></b></td>
         <td>object</td>
         <td>
-          Optional configuration for the LoadBalancer service that exposes the Kamaji control plane.<br/>
+          Optional configuration for the LoadBalancer service that exposes the Steward control plane.<br/>
         </td>
         <td>false</td>
       </tr><tr>
@@ -26918,10 +26918,10 @@ helping when serviceType is NodePort.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecnetworkingress">`KamajiControlPlaneTemplate.spec.template.spec.network.ingress`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecnetworkingress">`StewardControlPlaneTemplate.spec.template.spec.network.ingress`</span>
 
 
-When specified, the KamajiControlPlane will be reachable using an Ingress object
+When specified, the StewardControlPlane will be reachable using an Ingress object
 deployed in the management cluster.
 
 <table>
@@ -26967,10 +26967,10 @@ Useful if you need to define TLS/SSL passthrough, or other Ingress Controller-sp
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecnetworkloadbalancerconfig">`KamajiControlPlaneTemplate.spec.template.spec.network.loadBalancerConfig`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecnetworkloadbalancerconfig">`StewardControlPlaneTemplate.spec.template.spec.network.loadBalancerConfig`</span>
 
 
-Optional configuration for the LoadBalancer service that exposes the Kamaji control plane.
+Optional configuration for the LoadBalancer service that exposes the Steward control plane.
 
 <table>
     <thead>
@@ -27006,7 +27006,7 @@ Example: {"192.168.1.0/24", "10.0.0.0/8"}<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecscheduler">`KamajiControlPlaneTemplate.spec.template.spec.scheduler`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecscheduler">`StewardControlPlaneTemplate.spec.template.spec.scheduler`</span>
 
 
 ControlPlaneComponent allows the customization for the given component of the control plane.
@@ -27036,14 +27036,14 @@ With no value, the default images will be used.<br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecschedulerextravolumemountsindex">extraVolumeMounts</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecschedulerextravolumemountsindex">extraVolumeMounts</a></b></td>
         <td>[]object</td>
         <td>
           <br/>
         </td>
         <td>false</td>
       </tr><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecschedulerresources">resources</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecschedulerresources">resources</a></b></td>
         <td>object</td>
         <td>
           ResourceRequirements describes the compute resource requirements.<br/>
@@ -27053,7 +27053,7 @@ With no value, the default images will be used.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecschedulerextravolumemountsindex">`KamajiControlPlaneTemplate.spec.template.spec.scheduler.extraVolumeMounts[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecschedulerextravolumemountsindex">`StewardControlPlaneTemplate.spec.template.spec.scheduler.extraVolumeMounts[index]`</span>
 
 
 VolumeMount describes a mounting of a Volume within a container.
@@ -27146,7 +27146,7 @@ SubPathExpr and SubPath are mutually exclusive.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecschedulerresources">`KamajiControlPlaneTemplate.spec.template.spec.scheduler.resources`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecschedulerresources">`StewardControlPlaneTemplate.spec.template.spec.scheduler.resources`</span>
 
 
 ResourceRequirements describes the compute resource requirements.
@@ -27161,7 +27161,7 @@ ResourceRequirements describes the compute resource requirements.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b><a href="#kamajicontrolplanetemplatespectemplatespecschedulerresourcesclaimsindex">claims</a></b></td>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecschedulerresourcesclaimsindex">claims</a></b></td>
         <td>[]object</td>
         <td>
           Claims lists the names of resources, defined in spec.resourceClaims,
@@ -27195,7 +27195,7 @@ More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-co
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatespecschedulerresourcesclaimsindex">`KamajiControlPlaneTemplate.spec.template.spec.scheduler.resources.claims[index]`</span>
+<span id="stewardcontrolplanetemplatespectemplatespecschedulerresourcesclaimsindex">`StewardControlPlaneTemplate.spec.template.spec.scheduler.resources.claims[index]`</span>
 
 
 ResourceClaim references one entry in PodSpec.ResourceClaims.
@@ -27231,7 +27231,7 @@ only the result of this request.<br/>
 </table>
 
 
-<span id="kamajicontrolplanetemplatespectemplatemetadata">`KamajiControlPlaneTemplate.spec.template.metadata`</span>
+<span id="stewardcontrolplanetemplatespectemplatemetadata">`StewardControlPlaneTemplate.spec.template.metadata`</span>
 
 
 Standard object's metadata.
@@ -27269,7 +27269,7 @@ More info: http://kubernetes.io/docs/user-guide/labels<br/>
       </tr></tbody>
 </table>
 
-## kamaji.clastix.io/v1alpha1
+## steward.butlerlabs.io/v1alpha1
 
 Resource Types:
 
@@ -27302,7 +27302,7 @@ DataStore is the Schema for the datastores API.
     <tbody><tr>
       <td><b>apiVersion</b></td>
       <td>string</td>
-      <td>kamaji.clastix.io/v1alpha1</td>
+      <td>steward.butlerlabs.io/v1alpha1</td>
       <td>true</td>
       </tr>
       <tr>
@@ -27588,7 +27588,7 @@ This value is optional.
         <td>object</td>
         <td>
           Retrieve the Certificate Authority certificate and private key, such as bare content of the file, or a SecretReference.
-The key reference is required since etcd authentication is based on certificates, and Kamaji is responsible in creating this.<br/>
+The key reference is required since etcd authentication is based on certificates, and Steward is responsible in creating this.<br/>
         </td>
         <td>true</td>
       </tr><tr>
@@ -27606,7 +27606,7 @@ The key reference is required since etcd authentication is based on certificates
 
 
 Retrieve the Certificate Authority certificate and private key, such as bare content of the file, or a SecretReference.
-The key reference is required since etcd authentication is based on certificates, and Kamaji is responsible in creating this.
+The key reference is required since etcd authentication is based on certificates, and Steward is responsible in creating this.
 
 <table>
     <thead>
@@ -28011,7 +28011,7 @@ KubeconfigGenerator is the Schema for the kubeconfiggenerators API.
     <tbody><tr>
       <td><b>apiVersion</b></td>
       <td>string</td>
-      <td>kamaji.clastix.io/v1alpha1</td>
+      <td>steward.butlerlabs.io/v1alpha1</td>
       <td>true</td>
       </tr>
       <tr>
@@ -28420,7 +28420,7 @@ TenantControlPlane is the Schema for the tenantcontrolplanes API.
     <tbody><tr>
       <td><b>apiVersion</b></td>
       <td>string</td>
-      <td>kamaji.clastix.io/v1alpha1</td>
+      <td>steward.butlerlabs.io/v1alpha1</td>
       <td>true</td>
       </tr>
       <tr>
@@ -28493,10 +28493,10 @@ such as the number of Pod replicas, the Service resource, or the Ingress.<br/>
         <td>string</td>
         <td>
           DataStore specifies the DataStore that should be used to store the Kubernetes data for the given Tenant Control Plane.
-When Kamaji runs with the default DataStore flag, all empty values will inherit the default value.
-By leaving it empty and running Kamaji with no default DataStore flag, it is possible to achieve automatic assignment to a specific DataStore object.
+When Steward runs with the default DataStore flag, all empty values will inherit the default value.
+By leaving it empty and running Steward with no default DataStore flag, it is possible to achieve automatic assignment to a specific DataStore object.
 
-Migration from one DataStore to another backed by the same Driver is possible. See: https://kamaji.clastix.io/guides/datastore-migration/
+Migration from one DataStore to another backed by the same Driver is possible. See: https://steward.butlerlabs.io/guides/datastore-migration/
 Migration from one DataStore to another backed by a different Driver is not supported.<br/>
         </td>
         <td>false</td>
@@ -28512,8 +28512,8 @@ Migration from one DataStore to another backed by a different Driver is not supp
         <td>string</td>
         <td>
           DataStoreSchema allows to specify the name of the database (for relational DataStores) or the key prefix (for etcd). This
-value is optional and immutable. Note that Kamaji currently doesn't ensure that DataStoreSchema values are unique. It's up
-to the user to avoid clashes between different TenantControlPlanes. If not set upon creation, Kamaji will default the
+value is optional and immutable. Note that Steward currently doesn't ensure that DataStoreSchema values are unique. It's up
+to the user to avoid clashes between different TenantControlPlanes. If not set upon creation, Steward will default the
 DataStoreSchema by concatenating the namespace and name of the TenantControlPlane.<br/>
         </td>
         <td>false</td>
@@ -28522,8 +28522,8 @@ DataStoreSchema by concatenating the namespace and name of the TenantControlPlan
         <td>string</td>
         <td>
           DataStoreUsername allows to specify the username of the database (for relational DataStores). This
-value is optional and immutable. Note that Kamaji currently doesn't ensure that DataStoreUsername values are unique. It's up
-to the user to avoid clashes between different TenantControlPlanes. If not set upon creation, Kamaji will default the
+value is optional and immutable. Note that Steward currently doesn't ensure that DataStoreUsername values are unique. It's up
+to the user to avoid clashes between different TenantControlPlanes. If not set upon creation, Steward will default the
 DataStoreUsername by concatenating the namespace and name of the TenantControlPlane.<br/>
         </td>
         <td>false</td>
@@ -28631,7 +28631,7 @@ Defining the options for the Tenant Control Plane Service resource.
         <td><b><a href="#tenantcontrolplanespeccontrolplaneserviceadditionalportsindex">additionalPorts</a></b></td>
         <td>[]object</td>
         <td>
-          AdditionalPorts allows adding additional ports to the Service generated Kamaji
+          AdditionalPorts allows adding additional ports to the Service generated Steward
 which targets the Tenant Control Plane pods.<br/>
         </td>
         <td>false</td>
@@ -28689,7 +28689,7 @@ AdditionalMetadata defines which additional metadata, such as labels and annotat
         <td><b>name</b></td>
         <td>string</td>
         <td>
-          The name of this port within the Service created by Kamaji.
+          The name of this port within the Service created by Steward.
 This must be a DNS_LABEL, must have unique names, and cannot be `kube-apiserver`, or `konnectivity-server`.<br/>
         </td>
         <td>true</td>
@@ -28896,7 +28896,7 @@ More info: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-tol
         <td>
           TopologySpreadConstraints describes how the Tenant Control Plane pods ought to spread across topology
 domains. Scheduler will schedule pods in a way which abides by the constraints.
-In case of nil underlying LabelSelector, the Kamaji one for the given Tenant Control Plane will be used.
+In case of nil underlying LabelSelector, the Steward one for the given Tenant Control Plane will be used.
 All topologySpreadConstraints are ANDed.<br/>
         </td>
         <td>false</td>
@@ -40513,7 +40513,7 @@ Only modify if you know what you are doing.
         <td><b>kine</b></td>
         <td>[]string</td>
         <td>
-          Available only if Kamaji is running using Kine as backing storage.<br/>
+          Available only if Steward is running using Kine as backing storage.<br/>
         </td>
         <td>false</td>
       </tr><tr>
@@ -40656,7 +40656,7 @@ Resources defines the amount of memory and CPU to allocate to each component of 
         <td>object</td>
         <td>
           Define the kine container resources.
-Available only if Kamaji is running using Kine as backing storage.<br/>
+Available only if Steward is running using Kine as backing storage.<br/>
         </td>
         <td>false</td>
       </tr><tr>
@@ -40844,7 +40844,7 @@ only the result of this request.<br/>
 
 
 Define the kine container resources.
-Available only if Kamaji is running using Kine as backing storage.
+Available only if Steward is running using Kine as backing storage.
 
 <table>
     <thead>
@@ -42047,7 +42047,7 @@ Can be customized to start the konnectivity-agent even if the nodes are not read
         <td>string</td>
         <td>
           Version for Konnectivity agent.
-If left empty, Kamaji will automatically inflect the version from the deployed Tenant Control Plane.
+If left empty, Steward will automatically inflect the version from the deployed Tenant Control Plane.
 
 WARNING: for last cut-off releases, the container image could be not available.<br/>
         </td>
@@ -42176,7 +42176,7 @@ unxpected ways. Only modify if you know what you are doing.<br/>
         <td>string</td>
         <td>
           Container image version of the Konnectivity server.
-If left empty, Kamaji will automatically inflect the version from the deployed Tenant Control Plane.
+If left empty, Steward will automatically inflect the version from the deployed Tenant Control Plane.
 
 WARNING: for last cut-off releases, the container image could be not available.<br/>
         </td>

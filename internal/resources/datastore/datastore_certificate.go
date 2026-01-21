@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package datastore
@@ -17,18 +17,18 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/constants"
-	"github.com/clastix/kamaji/internal/crypto"
-	"github.com/clastix/kamaji/internal/resources"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/constants"
+	"github.com/butlerdotdev/steward/internal/crypto"
+	"github.com/butlerdotdev/steward/internal/resources"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 type Certificate struct {
 	resource                *corev1.Secret
 	Client                  client.Client
 	Name                    string
-	DataStore               kamajiv1alpha1.DataStore
+	DataStore               stewardv1alpha1.DataStore
 	CertExpirationThreshold time.Duration
 }
 
@@ -38,19 +38,19 @@ func (r *Certificate) GetHistogram() prometheus.Histogram {
 	return certificateCollector
 }
 
-func (r *Certificate) ShouldStatusBeUpdated(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *Certificate) ShouldStatusBeUpdated(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) bool {
 	return tenantControlPlane.Status.Storage.Certificate.Checksum != utilities.GetObjectChecksum(r.resource)
 }
 
-func (r *Certificate) ShouldCleanup(*kamajiv1alpha1.TenantControlPlane) bool {
+func (r *Certificate) ShouldCleanup(*stewardv1alpha1.TenantControlPlane) bool {
 	return false
 }
 
-func (r *Certificate) CleanUp(context.Context, *kamajiv1alpha1.TenantControlPlane) (bool, error) {
+func (r *Certificate) CleanUp(context.Context, *stewardv1alpha1.TenantControlPlane) (bool, error) {
 	return false, nil
 }
 
-func (r *Certificate) Define(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (r *Certificate) Define(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	r.resource = &corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      r.getPrefixedName(tenantControlPlane),
@@ -61,7 +61,7 @@ func (r *Certificate) Define(_ context.Context, tenantControlPlane *kamajiv1alph
 	return nil
 }
 
-func (r *Certificate) getPrefixedName(tenantControlPlane *kamajiv1alpha1.TenantControlPlane) string {
+func (r *Certificate) getPrefixedName(tenantControlPlane *stewardv1alpha1.TenantControlPlane) string {
 	return utilities.AddTenantPrefix(r.GetName(), tenantControlPlane)
 }
 
@@ -69,7 +69,7 @@ func (r *Certificate) GetClient() client.Client {
 	return r.Client
 }
 
-func (r *Certificate) CreateOrUpdate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
+func (r *Certificate) CreateOrUpdate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
 	return utilities.CreateOrUpdateWithConflict(ctx, r.Client, r.resource, r.mutate(ctx, tenantControlPlane))
 }
 
@@ -77,7 +77,7 @@ func (r *Certificate) GetName() string {
 	return "datastore-certificate"
 }
 
-func (r *Certificate) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (r *Certificate) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	tenantControlPlane.Status.Storage.Certificate.SecretName = r.resource.GetName()
 	tenantControlPlane.Status.Storage.Certificate.Checksum = utilities.GetObjectChecksum(r.resource)
 	tenantControlPlane.Status.Storage.Certificate.LastUpdate = metav1.Now()
@@ -85,7 +85,7 @@ func (r *Certificate) UpdateTenantControlPlaneStatus(_ context.Context, tenantCo
 	return nil
 }
 
-func (r *Certificate) mutate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) controllerutil.MutateFn {
+func (r *Certificate) mutate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) controllerutil.MutateFn {
 	return func() error {
 		logger := log.FromContext(ctx, "resource", r.GetName())
 
@@ -107,7 +107,7 @@ func (r *Certificate) mutate(ctx context.Context, tenantControlPlane *kamajiv1al
 
 			r.resource.SetLabels(utilities.MergeMaps(
 				r.resource.GetLabels(),
-				utilities.KamajiLabels(tenantControlPlane.GetName(), r.GetName()),
+				utilities.StewardLabels(tenantControlPlane.GetName(), r.GetName()),
 				map[string]string{
 					constants.ControllerLabelResource: utilities.CertificateX509Label,
 				},
@@ -120,7 +120,7 @@ func (r *Certificate) mutate(ctx context.Context, tenantControlPlane *kamajiv1al
 			}
 
 			if utilities.GetObjectChecksum(r.resource) == utilities.CalculateMapChecksum(r.resource.Data) {
-				if r.DataStore.Spec.Driver == kamajiv1alpha1.EtcdDriver {
+				if r.DataStore.Spec.Driver == stewardv1alpha1.EtcdDriver {
 					if isValid, _ := crypto.IsValidCertificateKeyPairBytes(r.resource.Data["server.crt"], r.resource.Data["server.key"], r.CertExpirationThreshold); isValid && !isRotationRequested {
 						return nil
 					}
@@ -130,7 +130,7 @@ func (r *Certificate) mutate(ctx context.Context, tenantControlPlane *kamajiv1al
 			var crt, key *bytes.Buffer
 
 			switch r.DataStore.Spec.Driver {
-			case kamajiv1alpha1.EtcdDriver:
+			case stewardv1alpha1.EtcdDriver:
 				var privateKey []byte
 				// When dealing with the etcd storage we cannot use the basic authentication, thus the generation of a
 				// certificate used for authentication is mandatory, along with the CA private key.
@@ -145,7 +145,7 @@ func (r *Certificate) mutate(ctx context.Context, tenantControlPlane *kamajiv1al
 
 					return err
 				}
-			case kamajiv1alpha1.KineMySQLDriver, kamajiv1alpha1.KinePostgreSQLDriver, kamajiv1alpha1.KineNatsDriver:
+			case stewardv1alpha1.KineMySQLDriver, stewardv1alpha1.KinePostgreSQLDriver, stewardv1alpha1.KineNatsDriver:
 				var crtBytes, keyBytes []byte
 				// For the SQL drivers we just need to copy the certificate, since the basic authentication is used
 				// to connect to the desired schema and database.

@@ -6,36 +6,36 @@ When pods are unschedulable because there are not enough resources, the Cluster 
 
 Cluster API supports the Cluster Autoscaler. See the [Cluster Autoscaler on Cluster API](https://cluster-api.sigs.k8s.io/tasks/automated-machine-management/autoscaling) for more information.
 
-## Getting started with the Cluster Autoscaler on Kamaji
+## Getting started with the Cluster Autoscaler on Steward
 
-Kamaji supports the Cluster Autoscaler through Cluster API. There are several ways to run the Cluster Autoscaler with Cluster API. In this guide, we leverage the unique features of Kamaji to run the Cluster Autoscaler as part of the Hosted Control Plane.
+Steward supports the Cluster Autoscaler through Cluster API. There are several ways to run the Cluster Autoscaler with Cluster API. In this guide, we leverage the unique features of Steward to run the Cluster Autoscaler as part of the Hosted Control Plane.
 
-In other words, the Cluster Autoscaler runs as a pod in the Kamaji Management Cluster, alongside the Tenant Control Plane pods, and connects directly to the API server of the workload cluster. This approach hides sensitive data from the tenant. It works by mounting the kubeconfig of the tenant cluster into the Cluster Autoscaler pod.
+In other words, the Cluster Autoscaler runs as a pod in the Steward Management Cluster, alongside the Tenant Control Plane pods, and connects directly to the API server of the workload cluster. This approach hides sensitive data from the tenant. It works by mounting the kubeconfig of the tenant cluster into the Cluster Autoscaler pod.
 
 ### Create the workload cluster
 
-Create a workload cluster using the Kamaji Control Plane Provider and the Infrastructure Provider of your choice. The following example creates a workload cluster using the vSphere Infrastructure Provider.
+Create a workload cluster using the Steward Control Plane Provider and the Infrastructure Provider of your choice. The following example creates a workload cluster using the vSphere Infrastructure Provider.
 
-The template file [`capi-kamaji-vsphere-autoscaler-template.yaml`](https://raw.githubusercontent.com/clastix/cluster-api-control-plane-provider-kamaji/master/templates/vsphere/capi-kamaji-vsphere-autoscaler-template.yaml) provides a full example of a cluster with the autoscaler enabled. You can generate the cluster manifest using `clusterctl`.
+The template file [`capi-steward-vsphere-autoscaler-template.yaml`](https://raw.githubusercontent.com/butlerlabs/cluster-api-control-plane-provider-steward/master/templates/vsphere/capi-steward-vsphere-autoscaler-template.yaml) provides a full example of a cluster with the autoscaler enabled. You can generate the cluster manifest using `clusterctl`.
 
 Before doing so, list all the variables in the template file:
 
 ```bash
-cat capi-kamaji-vsphere-autoscaler-template.yaml | clusterctl generate yaml --list-variables
+cat capi-steward-vsphere-autoscaler-template.yaml | clusterctl generate yaml --list-variables
 ```
 
 Fill them with the desired values and generate the manifest:
 
 ```bash
 clusterctl generate yaml \
-    --from capi-kamaji-vsphere-autoscaler-template.yaml \
-    > capi-kamaji-vsphere-cluster.yaml
+    --from capi-steward-vsphere-autoscaler-template.yaml \
+    > capi-steward-vsphere-cluster.yaml
 ```
 
 Apply the generated manifest to create the ClusterClass:
 
 ```bash
-kubectl apply -f capi-kamaji-vsphere-cluster.yaml
+kubectl apply -f capi-steward-vsphere-cluster.yaml
 ```
 
 ### Install the Cluster Autoscaler
@@ -43,7 +43,7 @@ kubectl apply -f capi-kamaji-vsphere-cluster.yaml
 Install the Cluster Autoscaler via Helm in the Management Cluster, in the same namespace where the workload cluster is deployed.
 
 !!! info "Options for installing the Cluster Autoscaler"
-    The Cluster Autoscaler works on a single cluster, meaning every cluster must have its own Cluster Autoscaler instance. This can be addressed by leveraging Project Sveltos automations to deploy a Cluster Autoscaler instance for each Kamaji Cluster API instance.
+    The Cluster Autoscaler works on a single cluster, meaning every cluster must have its own Cluster Autoscaler instance. This can be addressed by leveraging Project Sveltos automations to deploy a Cluster Autoscaler instance for each Steward Cluster API instance.
 
 ```bash
 helm repo add autoscaler https://kubernetes.github.io/autoscaler
@@ -138,7 +138,7 @@ This makes scaling portable across clouds, on-prem platforms, and custom provisi
 Once the cluster has been provisioned, install the `ProvisioningRequest` definition.
 
 ```
-kubectl kamaji kubeconfig get capi-quickstart-kubevirt > /tmp/capi-quickstart-kubevirt
+kubectl steward kubeconfig get capi-quickstart-kubevirt > /tmp/capi-quickstart-kubevirt
 KUBECONFIG=/tmp/capi-quickstart-kubevirt kubectl apply -f https://raw.githubusercontent.com/kubernetes/autoscaler/refs/tags/cluster-autoscaler-1.34.1/cluster-autoscaler/apis/config/crd/autoscaling.x-k8s.io_provisioningrequests.yaml
 ```
 

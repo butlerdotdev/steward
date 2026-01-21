@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package resources
@@ -25,8 +25,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/kubeadm"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/kubeadm"
 )
 
 type kubeadmPhase int
@@ -113,13 +113,13 @@ func (r *KubeadmPhase) GetPredicateFunc() func(obj client.Object) bool {
 	}
 }
 
-func (r *KubeadmPhase) isStatusEqual(tenantControlPlane *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *KubeadmPhase) isStatusEqual(tenantControlPlane *stewardv1alpha1.TenantControlPlane) bool {
 	i, err := r.GetStatus(tenantControlPlane)
 	if err != nil {
 		return true
 	}
 
-	status, ok := i.(*kamajiv1alpha1.KubeadmPhaseStatus)
+	status, ok := i.(*stewardv1alpha1.KubeadmPhaseStatus)
 	if !ok {
 		return true
 	}
@@ -131,23 +131,23 @@ func (r *KubeadmPhase) SetKubeadmConfigChecksum(checksum string) {
 	r.checksum = checksum
 }
 
-func (r *KubeadmPhase) ShouldStatusBeUpdated(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *KubeadmPhase) ShouldStatusBeUpdated(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) bool {
 	return !r.isStatusEqual(tenantControlPlane)
 }
 
-func (r *KubeadmPhase) ShouldCleanup(*kamajiv1alpha1.TenantControlPlane) bool {
+func (r *KubeadmPhase) ShouldCleanup(*stewardv1alpha1.TenantControlPlane) bool {
 	return false
 }
 
-func (r *KubeadmPhase) CleanUp(context.Context, *kamajiv1alpha1.TenantControlPlane) (bool, error) {
+func (r *KubeadmPhase) CleanUp(context.Context, *stewardv1alpha1.TenantControlPlane) (bool, error) {
 	return false, nil
 }
 
-func (r *KubeadmPhase) Define(context.Context, *kamajiv1alpha1.TenantControlPlane) error {
+func (r *KubeadmPhase) Define(context.Context, *stewardv1alpha1.TenantControlPlane) error {
 	return nil
 }
 
-func (r *KubeadmPhase) GetKubeadmFunction(ctx context.Context, tcp *kamajiv1alpha1.TenantControlPlane) (func(clientset.Interface, *kubeadm.Configuration) ([]byte, error), error) {
+func (r *KubeadmPhase) GetKubeadmFunction(ctx context.Context, tcp *stewardv1alpha1.TenantControlPlane) (func(clientset.Interface, *kubeadm.Configuration) ([]byte, error), error) {
 	switch r.Phase {
 	case PhaseUploadConfigKubeadm:
 		return kubeadm.UploadKubeadmConfig, nil
@@ -228,7 +228,7 @@ func (r *KubeadmPhase) GetName() string {
 	return r.Phase.String()
 }
 
-func (r *KubeadmPhase) UpdateTenantControlPlaneStatus(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (r *KubeadmPhase) UpdateTenantControlPlaneStatus(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	logger := log.FromContext(ctx, "resource", r.GetName(), "phase", r.Phase.String())
 
 	status, err := r.GetStatus(tenantControlPlane)
@@ -245,7 +245,7 @@ func (r *KubeadmPhase) UpdateTenantControlPlaneStatus(ctx context.Context, tenan
 	return nil
 }
 
-func (r *KubeadmPhase) GetStatus(tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (kamajiv1alpha1.KubeadmConfigChecksumDependant, error) {
+func (r *KubeadmPhase) GetStatus(tenantControlPlane *stewardv1alpha1.TenantControlPlane) (stewardv1alpha1.KubeadmConfigChecksumDependant, error) {
 	switch r.Phase {
 	case PhaseUploadConfigKubeadm, PhaseUploadConfigKubelet, PhaseClusterAdminRBAC:
 		return nil, nil //nolint:nilnil
@@ -256,7 +256,7 @@ func (r *KubeadmPhase) GetStatus(tenantControlPlane *kamajiv1alpha1.TenantContro
 	}
 }
 
-func (r *KubeadmPhase) CreateOrUpdate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
+func (r *KubeadmPhase) CreateOrUpdate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
 	logger := log.FromContext(ctx, "resource", r.GetName(), "phase", r.Phase.String())
 
 	if r.Phase == PhaseBootstrapToken {

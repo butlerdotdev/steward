@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package controllers
@@ -37,12 +37,12 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"sigs.k8s.io/controller-runtime/pkg/source"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/controllers/utils"
-	"github.com/clastix/kamaji/internal/constants"
-	"github.com/clastix/kamaji/internal/crypto"
-	"github.com/clastix/kamaji/internal/resources"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/controllers/utils"
+	"github.com/butlerdotdev/steward/internal/constants"
+	"github.com/butlerdotdev/steward/internal/crypto"
+	"github.com/butlerdotdev/steward/internal/resources"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 type KubeconfigGeneratorReconciler struct {
@@ -52,16 +52,16 @@ type KubeconfigGeneratorReconciler struct {
 }
 
 //+kubebuilder:rbac:groups="",resources=namespaces,verbs=get;list;watch
-//+kubebuilder:rbac:groups=kamaji.clastix.io,resources=kubeconfiggenerators,verbs=get;list;watch;create;update;patch
-//+kubebuilder:rbac:groups=kamaji.clastix.io,resources=kubeconfiggenerators/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=kamaji.clastix.io,resources=kubeconfiggenerators/finalizers,verbs=update
+//+kubebuilder:rbac:groups=steward.butlerlabs.dev,resources=kubeconfiggenerators,verbs=get;list;watch;create;update;patch
+//+kubebuilder:rbac:groups=steward.butlerlabs.dev,resources=kubeconfiggenerators/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=steward.butlerlabs.dev,resources=kubeconfiggenerators/finalizers,verbs=update
 
 func (r *KubeconfigGeneratorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
 	logger.Info("reconciling resource")
 
-	var generator kamajiv1alpha1.KubeconfigGenerator
+	var generator stewardv1alpha1.KubeconfigGenerator
 	if err := r.Client.Get(ctx, req.NamespacedName, &generator); err != nil {
 		if apierrors.IsNotFound(err) {
 			logger.Info("resource may have been deleted, skipping")
@@ -100,28 +100,28 @@ func (r *KubeconfigGeneratorReconciler) Reconcile(ctx context.Context, req ctrl.
 	return ctrl.Result{}, nil
 }
 
-func (r *KubeconfigGeneratorReconciler) handle(ctx context.Context, generator *kamajiv1alpha1.KubeconfigGenerator) (kamajiv1alpha1.KubeconfigGeneratorStatus, error) {
+func (r *KubeconfigGeneratorReconciler) handle(ctx context.Context, generator *stewardv1alpha1.KubeconfigGenerator) (stewardv1alpha1.KubeconfigGeneratorStatus, error) {
 	nsSelector, nsErr := metav1.LabelSelectorAsSelector(&generator.Spec.NamespaceSelector)
 	if nsErr != nil {
-		return kamajiv1alpha1.KubeconfigGeneratorStatus{}, errors.Wrap(nsErr, "NamespaceSelector contains an error")
+		return stewardv1alpha1.KubeconfigGeneratorStatus{}, errors.Wrap(nsErr, "NamespaceSelector contains an error")
 	}
 
 	var namespaceList corev1.NamespaceList
 	if err := r.Client.List(ctx, &namespaceList, &client.ListOptions{LabelSelector: nsSelector}); err != nil {
-		return kamajiv1alpha1.KubeconfigGeneratorStatus{}, errors.Wrap(err, "cannot filter Namespace objects using provided selector")
+		return stewardv1alpha1.KubeconfigGeneratorStatus{}, errors.Wrap(err, "cannot filter Namespace objects using provided selector")
 	}
 
-	var targets []kamajiv1alpha1.TenantControlPlane
+	var targets []stewardv1alpha1.TenantControlPlane
 
 	for _, ns := range namespaceList.Items {
 		tcpSelector, tcpErr := metav1.LabelSelectorAsSelector(&generator.Spec.TenantControlPlaneSelector)
 		if tcpErr != nil {
-			return kamajiv1alpha1.KubeconfigGeneratorStatus{}, errors.Wrap(tcpErr, "TenantControlPlaneSelector contains an error")
+			return stewardv1alpha1.KubeconfigGeneratorStatus{}, errors.Wrap(tcpErr, "TenantControlPlaneSelector contains an error")
 		}
 
-		var tcpList kamajiv1alpha1.TenantControlPlaneList
+		var tcpList stewardv1alpha1.TenantControlPlaneList
 		if err := r.Client.List(ctx, &tcpList, &client.ListOptions{Namespace: ns.GetName(), LabelSelector: tcpSelector}); err != nil {
-			return kamajiv1alpha1.KubeconfigGeneratorStatus{}, errors.Wrap(err, "cannot filter TenantControlPlane objects using provided selector")
+			return stewardv1alpha1.KubeconfigGeneratorStatus{}, errors.Wrap(err, "cannot filter TenantControlPlane objects using provided selector")
 		}
 
 		targets = append(targets, tcpList.Items...)
@@ -131,7 +131,7 @@ func (r *KubeconfigGeneratorReconciler) handle(ctx context.Context, generator *k
 		return client.ObjectKeyFromObject(&targets[i]).String() < client.ObjectKeyFromObject(&targets[j]).String()
 	})
 
-	status := kamajiv1alpha1.KubeconfigGeneratorStatus{
+	status := stewardv1alpha1.KubeconfigGeneratorStatus{
 		Resources:          len(targets),
 		AvailableResources: len(targets),
 	}
@@ -146,8 +146,8 @@ func (r *KubeconfigGeneratorReconciler) handle(ctx context.Context, generator *k
 	return status, nil
 }
 
-func (r *KubeconfigGeneratorReconciler) process(ctx context.Context, generator *kamajiv1alpha1.KubeconfigGenerator, tcp kamajiv1alpha1.TenantControlPlane) *kamajiv1alpha1.KubeconfigGeneratorStatusError {
-	statusErr := kamajiv1alpha1.KubeconfigGeneratorStatusError{
+func (r *KubeconfigGeneratorReconciler) process(ctx context.Context, generator *stewardv1alpha1.KubeconfigGenerator, tcp stewardv1alpha1.TenantControlPlane) *stewardv1alpha1.KubeconfigGeneratorStatusError {
+	statusErr := stewardv1alpha1.KubeconfigGeneratorStatusError{
 		Resource: client.ObjectKeyFromObject(&tcp).String(),
 	}
 
@@ -272,7 +272,7 @@ func (r *KubeconfigGeneratorReconciler) process(ctx context.Context, generator *
 	}
 }
 
-func (r *KubeconfigGeneratorReconciler) generate(ctx context.Context, generator *kamajiv1alpha1.KubeconfigGenerator, secret *corev1.Secret, tmpl *clientcmdapiv1.Config, tcp *kamajiv1alpha1.TenantControlPlane, groups sets.Set[string], user string) error {
+func (r *KubeconfigGeneratorReconciler) generate(ctx context.Context, generator *stewardv1alpha1.KubeconfigGenerator, secret *corev1.Secret, tmpl *clientcmdapiv1.Config, tcp *stewardv1alpha1.TenantControlPlane, groups sets.Set[string], user string) error {
 	_, config, err := resources.GetKubeadmManifestDeps(ctx, r.Client, tcp)
 	if err != nil {
 		return err
@@ -329,8 +329,8 @@ func (r *KubeconfigGeneratorReconciler) generate(ctx context.Context, generator 
 			labels = map[string]string{}
 		}
 
-		labels[kamajiv1alpha1.ManagedByLabel] = generator.Name
-		labels[kamajiv1alpha1.ManagedForLabel] = tcp.Name
+		labels[stewardv1alpha1.ManagedByLabel] = generator.Name
+		labels[stewardv1alpha1.ManagedForLabel] = tcp.Name
 		labels[constants.ControllerLabelResource] = utilities.CertificateKubeconfigLabel
 
 		secret.SetLabels(labels)
@@ -414,7 +414,7 @@ func (r *KubeconfigGeneratorReconciler) isValid(secret *corev1.Secret, tmpl *cli
 
 func (r *KubeconfigGeneratorReconciler) SetupWithManager(mgr manager.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&kamajiv1alpha1.KubeconfigGenerator{}).
+		For(&stewardv1alpha1.KubeconfigGenerator{}).
 		WatchesRawSource(source.Channel(r.CertificateChan, handler.Funcs{GenericFunc: func(_ context.Context, genericEvent event.TypedGenericEvent[client.Object], w workqueue.TypedRateLimitingInterface[reconcile.Request]) {
 			w.AddRateLimited(ctrl.Request{
 				NamespacedName: types.NamespacedName{
@@ -427,7 +427,7 @@ func (r *KubeconfigGeneratorReconciler) SetupWithManager(mgr manager.Manager) er
 				return nil
 			}
 
-			v, found := object.GetLabels()[kamajiv1alpha1.ManagedByLabel]
+			v, found := object.GetLabels()[stewardv1alpha1.ManagedByLabel]
 			if !found {
 				return nil
 			}

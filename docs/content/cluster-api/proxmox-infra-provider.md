@@ -1,6 +1,6 @@
 # Proxmox VE Infra Provider
 
-Use the Cluster API [Proxmox VE Infra Provider ](https://github.com/ionos-cloud/cluster-api-provider-proxmox) to create a fully functional Kubernetes cluster with the Cluster API [Kamaji Control Plane Provider](https://github.com/clastix/cluster-api-control-plane-provider-kamaji).
+Use the Cluster API [Proxmox VE Infra Provider ](https://github.com/ionos-cloud/cluster-api-provider-proxmox) to create a fully functional Kubernetes cluster with the Cluster API [Steward Control Plane Provider](https://github.com/butlerlabs/cluster-api-control-plane-provider-steward).
 
 The Proxmox Cluster API implementation is developed and maintained by [IONOS Cloud](https://github.com/ionos-cloud).
 
@@ -17,7 +17,7 @@ To use the Proxmox Cluster API provider, you must connect and authenticate to a 
 export PROXMOX_URL="https://pve.example:8006"
 
 # The Proxmox VE TokenID for authentication
-export PROXMOX_TOKEN='clastix@pam!capi'
+export PROXMOX_TOKEN='butlerlabs@pam!capi'
 
 # The secret associated with the TokenID
 export PROXMOX_SECRET="REDACTED"
@@ -73,7 +73,7 @@ Set the following environment variables to configure the workload machines:
 
 ```bash
 # Node Configuration
-export SSH_USER="clastix"
+export SSH_USER="butlerlabs"
 export SSH_AUTHORIZED_KEY="ssh-rsa AAAAB3Nz ..."
 export NODE_LABELS="datacenter=us-west,instance-type=large"
 export NODE_TAINTS="environment=production:PreferNoSchedule"
@@ -99,23 +99,23 @@ export STORAGE_NODE="local"
 export POOL_NAME="sample-pool"
 ```
 
-Use the following command to generate a cluster manifest based on the [`capi-kamaji-proxmox-template.yaml`](https://raw.githubusercontent.com/clastix/cluster-api-control-plane-provider-kamaji/master/templates/proxmox/capi-kamaji-proxmox-template.yaml) template file:
+Use the following command to generate a cluster manifest based on the [`capi-steward-proxmox-template.yaml`](https://raw.githubusercontent.com/butlerlabs/cluster-api-control-plane-provider-steward/master/templates/proxmox/capi-steward-proxmox-template.yaml) template file:
 
 ```bash
 clusterctl generate cluster $CLUSTER_NAME \
-    --from capi-kamaji-proxmox-template.yaml \
-    > capi-kamaji-proxmox-cluster.yaml
+    --from capi-steward-proxmox-template.yaml \
+    > capi-steward-proxmox-cluster.yaml
 ```
 
 !!! warning "Customize the Template"
-    Before to generate cluster manifest, review and edit the template `capi-kamaji-proxmox-template.yaml` to customize.
+    Before to generate cluster manifest, review and edit the template `capi-steward-proxmox-template.yaml` to customize.
 
 ### Apply the Cluster Manifest
 
 Apply the generated cluster manifest to provision the tenant cluster:
 
 ```bash
-kubectl apply -f capi-kamaji-proxmox-cluster.yaml
+kubectl apply -f capi-steward-proxmox-cluster.yaml
 ```
 
 Check the status of the cluster deployment using `clusterctl`:
@@ -124,7 +124,7 @@ Check the status of the cluster deployment using `clusterctl`:
 clusterctl describe cluster $CLUSTER_NAME
 ```
 
-and related tenant control plane created on the Kamaji Management Cluster:
+and related tenant control plane created on the Steward Management Cluster:
 
 ```bash
 kubectl get tcp -n default
@@ -132,7 +132,7 @@ kubectl get tcp -n default
 
 ## Access the Tenant Cluster
 
-To access the tenant cluster, you can estract the `kubeconfig` file from the Kamaji Management Cluster:
+To access the tenant cluster, you can estract the `kubeconfig` file from the Steward Management Cluster:
 
 ```bash
 clusterctl get kubeconfig $CLUSTER_NAME \
@@ -154,18 +154,18 @@ For cluster deletion, use the following command:
 kubectl delete cluster $CLUSTER_NAME
 ```
 
-Always use `kubectl delete cluster $CLUSTER_NAME` to delete the tenant cluster. Using `kubectl delete -f capi-kamaji-proxmox-cluster.yaml` may lead to orphaned resources in some scenarios, as this method doesn't always respect ownership references between resources that were created after the initial deployment.
+Always use `kubectl delete cluster $CLUSTER_NAME` to delete the tenant cluster. Using `kubectl delete -f capi-steward-proxmox-cluster.yaml` may lead to orphaned resources in some scenarios, as this method doesn't always respect ownership references between resources that were created after the initial deployment.
 
 ## Install the Tenant Cluster as Helm Release
 
-Alternatively, you can create a Tenant Cluster using the Helm Chart [cluster-api-kamaji-proxmox](https://github.com/clastix/cluster-api-kamaji-proxmox).
+Alternatively, you can create a Tenant Cluster using the Helm Chart [cluster-api-steward-proxmox](https://github.com/butlerlabs/cluster-api-steward-proxmox).
 
 Create a Tenant Cluster as Helm Release:
 
 ```bash
-helm repo add clastix https://clastix.github.io/cluster-api-kamaji-proxmox
+helm repo add butlerlabs https://butlerlabs.github.io/cluster-api-steward-proxmox
 helm repo update
-helm install sample clastix/cluster-api-kamaji-proxmox \
+helm install sample butlerlabs/cluster-api-steward-proxmox \
     --set cluster.name=sample \
     --namespace default \
     --values my-values.yaml

@@ -1,6 +1,6 @@
 # Releases and Versions
 
-[Clastix Labs](https://github.com/clastix) organization publishes Kamaji's versions that correspond to specific project milestones and sets of new features.
+[Butler Labs Labs](https://github.com/butlerlabs) organization publishes Steward's versions that correspond to specific project milestones and sets of new features.
 These versions are available in different types of release artifacts.
 
 ## Types of release artifacts
@@ -12,15 +12,15 @@ The latest artifacts are aimed for rapid development tests and evaluation proces
 
 Usage of the said artefacts is not suggested for production use-case due to missing version pinning of artefacts:
 
-- `latest` for OCI image (e.g.: `docker.io/clastix/kamaji:latest`)
-- `0.0.0+latest` for the Helm Chart managed by CLASTIX (`https://clastix.github.io/charts`)
+- `latest` for OCI image (e.g.: `docker.io/butlerlabs/steward:latest`)
+- `0.0.0+latest` for the Helm Chart managed by BUTLERLABS (`https://butlerlabs.github.io/charts`)
 
 ### Edge Releases
 
 Edge Release artifacts are published on a monthly basis as part of the open source project.
 Versioning follows the form `edge-{year}.{month}.{incremental}` where incremental refers to the monthly release.
 For example, `edge-24.7.1` is the first edge release shipped in July 2024.
-The full list of edge release artifacts can be found on the Kamaji's GitHub [releases page](https://github.com/clastix/kamaji/releases).
+The full list of edge release artifacts can be found on the Steward's GitHub [releases page](https://github.com/butlerlabs/steward/releases).
 
 Edge Release artifacts contain the code in from the main branch at the point in time when they were cut.
 This means they always have the latest features and fixes, and have undergone automated testing as well as maintainer code review.
@@ -29,7 +29,7 @@ They may also involve breaking changes, of course, we do our best to avoid this.
 
 Edge Releases are generally considered production ready and the project will mark specific releases as _"not recommended"_ if bugs are discovered after release.
 
-| Kamaji      | Management Cluster | Tenant Cluster       |
+| Steward      | Management Cluster | Tenant Cluster       |
 |-------------|--------------------|----------------------|
 | edge-25.4.1 | v1.22+             | [v1.30.0 .. v1.33.0] |
 
@@ -39,8 +39,8 @@ We publish edge release guidance as part of the release notes and strive to alwa
 
 ### Stable Releases
 
-As of July 2024, [Clastix Labs](https://github.com/clastix) does no longer provide release artifacts following its own semantic versioning:
-this choice has been put in place to help monetize CLASTIX in the development and maintenance of the Kamaji project.
+As of July 2024, [Butler Labs Labs](https://github.com/butlerlabs) does no longer provide release artifacts following its own semantic versioning:
+this choice has been put in place to help monetize BUTLERLABS in the development and maintenance of the Steward project.
 
-Stable artifacts such as OCI (containers) and Helm Chart ones are available on a subscription basis maintained by [CLASTIX](https://clastix.io):
-learn more about the available [Subscription Plans](https://clastix.io/support/).
+Stable artifacts such as OCI (containers) and Helm Chart ones are available on a subscription basis maintained by [BUTLERLABS](https://butlerlabs.io):
+learn more about the available [Subscription Plans](https://butlerlabs.io/support/).

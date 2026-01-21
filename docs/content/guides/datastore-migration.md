@@ -18,7 +18,7 @@ tenant-00   v1.25.2   Ready    192.168.32.200:6443      tenant-00-admin-kubeconf
 You can check a custom resource called `DataStore` providing a declarative description of the `default` datastore:
 
 ```yaml
-apiVersion: kamaji.clastix.io/v1alpha1
+apiVersion: steward.butlerlabs.io/v1alpha1
 kind: DataStore
 metadata:
   annotations:
@@ -27,62 +27,62 @@ metadata:
 spec:
   driver: etcd
   endpoints:
-  - etcd-0.etcd.kamaji-system.svc.cluster.local:2379
-  - etcd-1.etcd.kamaji-system.svc.cluster.local:2379
-  - etcd-2.etcd.kamaji-system.svc.cluster.local:2379
+  - etcd-0.etcd.steward-system.svc.cluster.local:2379
+  - etcd-1.etcd.steward-system.svc.cluster.local:2379
+  - etcd-2.etcd.steward-system.svc.cluster.local:2379
   tlsConfig:
     certificateAuthority:
       certificate:
         secretReference:
           keyPath: ca.crt
           name: etcd-certs
-          namespace: kamaji-system
+          namespace: steward-system
       privateKey:
         secretReference:
           keyPath: ca.key
           name: etcd-certs
-          namespace: kamaji-system
+          namespace: steward-system
     clientCertificate:
       certificate:
         secretReference:
           keyPath: tls.crt
           name: etcd-root-client-certs
-          namespace: kamaji-system
+          namespace: steward-system
       privateKey:
         secretReference:
           keyPath: tls.key
           name: etcd-root-client-certs
-          namespace: kamaji-system
+          namespace: steward-system
 status:
   usedBy:
   - default/tenant-00
 ```
 
-The `default` datastore is installed by Kamaji Helm chart in the same namespace hosting the controller:
+The `default` datastore is installed by Steward Helm chart in the same namespace hosting the controller:
 
 ```shell
-kubectl -n kamaji-system get pods
+kubectl -n steward-system get pods
 NAME                              READY   STATUS      RESTARTS   AGE
 etcd-0                            1/1     Running     0          23d
 etcd-1                            1/1     Running     0          23d
 etcd-2                            1/1     Running     0          23d
-kamaji-5d6cdfbbb9-bn27f           1/1     Running     0          2d19h
+steward-5d6cdfbbb9-bn27f           1/1     Running     0          2d19h
 ```
 
 ## Install a new datastore
-A managed datastore is highly recommended in production. The [kamaji-etcd](https://github.com/clastix/kamaji-etcd) project provides a viable option to setup a managed multi-tenant `etcd` running as StatefulSet made of three replicas:
+A managed datastore is highly recommended in production. The [steward-etcd](https://github.com/butlerlabs/steward-etcd) project provides a viable option to setup a managed multi-tenant `etcd` running as StatefulSet made of three replicas:
 
 ```bash
-helm repo add clastix https://clastix.github.io/charts
+helm repo add butlerlabs https://butlerlabs.github.io/charts
 helm repo update
-helm install dedicated clastix/kamaji-etcd -n dedicated --create-namespace --set datastore.enabled=true
+helm install dedicated butlerlabs/steward-etcd -n dedicated --create-namespace --set datastore.enabled=true
 ```
 
 You should end up with a new datastore `dedicated` provided by an `etcd` cluster:
 
 ```yaml
 # kubectl get datastore dedicated -o yaml
-apiVersion: kamaji.clastix.io/v1alpha1
+apiVersion: steward.butlerlabs.io/v1alpha1
 kind: DataStore
 metadata:
   annotations:
@@ -163,13 +163,13 @@ During the datastore migration, the Tenant Control Plane is put in read-only mod
 ```shell
 Error from server (the current Control Plane is in freezing mode due to a maintenance mode,
 all the changes are blocked: removing the webhook may lead to an inconsistent state upon its completion):
-admission webhook "catchall.migrate.kamaji.clastix.io" denied the request
+admission webhook "catchall.migrate.steward.butlerlabs.io" denied the request
 ```
 
-After a while, depending on the amount of data to migrate, the Tenant Control Plane is put back in full operating mode by the Kamaji controller.
+After a while, depending on the amount of data to migrate, the Tenant Control Plane is put back in full operating mode by the Steward controller.
 
 Migration is expected to complete in 5 minutes.
-However, that timeout can be customized at the `TenantControlPlane` level with the annotation `kamaji.clastix.io/migration-timeout` with a Go-duration value (e.g.: `5m`).
+However, that timeout can be customized at the `TenantControlPlane` level with the annotation `steward.butlerlabs.io/migration-timeout` with a Go-duration value (e.g.: `5m`).
 
 !!! info "Leftover"
     Please, note the datastore migration leaves the data on the default datastore, so you have to remove it manually.
@@ -177,7 +177,7 @@ However, that timeout can be customized at the `TenantControlPlane` level with t
 !!! info "Avoiding stale DataStore content"
     When migrating `TenantControlPlane` across DataStore, a collision with the __schema__ name could happen,
     leading to unexpected results such as old data still available.
-    The annotation `kamaji.clastix.io/cleanup-prior-migration=true` allows to enforce the clean-up of the target `DataStore` schema in case of collision.
+    The annotation `steward.butlerlabs.io/cleanup-prior-migration=true` allows to enforce the clean-up of the target `DataStore` schema in case of collision.
 
 ## Post migration
 After migrating data to the new datastore, complete the migration procedure by restarting the `kubelet.service` on all the tenant worker nodes.
@@ -185,20 +185,20 @@ After migrating data to the new datastore, complete the migration procedure by r
 ## Troubleshooting
 
 ### Migration Job Image Version
-When migrating between datastores, the Kamaji controller automatically creates a migration job to transfer data from the source to the destination datastore. By default, this job uses the same image version as the running Kamaji controller. If you need to use a different image version for the migration job, you can specify it by passing extra arguments to the controller:
+When migrating between datastores, the Steward controller automatically creates a migration job to transfer data from the source to the destination datastore. By default, this job uses the same image version as the running Steward controller. If you need to use a different image version for the migration job, you can specify it by passing extra arguments to the controller:
 
 ```shell
-helm upgrade kamaji clastix/kamaji --version ${CHART_VERSION} -n kamaji-system 
---set extraArgs[0]=--migrate-image=custom/kamaji:version`
+helm upgrade steward butlerlabs/steward --version ${CHART_VERSION} -n steward-system 
+--set extraArgs[0]=--migrate-image=custom/steward:version`
 ```
 
 ### Handling Private Registry Images
-If the Kamaji controller images are stored in a private registry that requires authentication, the migration job will fail because it does not use any `ImagePullSecret` by default. You need to attach your registry secret to the `kamaji-controller-manager` service account, which is used by the migration job. You can do this with the following command:
+If the Steward controller images are stored in a private registry that requires authentication, the migration job will fail because it does not use any `ImagePullSecret` by default. You need to attach your registry secret to the `steward-controller-manager` service account, which is used by the migration job. You can do this with the following command:
 
 ```shell
-kubectl -n kamaji-system patch serviceaccount kamaji-controller-manager \
+kubectl -n steward-system patch serviceaccount steward-controller-manager \
         -p '{"imagePullSecrets": [{"name": "myregistry-credentials"}]}'
 ```
 
-This command patches the kamaji-controller-manager service account to include your registry secret, allowing the migration job to pull images from the private registry successfully.
+This command patches the steward-controller-manager service account to include your registry secret, allowing the migration job to pull images from the private registry successfully.
 

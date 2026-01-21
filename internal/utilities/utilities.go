@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package utilities
@@ -10,15 +10,15 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/serializer/json"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/constants"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/constants"
 )
 
 const (
 	separator = "-"
 )
 
-func KamajiLabels(tcpName, resourceName string) map[string]string {
+func StewardLabels(tcpName, resourceName string) map[string]string {
 	return map[string]string{
 		constants.ProjectNameLabelKey:       constants.ProjectNameLabelValue,
 		constants.ControlPlaneLabelKey:      tcpName,
@@ -38,7 +38,7 @@ func MergeMaps(maps ...map[string]string) map[string]string {
 	return result
 }
 
-func AddTenantPrefix(name string, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) string {
+func AddTenantPrefix(name string, tenantControlPlane *stewardv1alpha1.TenantControlPlane) string {
 	return fmt.Sprintf("%s%s%s", tenantControlPlane.GetName(), separator, name)
 }
 

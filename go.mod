@@ -1,11 +1,10 @@
-module github.com/clastix/kamaji
+module github.com/butlerdotdev/steward
 
 go 1.25.0
 
 require (
 	github.com/JamesStewy/go-mysqldump v0.2.2
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/clastix/kamaji-telemetry v1.0.0
 	github.com/docker/docker v28.5.2+incompatible
 	github.com/evanphx/json-patch/v5 v5.9.11
 	github.com/go-logr/logr v1.4.3

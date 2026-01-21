@@ -1,0 +1,37 @@
+# Steward Helm Chart
+
+Steward is the Hosted Control Plane Manager for Kubernetes.
+
+## Installation
+
+Add the Butler Labs Helm repository:
+```bash
+helm repo add butlerlabs https://butlerdotdev.github.io/charts
+helm repo update
+```
+
+Install the Chart:
+```bash
+helm upgrade --install --namespace steward-system --create-namespace steward butlerlabs/steward
+```
+
+## Configuration
+
+Steward supports multiple datastores. By default, an etcd cluster will be deployed.
+
+To use an external datastore:
+```bash
+helm upgrade steward --install --namespace steward-system --create-namespace butlerlabs/steward --set etcd.deploy=false
+```
+
+## Upgrade
+```bash
+helm upgrade steward -n steward-system butlerlabs/steward
+```
+
+## Uninstall
+```bash
+helm uninstall steward -n steward-system
+```
+
+{{ template "chart.valuesSection" . }}

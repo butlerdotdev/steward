@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package resources
@@ -16,8 +16,8 @@ import (
 	gatewayv1 "sigs.k8s.io/gateway-api/apis/v1"
 	gatewayv1alpha2 "sigs.k8s.io/gateway-api/apis/v1alpha2"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 type KubernetesGatewayResource struct {
@@ -31,7 +31,7 @@ func (r *KubernetesGatewayResource) GetHistogram() prometheus.Histogram {
 	return gatewayCollector
 }
 
-func (r *KubernetesGatewayResource) ShouldStatusBeUpdated(_ context.Context, tcp *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *KubernetesGatewayResource) ShouldStatusBeUpdated(_ context.Context, tcp *stewardv1alpha1.TenantControlPlane) bool {
 	switch {
 	case tcp.Spec.ControlPlane.Gateway == nil && tcp.Status.Kubernetes.Gateway == nil:
 		return false
@@ -48,7 +48,7 @@ func (r *KubernetesGatewayResource) ShouldStatusBeUpdated(_ context.Context, tcp
 }
 
 // gatewayStatusNeedsUpdate compares the current gateway resource status with the stored status.
-func (r *KubernetesGatewayResource) gatewayStatusNeedsUpdate(tcp *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *KubernetesGatewayResource) gatewayStatusNeedsUpdate(tcp *stewardv1alpha1.TenantControlPlane) bool {
 	currentStatus := tcp.Status.Kubernetes.Gateway
 
 	// Check if route reference has changed
@@ -60,11 +60,11 @@ func (r *KubernetesGatewayResource) gatewayStatusNeedsUpdate(tcp *kamajiv1alpha1
 	return IsGatewayRouteStatusChanged(currentStatus, r.resource.Status.RouteStatus)
 }
 
-func (r *KubernetesGatewayResource) ShouldCleanup(tcp *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *KubernetesGatewayResource) ShouldCleanup(tcp *stewardv1alpha1.TenantControlPlane) bool {
 	return tcp.Spec.ControlPlane.Gateway == nil && tcp.Status.Kubernetes.Gateway != nil
 }
 
-func (r *KubernetesGatewayResource) CleanUp(ctx context.Context, tcp *kamajiv1alpha1.TenantControlPlane) (bool, error) {
+func (r *KubernetesGatewayResource) CleanUp(ctx context.Context, tcp *stewardv1alpha1.TenantControlPlane) (bool, error) {
 	logger := log.FromContext(ctx, "resource", r.GetName())
 
 	cleaned, err := CleanupTLSRoute(ctx, r.Client, r.resource.GetName(), r.resource.GetNamespace(), tcp)
@@ -81,7 +81,7 @@ func (r *KubernetesGatewayResource) CleanUp(ctx context.Context, tcp *kamajiv1al
 	return cleaned, nil
 }
 
-func (r *KubernetesGatewayResource) UpdateTenantControlPlaneStatus(ctx context.Context, tcp *kamajiv1alpha1.TenantControlPlane) error {
+func (r *KubernetesGatewayResource) UpdateTenantControlPlaneStatus(ctx context.Context, tcp *stewardv1alpha1.TenantControlPlane) error {
 	logger := log.FromContext(ctx, "resource", r.GetName())
 
 	// Clean up status if Gateway routes are no longer configured
@@ -91,7 +91,7 @@ func (r *KubernetesGatewayResource) UpdateTenantControlPlaneStatus(ctx context.C
 		return nil
 	}
 
-	tcp.Status.Kubernetes.Gateway = &kamajiv1alpha1.KubernetesGatewayStatus{
+	tcp.Status.Kubernetes.Gateway = &stewardv1alpha1.KubernetesGatewayStatus{
 		RouteStatus: r.resource.Status.RouteStatus,
 		RouteRef: v1.LocalObjectReference{
 			Name: r.resource.Name,
@@ -125,7 +125,7 @@ func (r *KubernetesGatewayResource) UpdateTenantControlPlaneStatus(ctx context.C
 	return nil
 }
 
-func (r *KubernetesGatewayResource) Define(_ context.Context, tcp *kamajiv1alpha1.TenantControlPlane) error {
+func (r *KubernetesGatewayResource) Define(_ context.Context, tcp *stewardv1alpha1.TenantControlPlane) error {
 	r.resource = &gatewayv1alpha2.TLSRoute{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      tcp.GetName(),
@@ -136,11 +136,11 @@ func (r *KubernetesGatewayResource) Define(_ context.Context, tcp *kamajiv1alpha
 	return nil
 }
 
-func (r *KubernetesGatewayResource) mutate(tcp *kamajiv1alpha1.TenantControlPlane) controllerutil.MutateFn {
+func (r *KubernetesGatewayResource) mutate(tcp *stewardv1alpha1.TenantControlPlane) controllerutil.MutateFn {
 	return func() error {
 		labels := utilities.MergeMaps(
 			r.resource.GetLabels(),
-			utilities.KamajiLabels(tcp.GetName(), r.GetName()),
+			utilities.StewardLabels(tcp.GetName(), r.GetName()),
 			tcp.Spec.ControlPlane.Gateway.AdditionalMetadata.Labels,
 		)
 		r.resource.SetLabels(labels)
@@ -180,7 +180,7 @@ func (r *KubernetesGatewayResource) mutate(tcp *kamajiv1alpha1.TenantControlPlan
 	}
 }
 
-func (r *KubernetesGatewayResource) CreateOrUpdate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
+func (r *KubernetesGatewayResource) CreateOrUpdate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
 	logger := log.FromContext(ctx, "resource", r.GetName())
 
 	if tenantControlPlane.Spec.ControlPlane.Gateway == nil {

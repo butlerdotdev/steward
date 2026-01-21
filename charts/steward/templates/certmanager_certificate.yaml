@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    {{- $data := . | mustMergeOverwrite (dict "component" "certificate") -}}
+    {{- include "steward.labels" $data | nindent 4 }}
+  name: {{ include "steward.certificateName" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  dnsNames:
+    - {{ include "steward.webhookServiceName" . }}.{{ .Release.Namespace }}.svc
+    - {{ include "steward.webhookServiceName" . }}.{{ .Release.Namespace }}.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: steward-selfsigned-issuer
+  secretName: {{ include "steward.webhookSecretName" . }}

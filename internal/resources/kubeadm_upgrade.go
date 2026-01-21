@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package resources
@@ -15,10 +15,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/kubeadm/printers"
-	kamajiupgrade "github.com/clastix/kamaji/internal/upgrade"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/kubeadm/printers"
+	stewardupgrade "github.com/butlerdotdev/steward/internal/upgrade"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 type KubernetesUpgrade struct {
@@ -34,7 +34,7 @@ func (k *KubernetesUpgrade) GetHistogram() prometheus.Histogram {
 	return kubeadmupgradeCollector
 }
 
-func (k *KubernetesUpgrade) Define(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (k *KubernetesUpgrade) Define(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	k.upgrade = upgrade.Upgrade{
 		Before: upgrade.ClusterState{
 			KubeVersion: tenantControlPlane.Status.Kubernetes.Version.Version,
@@ -47,15 +47,15 @@ func (k *KubernetesUpgrade) Define(_ context.Context, tenantControlPlane *kamaji
 	return nil
 }
 
-func (k *KubernetesUpgrade) ShouldCleanup(*kamajiv1alpha1.TenantControlPlane) bool {
+func (k *KubernetesUpgrade) ShouldCleanup(*stewardv1alpha1.TenantControlPlane) bool {
 	return false
 }
 
-func (k *KubernetesUpgrade) CleanUp(context.Context, *kamajiv1alpha1.TenantControlPlane) (bool, error) {
+func (k *KubernetesUpgrade) CleanUp(context.Context, *stewardv1alpha1.TenantControlPlane) (bool, error) {
 	return false, nil
 }
 
-func (k *KubernetesUpgrade) CreateOrUpdate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
+func (k *KubernetesUpgrade) CreateOrUpdate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
 	// A new installation, no need to upgrade
 	if len(tenantControlPlane.Status.Kubernetes.Version.Version) == 0 {
 		k.inProgress = false
@@ -69,7 +69,7 @@ func (k *KubernetesUpgrade) CreateOrUpdate(ctx context.Context, tenantControlPla
 		return controllerutil.OperationResultNone, nil
 	}
 	// An upgrade is in progress, let it go
-	if status := tenantControlPlane.Status.Kubernetes.Version.Status; status != nil && *status == kamajiv1alpha1.VersionUpgrading {
+	if status := tenantControlPlane.Status.Kubernetes.Version.Status; status != nil && *status == stewardv1alpha1.VersionUpgrading {
 		return controllerutil.OperationResultNone, nil
 	}
 	// Checking if the upgrade is allowed, or not
@@ -83,7 +83,7 @@ func (k *KubernetesUpgrade) CreateOrUpdate(ctx context.Context, tenantControlPla
 		coreDNSVersion = tenantControlPlane.Spec.Addons.CoreDNS.ImageTag
 	}
 
-	versionGetter := kamajiupgrade.NewKamajiKubeVersionGetter(clientSet, tenantControlPlane.Status.Kubernetes.Version.Version, coreDNSVersion, tenantControlPlane.Status.Kubernetes.Version.Status)
+	versionGetter := stewardupgrade.NewStewardKubeVersionGetter(clientSet, tenantControlPlane.Status.Kubernetes.Version.Version, coreDNSVersion, tenantControlPlane.Status.Kubernetes.Version.Status)
 
 	if _, err = upgrade.GetAvailableUpgrades(versionGetter, false, false, &printers.Discard{}); err != nil {
 		return controllerutil.OperationResultNone, errors.Wrap(err, "cannot retrieve available Upgrades for Kubernetes upgrade plan")
@@ -104,17 +104,17 @@ func (k *KubernetesUpgrade) GetName() string {
 	return "upgrade"
 }
 
-func (k *KubernetesUpgrade) ShouldStatusBeUpdated(context.Context, *kamajiv1alpha1.TenantControlPlane) bool {
+func (k *KubernetesUpgrade) ShouldStatusBeUpdated(context.Context, *stewardv1alpha1.TenantControlPlane) bool {
 	return k.inProgress
 }
 
-func (k *KubernetesUpgrade) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (k *KubernetesUpgrade) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	if k.inProgress {
-		tenantControlPlane.Status.Kubernetes.Version.Status = &kamajiv1alpha1.VersionUpgrading
+		tenantControlPlane.Status.Kubernetes.Version.Status = &stewardv1alpha1.VersionUpgrading
 	}
 
 	if tenantControlPlane.Spec.Kubernetes.Version == tenantControlPlane.Status.Kubernetes.Version.Version {
-		tenantControlPlane.Status.Kubernetes.Version.Status = &kamajiv1alpha1.VersionReady
+		tenantControlPlane.Status.Kubernetes.Version.Status = &stewardv1alpha1.VersionReady
 	}
 
 	return nil

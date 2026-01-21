@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package utils
@@ -10,10 +10,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/event"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
 )
 
-func TriggerChannel(ctx context.Context, receiver chan event.GenericEvent, tcp kamajiv1alpha1.TenantControlPlane) {
+func TriggerChannel(ctx context.Context, receiver chan event.GenericEvent, tcp stewardv1alpha1.TenantControlPlane) {
 	deadlineCtx, cancelFn := context.WithTimeout(ctx, 10*time.Second)
 	defer cancelFn()
 

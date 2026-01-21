@@ -1,0 +1,11 @@
+spec:
+  conversion:
+    strategy: Webhook
+    webhook:
+      clientConfig:
+        service:
+          name: steward-webhook-service
+          namespace: steward-system
+          path: /convert
+      conversionReviewVersions:
+        - v1

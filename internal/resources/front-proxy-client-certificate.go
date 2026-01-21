@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package resources
@@ -19,11 +19,11 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/constants"
-	"github.com/clastix/kamaji/internal/crypto"
-	"github.com/clastix/kamaji/internal/kubeadm"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/constants"
+	"github.com/butlerdotdev/steward/internal/crypto"
+	"github.com/butlerdotdev/steward/internal/kubeadm"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 type FrontProxyClientCertificate struct {
@@ -39,19 +39,19 @@ func (r *FrontProxyClientCertificate) GetHistogram() prometheus.Histogram {
 	return frontproxycertificateCollector
 }
 
-func (r *FrontProxyClientCertificate) ShouldStatusBeUpdated(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *FrontProxyClientCertificate) ShouldStatusBeUpdated(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) bool {
 	return tenantControlPlane.Status.Certificates.FrontProxyClient.Checksum != utilities.GetObjectChecksum(r.resource)
 }
 
-func (r *FrontProxyClientCertificate) ShouldCleanup(*kamajiv1alpha1.TenantControlPlane) bool {
+func (r *FrontProxyClientCertificate) ShouldCleanup(*stewardv1alpha1.TenantControlPlane) bool {
 	return false
 }
 
-func (r *FrontProxyClientCertificate) CleanUp(context.Context, *kamajiv1alpha1.TenantControlPlane) (bool, error) {
+func (r *FrontProxyClientCertificate) CleanUp(context.Context, *stewardv1alpha1.TenantControlPlane) (bool, error) {
 	return false, nil
 }
 
-func (r *FrontProxyClientCertificate) Define(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (r *FrontProxyClientCertificate) Define(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	r.resource = &corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      r.getPrefixedName(tenantControlPlane),
@@ -62,7 +62,7 @@ func (r *FrontProxyClientCertificate) Define(_ context.Context, tenantControlPla
 	return nil
 }
 
-func (r *FrontProxyClientCertificate) getPrefixedName(tenantControlPlane *kamajiv1alpha1.TenantControlPlane) string {
+func (r *FrontProxyClientCertificate) getPrefixedName(tenantControlPlane *stewardv1alpha1.TenantControlPlane) string {
 	return utilities.AddTenantPrefix(r.GetName(), tenantControlPlane)
 }
 
@@ -74,7 +74,7 @@ func (r *FrontProxyClientCertificate) GetTmpDirectory() string {
 	return r.TmpDirectory
 }
 
-func (r *FrontProxyClientCertificate) CreateOrUpdate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
+func (r *FrontProxyClientCertificate) CreateOrUpdate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
 	return utilities.CreateOrUpdateWithConflict(ctx, r.Client, r.resource, r.mutate(ctx, tenantControlPlane))
 }
 
@@ -82,7 +82,7 @@ func (r *FrontProxyClientCertificate) GetName() string {
 	return "front-proxy-client-certificate"
 }
 
-func (r *FrontProxyClientCertificate) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (r *FrontProxyClientCertificate) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	tenantControlPlane.Status.Certificates.FrontProxyClient.LastUpdate = metav1.Now()
 	tenantControlPlane.Status.Certificates.FrontProxyClient.SecretName = r.resource.GetName()
 	tenantControlPlane.Status.Certificates.FrontProxyClient.Checksum = utilities.GetObjectChecksum(r.resource)
@@ -90,7 +90,7 @@ func (r *FrontProxyClientCertificate) UpdateTenantControlPlaneStatus(_ context.C
 	return nil
 }
 
-func (r *FrontProxyClientCertificate) mutate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) controllerutil.MutateFn {
+func (r *FrontProxyClientCertificate) mutate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) controllerutil.MutateFn {
 	return func() error {
 		logger := log.FromContext(ctx, "resource", r.GetName())
 		// Retrieving the TenantControlPlane CA:
@@ -105,7 +105,7 @@ func (r *FrontProxyClientCertificate) mutate(ctx context.Context, tenantControlP
 
 		r.resource.SetLabels(utilities.MergeMaps(
 			r.resource.GetLabels(),
-			utilities.KamajiLabels(tenantControlPlane.GetName(), r.GetName()),
+			utilities.StewardLabels(tenantControlPlane.GetName(), r.GetName()),
 			map[string]string{
 				constants.ControllerLabelResource: utilities.CertificateX509Label,
 			},

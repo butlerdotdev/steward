@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package handlers
@@ -16,9 +16,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/builders/controlplane"
-	"github.com/clastix/kamaji/internal/webhook/utils"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/builders/controlplane"
+	"github.com/butlerdotdev/steward/internal/webhook/utils"
 )
 
 type TenantControlPlaneDeployment struct {
@@ -35,7 +35,7 @@ func (t TenantControlPlaneDeployment) OnDelete(runtime.Object) AdmissionResponse
 	return utils.NilOp()
 }
 
-func (t TenantControlPlaneDeployment) shouldTriggerCheck(newTCP, oldTCP kamajiv1alpha1.TenantControlPlane) bool {
+func (t TenantControlPlaneDeployment) shouldTriggerCheck(newTCP, oldTCP stewardv1alpha1.TenantControlPlane) bool {
 	if newTCP.Spec.ControlPlane.Deployment.AdditionalVolumeMounts == nil &&
 		len(newTCP.Spec.ControlPlane.Deployment.AdditionalInitContainers) == 0 &&
 		len(newTCP.Spec.ControlPlane.Deployment.AdditionalContainers) == 0 &&
@@ -55,13 +55,13 @@ func (t TenantControlPlaneDeployment) shouldTriggerCheck(newTCP, oldTCP kamajiv1
 
 func (t TenantControlPlaneDeployment) OnUpdate(newObject runtime.Object, oldObject runtime.Object) AdmissionResponse {
 	return func(ctx context.Context, _ admission.Request) ([]jsonpatch.JsonPatchOperation, error) {
-		tcp, previousTCP := newObject.(*kamajiv1alpha1.TenantControlPlane), oldObject.(*kamajiv1alpha1.TenantControlPlane) //nolint:forcetypeassert
+		tcp, previousTCP := newObject.(*stewardv1alpha1.TenantControlPlane), oldObject.(*stewardv1alpha1.TenantControlPlane) //nolint:forcetypeassert
 
 		if !t.shouldTriggerCheck(*tcp, *previousTCP) {
 			return nil, nil
 		}
 
-		ds := kamajiv1alpha1.DataStore{}
+		ds := stewardv1alpha1.DataStore{}
 		if err := t.Client.Get(ctx, types.NamespacedName{Name: tcp.Spec.DataStore}, &ds); err != nil {
 			return nil, err
 		}
@@ -70,7 +70,7 @@ func (t TenantControlPlaneDeployment) OnUpdate(newObject runtime.Object, oldObje
 		dataStoreOverrides := make([]controlplane.DataStoreOverrides, 0, len(tcp.Spec.DataStoreOverrides))
 
 		for _, dso := range tcp.Spec.DataStoreOverrides {
-			ds := kamajiv1alpha1.DataStore{}
+			ds := stewardv1alpha1.DataStore{}
 			if err := t.Client.Get(ctx, types.NamespacedName{Name: dso.DataStore}, &ds); err != nil {
 				return nil, err
 			}

@@ -1,6 +1,6 @@
 ## Configuration
 
-Currently, **Kamaji** allows customization using CLI flags for the `manager` subcommand.
+Currently, **Steward** allows customization using CLI flags for the `manager` subcommand.
 
 Available flags are the following:
 
@@ -9,13 +9,13 @@ Available flags are the following:
 | `--metrics-bind-address`          | The address the metric endpoint binds to.                                                                                                                                          | `:8080`                                        |
 | `--health-probe-bind-address`     | The address the probe endpoint binds to.                                                                                                                                           | `:8081`                                        |
 | `--leader-elect`                  | Enable leader election for controller manager. Enabling this will ensure there is only one active controller manager.                                                              | `true`                                         |
-| `--tmp-directory`                 | Directory which will be used to work with temporary files.                                                                                                                         | `/tmp/kamaji`                                  |
+| `--tmp-directory`                 | Directory which will be used to work with temporary files.                                                                                                                         | `/tmp/steward`                                  |
 | `--kine-image`                    | Container image along with tag to use for the Kine sidecar container (used only if etcd-storage-type is set to one of kine strategies).                                            | `rancher/kine:v0.11.10-amd64`                  |
-| `--datastore`                     | The default DataStore that should be used by Kamaji to setup the required storage.                                                                                                 | `etcd`                                         |
+| `--datastore`                     | The default DataStore that should be used by Steward to setup the required storage.                                                                                                 | `etcd`                                         |
 | `--migrate-image`                 | Specify the container image to launch when a TenantControlPlane is migrated to a new datastore.                                                                                    | `migrate-image`                                |
 | `--max-concurrent-tcp-reconciles` | Specify the number of workers for the Tenant Control Plane controller (beware of CPU consumption).                                                                                 | `1`                                            |
 | `--pod-namespace`                 | The Kubernetes Namespace on which the Operator is running in, required for the TenantControlPlane migration jobs.                                                                  | `os.Getenv("POD_NAMESPACE")`                   |
-| `--webhook-service-name`          | The Kamaji webhook server Service name which is used to get validation webhooks, required for the TenantControlPlane migration jobs.                                               | `kamaji-webhook-service`                       |
+| `--webhook-service-name`          | The Steward webhook server Service name which is used to get validation webhooks, required for the TenantControlPlane migration jobs.                                               | `steward-webhook-service`                       |
 | `--serviceaccount-name`           | The Kubernetes ServiceAccount used by the Operator, required for the TenantControlPlane migration jobs.                                                                            | `os.Getenv("SERVICE_ACCOUNT")`                 |
 | `--webhook-ca-path`               | Path to the Manager webhook server CA, required for the TenantControlPlane migration jobs.                                                                                         | `/tmp/k8s-webhook-server/serving-certs/ca.crt` |
 | `--controller-reconcile-timeout`  | The reconciliation request timeout before the controller withdraw the external resource calls, such as dealing with the Datastore, or the Tenant Control Plane API endpoint.       | `30s`                                          |

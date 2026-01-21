@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package konnectivity
@@ -16,9 +16,9 @@ import (
 	gatewayv1 "sigs.k8s.io/gateway-api/apis/v1"
 	gatewayv1alpha2 "sigs.k8s.io/gateway-api/apis/v1alpha2"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/resources"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/resources"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 type KubernetesKonnectivityGatewayResource struct {
@@ -32,7 +32,7 @@ func (r *KubernetesKonnectivityGatewayResource) GetHistogram() prometheus.Histog
 	return gatewayCollector
 }
 
-func (r *KubernetesKonnectivityGatewayResource) ShouldStatusBeUpdated(_ context.Context, tcp *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *KubernetesKonnectivityGatewayResource) ShouldStatusBeUpdated(_ context.Context, tcp *stewardv1alpha1.TenantControlPlane) bool {
 	switch {
 	case !r.shouldHaveGateway(tcp) && (tcp.Status.Addons.Konnectivity.Gateway == nil):
 		return false
@@ -49,7 +49,7 @@ func (r *KubernetesKonnectivityGatewayResource) ShouldStatusBeUpdated(_ context.
 
 // shouldHaveGateway checks if Konnectivity gateway should be configured.
 // Create when Konnectivity addon is enabled and control plane gateway is configured.
-func (r *KubernetesKonnectivityGatewayResource) shouldHaveGateway(tcp *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *KubernetesKonnectivityGatewayResource) shouldHaveGateway(tcp *stewardv1alpha1.TenantControlPlane) bool {
 	if tcp.Spec.Addons.Konnectivity == nil { // konnectivity addon is disabled
 		return false
 	}
@@ -58,7 +58,7 @@ func (r *KubernetesKonnectivityGatewayResource) shouldHaveGateway(tcp *kamajiv1a
 }
 
 // gatewayStatusNeedsUpdate compares the current gateway resource status with the stored status.
-func (r *KubernetesKonnectivityGatewayResource) gatewayStatusNeedsUpdate(tcp *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *KubernetesKonnectivityGatewayResource) gatewayStatusNeedsUpdate(tcp *stewardv1alpha1.TenantControlPlane) bool {
 	currentStatus := tcp.Status.Addons.Konnectivity.Gateway
 
 	// Check if route reference has changed
@@ -70,11 +70,11 @@ func (r *KubernetesKonnectivityGatewayResource) gatewayStatusNeedsUpdate(tcp *ka
 	return resources.IsGatewayRouteStatusChanged(currentStatus, r.resource.Status.RouteStatus)
 }
 
-func (r *KubernetesKonnectivityGatewayResource) ShouldCleanup(tcp *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *KubernetesKonnectivityGatewayResource) ShouldCleanup(tcp *stewardv1alpha1.TenantControlPlane) bool {
 	return !r.shouldHaveGateway(tcp) && tcp.Status.Addons.Konnectivity.Gateway != nil
 }
 
-func (r *KubernetesKonnectivityGatewayResource) CleanUp(ctx context.Context, tcp *kamajiv1alpha1.TenantControlPlane) (bool, error) {
+func (r *KubernetesKonnectivityGatewayResource) CleanUp(ctx context.Context, tcp *stewardv1alpha1.TenantControlPlane) (bool, error) {
 	logger := log.FromContext(ctx, "resource", r.GetName())
 
 	cleaned, err := resources.CleanupTLSRoute(ctx, r.Client, r.resource.GetName(), r.resource.GetNamespace(), tcp)
@@ -91,7 +91,7 @@ func (r *KubernetesKonnectivityGatewayResource) CleanUp(ctx context.Context, tcp
 	return cleaned, nil
 }
 
-func (r *KubernetesKonnectivityGatewayResource) UpdateTenantControlPlaneStatus(ctx context.Context, tcp *kamajiv1alpha1.TenantControlPlane) error {
+func (r *KubernetesKonnectivityGatewayResource) UpdateTenantControlPlaneStatus(ctx context.Context, tcp *stewardv1alpha1.TenantControlPlane) error {
 	logger := log.FromContext(ctx, "resource", r.GetName())
 
 	// Clean up status if Gateway routes are no longer configured
@@ -101,7 +101,7 @@ func (r *KubernetesKonnectivityGatewayResource) UpdateTenantControlPlaneStatus(c
 		return nil
 	}
 
-	tcp.Status.Addons.Konnectivity.Gateway = &kamajiv1alpha1.KubernetesGatewayStatus{
+	tcp.Status.Addons.Konnectivity.Gateway = &stewardv1alpha1.KubernetesGatewayStatus{
 		RouteStatus: r.resource.Status.RouteStatus,
 		RouteRef: v1.LocalObjectReference{
 			Name: r.resource.Name,
@@ -135,7 +135,7 @@ func (r *KubernetesKonnectivityGatewayResource) UpdateTenantControlPlaneStatus(c
 	return nil
 }
 
-func (r *KubernetesKonnectivityGatewayResource) Define(_ context.Context, tcp *kamajiv1alpha1.TenantControlPlane) error {
+func (r *KubernetesKonnectivityGatewayResource) Define(_ context.Context, tcp *stewardv1alpha1.TenantControlPlane) error {
 	r.resource = &gatewayv1alpha2.TLSRoute{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      fmt.Sprintf("%s-konnectivity", tcp.GetName()),
@@ -146,7 +146,7 @@ func (r *KubernetesKonnectivityGatewayResource) Define(_ context.Context, tcp *k
 	return nil
 }
 
-func (r *KubernetesKonnectivityGatewayResource) mutate(tcp *kamajiv1alpha1.TenantControlPlane) controllerutil.MutateFn {
+func (r *KubernetesKonnectivityGatewayResource) mutate(tcp *stewardv1alpha1.TenantControlPlane) controllerutil.MutateFn {
 	return func() error {
 		// Use control plane gateway configuration
 		if tcp.Spec.ControlPlane.Gateway == nil {
@@ -155,7 +155,7 @@ func (r *KubernetesKonnectivityGatewayResource) mutate(tcp *kamajiv1alpha1.Tenan
 
 		labels := utilities.MergeMaps(
 			r.resource.GetLabels(),
-			utilities.KamajiLabels(tcp.GetName(), r.GetName()),
+			utilities.StewardLabels(tcp.GetName(), r.GetName()),
 			tcp.Spec.ControlPlane.Gateway.AdditionalMetadata.Labels,
 		)
 		r.resource.SetLabels(labels)
@@ -202,7 +202,7 @@ func (r *KubernetesKonnectivityGatewayResource) mutate(tcp *kamajiv1alpha1.Tenan
 	}
 }
 
-func (r *KubernetesKonnectivityGatewayResource) CreateOrUpdate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
+func (r *KubernetesKonnectivityGatewayResource) CreateOrUpdate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
 	logger := log.FromContext(ctx, "resource", r.GetName())
 
 	if !r.shouldHaveGateway(tenantControlPlane) {

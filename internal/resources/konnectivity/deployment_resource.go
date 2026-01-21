@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package konnectivity
@@ -14,10 +14,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	builder "github.com/clastix/kamaji/internal/builders/controlplane"
-	"github.com/clastix/kamaji/internal/resources"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	builder "github.com/butlerdotdev/steward/internal/builders/controlplane"
+	"github.com/butlerdotdev/steward/internal/resources"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 type KubernetesDeploymentResource struct {
@@ -33,7 +33,7 @@ func (r *KubernetesDeploymentResource) GetHistogram() prometheus.Histogram {
 	return deploymentCollector
 }
 
-func (r *KubernetesDeploymentResource) ShouldStatusBeUpdated(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *KubernetesDeploymentResource) ShouldStatusBeUpdated(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) bool {
 	switch {
 	case tenantControlPlane.Spec.Addons.Konnectivity == nil && tenantControlPlane.Status.Addons.Konnectivity.Enabled,
 		tenantControlPlane.Spec.Addons.Konnectivity != nil && !tenantControlPlane.Status.Addons.Konnectivity.Enabled:
@@ -43,11 +43,11 @@ func (r *KubernetesDeploymentResource) ShouldStatusBeUpdated(_ context.Context, 
 	}
 }
 
-func (r *KubernetesDeploymentResource) ShouldCleanup(tenantControlPlane *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *KubernetesDeploymentResource) ShouldCleanup(tenantControlPlane *stewardv1alpha1.TenantControlPlane) bool {
 	return tenantControlPlane.Spec.Addons.Konnectivity == nil && tenantControlPlane.Status.Addons.Konnectivity.Enabled
 }
 
-func (r *KubernetesDeploymentResource) CleanUp(ctx context.Context, _ *kamajiv1alpha1.TenantControlPlane) (bool, error) {
+func (r *KubernetesDeploymentResource) CleanUp(ctx context.Context, _ *stewardv1alpha1.TenantControlPlane) (bool, error) {
 	logger := log.FromContext(ctx)
 
 	logger.Info("performing clean-up from Deployment of Konnectivity")
@@ -71,7 +71,7 @@ func (r *KubernetesDeploymentResource) CleanUp(ctx context.Context, _ *kamajiv1a
 	return res == controllerutil.OperationResultUpdated, err
 }
 
-func (r *KubernetesDeploymentResource) Define(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (r *KubernetesDeploymentResource) Define(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	r.resource = &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      tenantControlPlane.GetName(),
@@ -82,7 +82,7 @@ func (r *KubernetesDeploymentResource) Define(_ context.Context, tenantControlPl
 	return nil
 }
 
-func (r *KubernetesDeploymentResource) mutate(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) controllerutil.MutateFn {
+func (r *KubernetesDeploymentResource) mutate(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) controllerutil.MutateFn {
 	return func() (err error) {
 		// If konnectivity is disabled, no operation is required:
 		// removal of the container will be performed by clean-up.
@@ -100,7 +100,7 @@ func (r *KubernetesDeploymentResource) mutate(_ context.Context, tenantControlPl
 	}
 }
 
-func (r *KubernetesDeploymentResource) CreateOrUpdate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
+func (r *KubernetesDeploymentResource) CreateOrUpdate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
 	if tenantControlPlane.Spec.Addons.Konnectivity == nil {
 		return controllerutil.OperationResultNone, nil
 	}
@@ -112,7 +112,7 @@ func (r *KubernetesDeploymentResource) GetName() string {
 	return "konnectivity-deployment"
 }
 
-func (r *KubernetesDeploymentResource) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (r *KubernetesDeploymentResource) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	tenantControlPlane.Status.Addons.Konnectivity.Enabled = tenantControlPlane.Spec.Addons.Konnectivity != nil
 
 	return nil

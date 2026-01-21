@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package datastore
@@ -18,22 +18,22 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	kamajierrors "github.com/clastix/kamaji/internal/errors"
-	"github.com/clastix/kamaji/internal/resources"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	stewarderrors "github.com/butlerdotdev/steward/internal/errors"
+	"github.com/butlerdotdev/steward/internal/resources"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 type Migrate struct {
 	Client               client.Client
-	KamajiNamespace      string
-	KamajiServiceAccount string
-	KamajiServiceName    string
+	StewardNamespace      string
+	StewardServiceAccount string
+	StewardServiceName    string
 	ShouldCleanUp        bool
 	MigrateImage         string
 
-	actualDatastore  *kamajiv1alpha1.DataStore
-	desiredDatastore *kamajiv1alpha1.DataStore
+	actualDatastore  *stewardv1alpha1.DataStore
+	desiredDatastore *stewardv1alpha1.DataStore
 	job              *batchv1.Job
 
 	inProgress bool
@@ -45,7 +45,7 @@ func (d *Migrate) GetHistogram() prometheus.Histogram {
 	return migrateCollector
 }
 
-func (d *Migrate) Define(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (d *Migrate) Define(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	if len(tenantControlPlane.Status.Storage.DataStoreName) == 0 {
 		return nil
 	}
@@ -53,7 +53,7 @@ func (d *Migrate) Define(ctx context.Context, tenantControlPlane *kamajiv1alpha1
 	d.job = &batchv1.Job{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      fmt.Sprintf("migrate-%s", tenantControlPlane.UID),
-			Namespace: d.KamajiNamespace,
+			Namespace: d.StewardNamespace,
 		},
 	}
 
@@ -67,21 +67,21 @@ func (d *Migrate) Define(ctx context.Context, tenantControlPlane *kamajiv1alpha1
 		}
 	}
 
-	d.actualDatastore = &kamajiv1alpha1.DataStore{}
+	d.actualDatastore = &stewardv1alpha1.DataStore{}
 	if err := d.Client.Get(ctx, types.NamespacedName{Name: tenantControlPlane.Status.Storage.DataStoreName}, d.actualDatastore); err != nil {
 		return err
 	}
 
-	d.desiredDatastore = &kamajiv1alpha1.DataStore{}
+	d.desiredDatastore = &stewardv1alpha1.DataStore{}
 
 	return d.Client.Get(ctx, types.NamespacedName{Name: tenantControlPlane.Spec.DataStore}, d.desiredDatastore)
 }
 
-func (d *Migrate) ShouldCleanup(tcp *kamajiv1alpha1.TenantControlPlane) bool {
-	return d.ShouldCleanUp && *tcp.Status.Kubernetes.Version.Status == kamajiv1alpha1.VersionMigrating
+func (d *Migrate) ShouldCleanup(tcp *stewardv1alpha1.TenantControlPlane) bool {
+	return d.ShouldCleanUp && *tcp.Status.Kubernetes.Version.Status == stewardv1alpha1.VersionMigrating
 }
 
-func (d *Migrate) CleanUp(ctx context.Context, _ *kamajiv1alpha1.TenantControlPlane) (bool, error) {
+func (d *Migrate) CleanUp(ctx context.Context, _ *stewardv1alpha1.TenantControlPlane) (bool, error) {
 	err := d.Client.Get(ctx, types.NamespacedName{Name: d.job.GetName(), Namespace: d.job.GetNamespace()}, d.job)
 	if err != nil {
 		if errors.IsNotFound(err) {
@@ -94,7 +94,7 @@ func (d *Migrate) CleanUp(ctx context.Context, _ *kamajiv1alpha1.TenantControlPl
 	return false, d.Client.Delete(ctx, d.job)
 }
 
-func (d *Migrate) CreateOrUpdate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
+func (d *Migrate) CreateOrUpdate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
 	if d.desiredDatastore == nil {
 		return controllerutil.OperationResultNone, nil
 	}
@@ -105,13 +105,13 @@ func (d *Migrate) CreateOrUpdate(ctx context.Context, tenantControlPlane *kamaji
 
 	res, err := utilities.CreateOrUpdateWithConflict(ctx, d.Client, d.job, func() error {
 		d.job.SetLabels(map[string]string{
-			"tcp.kamaji.clastix.io/name":      tenantControlPlane.GetName(),
-			"tcp.kamaji.clastix.io/namespace": tenantControlPlane.GetNamespace(),
-			"kamaji.clastix.io/component":     "migrate",
+			"tcp.steward.butlerlabs.dev/name":      tenantControlPlane.GetName(),
+			"tcp.steward.butlerlabs.dev/namespace": tenantControlPlane.GetNamespace(),
+			"steward.butlerlabs.dev/component":     "migrate",
 		})
 
 		d.job.Spec.Template.ObjectMeta.Labels = utilities.MergeMaps(d.job.Spec.Template.ObjectMeta.Labels, d.job.Spec.Template.ObjectMeta.Labels)
-		d.job.Spec.Template.Spec.ServiceAccountName = d.KamajiServiceAccount
+		d.job.Spec.Template.Spec.ServiceAccountName = d.StewardServiceAccount
 		d.job.Spec.Template.Spec.RestartPolicy = corev1.RestartPolicyOnFailure
 		if len(d.job.Spec.Template.Spec.Containers) == 0 {
 			d.job.Spec.Template.Spec.Containers = append(d.job.Spec.Template.Spec.Containers, corev1.Container{})
@@ -125,10 +125,10 @@ func (d *Migrate) CreateOrUpdate(ctx context.Context, tenantControlPlane *kamaji
 		}
 
 		if annotations := tenantControlPlane.GetAnnotations(); annotations != nil {
-			v, _ := strconv.ParseBool(annotations["kamaji.clastix.io/cleanup-prior-migration"])
+			v, _ := strconv.ParseBool(annotations["steward.butlerlabs.dev/cleanup-prior-migration"])
 			d.job.Spec.Template.Spec.Containers[0].Args = append(d.job.Spec.Template.Spec.Containers[0].Args, fmt.Sprintf("--cleanup-prior-migration=%t", v))
 
-			if timeout, tErr := time.ParseDuration(annotations["kamaji.clastix.io/migration-timeout"]); tErr == nil {
+			if timeout, tErr := time.ParseDuration(annotations["steward.butlerlabs.dev/migration-timeout"]); tErr == nil {
 				d.job.Spec.Template.Spec.Containers[0].Args = append(d.job.Spec.Template.Spec.Containers[0].Args, fmt.Sprintf("--timeout=%s", timeout.String()))
 			}
 		}
@@ -137,7 +137,7 @@ func (d *Migrate) CreateOrUpdate(ctx context.Context, tenantControlPlane *kamaji
 	})
 	if err != nil {
 		// Jobs are immutable, except for a tiny subset of fields:
-		// these are useless for Kamaji, and we don't have proper RBAC.
+		// these are useless for Steward, and we don't have proper RBAC.
 		// If the Job has a UUID, it means it's an update, and we're expecting that error.
 		if errors.IsForbidden(err) && d.job.UID != "" {
 			_ = d.Client.Delete(ctx, d.job)
@@ -164,7 +164,7 @@ func (d *Migrate) CreateOrUpdate(ctx context.Context, tenantControlPlane *kamaji
 
 		d.inProgress = true
 
-		return controllerutil.OperationResultNone, kamajierrors.MigrationInProcessError{}
+		return controllerutil.OperationResultNone, stewarderrors.MigrationInProcessError{}
 	default:
 		return controllerutil.OperationResultNone, fmt.Errorf("unexpected status %s from the migration job", res)
 	}
@@ -174,13 +174,13 @@ func (d *Migrate) GetName() string {
 	return "migrate"
 }
 
-func (d *Migrate) ShouldStatusBeUpdated(context.Context, *kamajiv1alpha1.TenantControlPlane) bool {
+func (d *Migrate) ShouldStatusBeUpdated(context.Context, *stewardv1alpha1.TenantControlPlane) bool {
 	return d.inProgress
 }
 
-func (d *Migrate) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (d *Migrate) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	if d.inProgress {
-		tenantControlPlane.Status.Kubernetes.Version.Status = &kamajiv1alpha1.VersionMigrating
+		tenantControlPlane.Status.Kubernetes.Version.Status = &stewardv1alpha1.VersionMigrating
 	}
 
 	return nil

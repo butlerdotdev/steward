@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package datastore
@@ -16,11 +16,11 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/controllers/finalizers"
-	"github.com/clastix/kamaji/internal/datastore"
-	"github.com/clastix/kamaji/internal/resources"
-	"github.com/clastix/kamaji/internal/resources/utils"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/controllers/finalizers"
+	"github.com/butlerdotdev/steward/internal/datastore"
+	"github.com/butlerdotdev/steward/internal/resources"
+	"github.com/butlerdotdev/steward/internal/resources/utils"
 )
 
 type SetupResource struct {
@@ -33,7 +33,7 @@ type Setup struct {
 	resource   *SetupResource
 	Client     client.Client
 	Connection datastore.Connection
-	DataStore  kamajiv1alpha1.DataStore
+	DataStore  stewardv1alpha1.DataStore
 }
 
 func (r *Setup) GetHistogram() prometheus.Histogram {
@@ -42,22 +42,22 @@ func (r *Setup) GetHistogram() prometheus.Histogram {
 	return setupCollector
 }
 
-func (r *Setup) ShouldStatusBeUpdated(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *Setup) ShouldStatusBeUpdated(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) bool {
 	return tenantControlPlane.Status.Storage.Driver != string(r.DataStore.Spec.Driver) ||
 		tenantControlPlane.Status.Storage.Setup.Checksum != tenantControlPlane.Status.Storage.Config.Checksum ||
 		tenantControlPlane.Status.Storage.Setup.User != r.resource.user ||
 		tenantControlPlane.Status.Storage.Setup.Schema != r.resource.schema
 }
 
-func (r *Setup) ShouldCleanup(_ *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *Setup) ShouldCleanup(_ *stewardv1alpha1.TenantControlPlane) bool {
 	return false
 }
 
-func (r *Setup) CleanUp(context.Context, *kamajiv1alpha1.TenantControlPlane) (bool, error) {
+func (r *Setup) CleanUp(context.Context, *stewardv1alpha1.TenantControlPlane) (bool, error) {
 	return false, nil
 }
 
-func (r *Setup) Define(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (r *Setup) Define(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	logger := log.FromContext(ctx, "resource", r.GetName())
 
 	secret := &corev1.Secret{}
@@ -84,7 +84,7 @@ func (r *Setup) GetClient() client.Client {
 	return r.Client
 }
 
-func (r *Setup) CreateOrUpdate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (reconciliationResult controllerutil.OperationResult, err error) {
+func (r *Setup) CreateOrUpdate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (reconciliationResult controllerutil.OperationResult, err error) {
 	logger := log.FromContext(ctx, "resource", r.GetName())
 
 	defer func() {
@@ -93,7 +93,7 @@ func (r *Setup) CreateOrUpdate(ctx context.Context, tenantControlPlane *kamajiv1
 		}
 		// Adding the Datastore finalizer
 		err = retry.RetryOnConflict(retry.DefaultRetry, func() error {
-			tcp := &kamajiv1alpha1.TenantControlPlane{}
+			tcp := &stewardv1alpha1.TenantControlPlane{}
 
 			if retryErr := r.Client.Get(ctx, types.NamespacedName{Namespace: tenantControlPlane.GetNamespace(), Name: tenantControlPlane.GetName()}, tcp); retryErr != nil {
 				return retryErr
@@ -142,7 +142,7 @@ func (r *Setup) GetName() string {
 	return "datastore-setup"
 }
 
-func (r *Setup) Delete(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (r *Setup) Delete(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	logger := log.FromContext(ctx, "resource", r.GetName())
 
 	if err := r.revokeGrantPrivileges(ctx, tenantControlPlane); err != nil {
@@ -164,7 +164,7 @@ func (r *Setup) Delete(ctx context.Context, tenantControlPlane *kamajiv1alpha1.T
 	}
 
 	err := retry.RetryOnConflict(retry.DefaultRetry, func() error {
-		tcp := &kamajiv1alpha1.TenantControlPlane{}
+		tcp := &stewardv1alpha1.TenantControlPlane{}
 		if err := r.Client.Get(ctx, types.NamespacedName{Name: tenantControlPlane.GetName(), Namespace: tenantControlPlane.GetNamespace()}, tcp); err != nil {
 			return err
 		}
@@ -180,7 +180,7 @@ func (r *Setup) Delete(ctx context.Context, tenantControlPlane *kamajiv1alpha1.T
 	return nil
 }
 
-func (r *Setup) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (r *Setup) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	tenantControlPlane.Status.Storage.Setup.Schema = r.resource.schema
 	tenantControlPlane.Status.Storage.Setup.User = r.resource.user
 	tenantControlPlane.Status.Storage.Setup.LastUpdate = metav1.Now()
@@ -189,7 +189,7 @@ func (r *Setup) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlP
 	return nil
 }
 
-func (r *Setup) createDB(ctx context.Context, _ *kamajiv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
+func (r *Setup) createDB(ctx context.Context, _ *stewardv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
 	exists, err := r.Connection.DBExists(ctx, r.resource.schema)
 	if err != nil {
 		return controllerutil.OperationResultNone, errors.Wrap(err, "unable to check if datastore exists")
@@ -206,7 +206,7 @@ func (r *Setup) createDB(ctx context.Context, _ *kamajiv1alpha1.TenantControlPla
 	return controllerutil.OperationResultCreated, nil
 }
 
-func (r *Setup) deleteDB(ctx context.Context, _ *kamajiv1alpha1.TenantControlPlane) error {
+func (r *Setup) deleteDB(ctx context.Context, _ *stewardv1alpha1.TenantControlPlane) error {
 	exists, err := r.Connection.DBExists(ctx, r.resource.schema)
 	if err != nil {
 		return errors.Wrap(err, "unable to check if datastore exists")
@@ -223,7 +223,7 @@ func (r *Setup) deleteDB(ctx context.Context, _ *kamajiv1alpha1.TenantControlPla
 	return nil
 }
 
-func (r *Setup) createUser(ctx context.Context, _ *kamajiv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
+func (r *Setup) createUser(ctx context.Context, _ *stewardv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
 	exists, err := r.Connection.UserExists(ctx, r.resource.user)
 	if err != nil {
 		return controllerutil.OperationResultNone, errors.Wrap(err, "unable to check if user exists")
@@ -240,7 +240,7 @@ func (r *Setup) createUser(ctx context.Context, _ *kamajiv1alpha1.TenantControlP
 	return controllerutil.OperationResultCreated, nil
 }
 
-func (r *Setup) deleteUser(ctx context.Context, _ *kamajiv1alpha1.TenantControlPlane) error {
+func (r *Setup) deleteUser(ctx context.Context, _ *stewardv1alpha1.TenantControlPlane) error {
 	exists, err := r.Connection.UserExists(ctx, r.resource.user)
 	if err != nil {
 		return errors.Wrap(err, "unable to check if user exists")
@@ -257,7 +257,7 @@ func (r *Setup) deleteUser(ctx context.Context, _ *kamajiv1alpha1.TenantControlP
 	return nil
 }
 
-func (r *Setup) createGrantPrivileges(ctx context.Context, _ *kamajiv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
+func (r *Setup) createGrantPrivileges(ctx context.Context, _ *stewardv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
 	exists, err := r.Connection.GrantPrivilegesExists(ctx, r.resource.user, r.resource.schema)
 	if err != nil {
 		return controllerutil.OperationResultNone, errors.Wrap(err, "unable to check if privileges exist")
@@ -274,7 +274,7 @@ func (r *Setup) createGrantPrivileges(ctx context.Context, _ *kamajiv1alpha1.Ten
 	return controllerutil.OperationResultCreated, nil
 }
 
-func (r *Setup) revokeGrantPrivileges(ctx context.Context, _ *kamajiv1alpha1.TenantControlPlane) error {
+func (r *Setup) revokeGrantPrivileges(ctx context.Context, _ *stewardv1alpha1.TenantControlPlane) error {
 	exists, err := r.Connection.GrantPrivilegesExists(ctx, r.resource.user, r.resource.schema)
 	if err != nil {
 		return errors.Wrap(err, "unable to check if privileges exist")

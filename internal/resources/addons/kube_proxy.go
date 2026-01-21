@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package addons
@@ -19,13 +19,13 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/constants"
-	"github.com/clastix/kamaji/internal/kubeadm"
-	"github.com/clastix/kamaji/internal/resources"
-	addon_utils "github.com/clastix/kamaji/internal/resources/addons/utils"
-	"github.com/clastix/kamaji/internal/resources/utils"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/constants"
+	"github.com/butlerdotdev/steward/internal/kubeadm"
+	"github.com/butlerdotdev/steward/internal/resources"
+	addon_utils "github.com/butlerdotdev/steward/internal/resources/addons/utils"
+	"github.com/butlerdotdev/steward/internal/resources/utils"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 type KubeProxy struct {
@@ -45,7 +45,7 @@ func (k *KubeProxy) GetHistogram() prometheus.Histogram {
 	return kubeProxyCollector
 }
 
-func (k *KubeProxy) Define(context.Context, *kamajiv1alpha1.TenantControlPlane) error {
+func (k *KubeProxy) Define(context.Context, *stewardv1alpha1.TenantControlPlane) error {
 	k.clusterRoleBinding = &rbacv1.ClusterRoleBinding{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: kubeadm.KubeProxyClusterRoleBindingName,
@@ -85,11 +85,11 @@ func (k *KubeProxy) Define(context.Context, *kamajiv1alpha1.TenantControlPlane) 
 	return nil
 }
 
-func (k *KubeProxy) ShouldCleanup(tenantControlPlane *kamajiv1alpha1.TenantControlPlane) bool {
+func (k *KubeProxy) ShouldCleanup(tenantControlPlane *stewardv1alpha1.TenantControlPlane) bool {
 	return tenantControlPlane.Spec.Addons.KubeProxy == nil && tenantControlPlane.Status.Addons.KubeProxy.Enabled
 }
 
-func (k *KubeProxy) CleanUp(ctx context.Context, tcp *kamajiv1alpha1.TenantControlPlane) (bool, error) {
+func (k *KubeProxy) CleanUp(ctx context.Context, tcp *stewardv1alpha1.TenantControlPlane) (bool, error) {
 	logger := log.FromContext(ctx, "resource", "kubeadm_addons", "addon", k.GetName())
 
 	tenantClient, err := utilities.GetTenantClient(ctx, k.Client, tcp)
@@ -108,7 +108,7 @@ func (k *KubeProxy) CleanUp(ctx context.Context, tcp *kamajiv1alpha1.TenantContr
 			}
 		}
 		// Skipping deletion:
-		// the kubeproxy addons is not managed by Kamaji.
+		// the kubeproxy addons is not managed by Steward.
 		if labels := obj.GetLabels(); labels == nil || labels[constants.ProjectNameLabelKey] != constants.ProjectNameLabelValue {
 			continue
 		}
@@ -127,7 +127,7 @@ func (k *KubeProxy) CleanUp(ctx context.Context, tcp *kamajiv1alpha1.TenantContr
 	return deleted, nil
 }
 
-func (k *KubeProxy) CreateOrUpdate(ctx context.Context, tcp *kamajiv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
+func (k *KubeProxy) CreateOrUpdate(ctx context.Context, tcp *stewardv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
 	if tcp.Spec.Addons.KubeProxy == nil {
 		return controllerutil.OperationResultNone, nil
 	}
@@ -206,11 +206,11 @@ func (k *KubeProxy) GetName() string {
 	return "kube-proxy"
 }
 
-func (k *KubeProxy) ShouldStatusBeUpdated(_ context.Context, tcp *kamajiv1alpha1.TenantControlPlane) bool {
+func (k *KubeProxy) ShouldStatusBeUpdated(_ context.Context, tcp *stewardv1alpha1.TenantControlPlane) bool {
 	return tcp.Spec.Addons.KubeProxy != nil && !tcp.Status.Addons.KubeProxy.Enabled
 }
 
-func (k *KubeProxy) UpdateTenantControlPlaneStatus(_ context.Context, tcp *kamajiv1alpha1.TenantControlPlane) error {
+func (k *KubeProxy) UpdateTenantControlPlaneStatus(_ context.Context, tcp *stewardv1alpha1.TenantControlPlane) error {
 	tcp.Status.Addons.KubeProxy.Enabled = tcp.Spec.Addons.KubeProxy != nil
 	tcp.Status.Addons.KubeProxy.LastUpdate = metav1.Now()
 
@@ -315,10 +315,10 @@ func (k *KubeProxy) mutateDaemonSet(ctx context.Context, tenantClient client.Cli
 		return controllerutil.OperationResultNone, err
 	}
 
-	return controllerutil.OperationResultNone, tenantClient.Patch(ctx, k.daemonSet, client.Apply, client.FieldOwner("kamaji"), client.ForceOwnership)
+	return controllerutil.OperationResultNone, tenantClient.Patch(ctx, k.daemonSet, client.Apply, client.FieldOwner("steward"), client.ForceOwnership)
 }
 
-func (k *KubeProxy) decodeManifests(ctx context.Context, tcp *kamajiv1alpha1.TenantControlPlane) error {
+func (k *KubeProxy) decodeManifests(ctx context.Context, tcp *stewardv1alpha1.TenantControlPlane) error {
 	tcpClient, config, err := resources.GetKubeadmManifestDeps(ctx, k.Client, tcp)
 	if err != nil {
 		return errors.Wrap(err, "unable to create manifests dependencies")
@@ -348,32 +348,32 @@ func (k *KubeProxy) decodeManifests(ctx context.Context, tcp *kamajiv1alpha1.Ten
 	if err = utilities.DecodeFromYAML(string(parts[1]), k.serviceAccount); err != nil {
 		return errors.Wrap(err, "unable to decode ServiceAccount manifest")
 	}
-	addon_utils.SetKamajiManagedLabels(k.serviceAccount)
+	addon_utils.SetStewardManagedLabels(k.serviceAccount)
 
 	if err = utilities.DecodeFromYAML(string(parts[2]), k.clusterRoleBinding); err != nil {
 		return errors.Wrap(err, "unable to decode ClusterRoleBinding manifest")
 	}
-	addon_utils.SetKamajiManagedLabels(k.clusterRoleBinding)
+	addon_utils.SetStewardManagedLabels(k.clusterRoleBinding)
 
 	if err = utilities.DecodeFromYAML(string(parts[3]), k.role); err != nil {
 		return errors.Wrap(err, "unable to decode Role manifest")
 	}
-	addon_utils.SetKamajiManagedLabels(k.role)
+	addon_utils.SetStewardManagedLabels(k.role)
 
 	if err = utilities.DecodeFromYAML(string(parts[4]), k.roleBinding); err != nil {
 		return errors.Wrap(err, "unable to decode RoleBinding manifest")
 	}
-	addon_utils.SetKamajiManagedLabels(k.roleBinding)
+	addon_utils.SetStewardManagedLabels(k.roleBinding)
 
 	if err = utilities.DecodeFromYAML(string(parts[5]), k.configMap); err != nil {
 		return errors.Wrap(err, "unable to decode ConfigMap manifest")
 	}
-	addon_utils.SetKamajiManagedLabels(k.configMap)
+	addon_utils.SetStewardManagedLabels(k.configMap)
 
 	if err = utilities.DecodeFromYAML(string(parts[6]), k.daemonSet); err != nil {
 		return errors.Wrap(err, "unable to decode DaemonSet manifest")
 	}
-	addon_utils.SetKamajiManagedLabels(k.daemonSet)
+	addon_utils.SetStewardManagedLabels(k.daemonSet)
 
 	return nil
 }

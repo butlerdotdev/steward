@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package controllers
@@ -23,11 +23,11 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/controllers/utils"
-	"github.com/clastix/kamaji/internal/constants"
-	"github.com/clastix/kamaji/internal/crypto"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/controllers/utils"
+	"github.com/butlerdotdev/steward/internal/constants"
+	"github.com/butlerdotdev/steward/internal/crypto"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 type CertificateLifecycle struct {
@@ -112,7 +112,7 @@ func (s *CertificateLifecycle) EnqueueForTenantControlPlane(secret *corev1.Secre
 			continue
 		}
 
-		s.Channel <- event.GenericEvent{Object: &kamajiv1alpha1.TenantControlPlane{
+		s.Channel <- event.GenericEvent{Object: &stewardv1alpha1.TenantControlPlane{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      or.Name,
 				Namespace: secret.Namespace,
@@ -127,7 +127,7 @@ func (s *CertificateLifecycle) EnqueueForKubeconfigGenerator(secret *corev1.Secr
 			continue
 		}
 
-		s.Channel <- event.GenericEvent{Object: &kamajiv1alpha1.TenantControlPlane{
+		s.Channel <- event.GenericEvent{Object: &stewardv1alpha1.TenantControlPlane{
 			ObjectMeta: metav1.ObjectMeta{
 				Name: or.Name,
 			},

@@ -8,7 +8,7 @@ This guide will assist you in how to backup and restore TCP resources on the Man
 
 Before proceeding with the next steps, we assume that the following prerequisites are met:
 
-- Working Kamaji setup
+- Working Steward setup
 - Working datastore resource
 - Working TCP resource
 - Velero binary installed on the operator VM
@@ -62,7 +62,7 @@ NAME           BACKUP         STATUS      STARTED                         COMPLE
 tenant-00      tenant-00      Completed   2023-02-24 12:31:39 +0100 CET   2023-02-24 12:31:40 +0100 CET   0        0          2023-02-24 12:31:39 +0100 CET   <none>
 ```
 
-In a bunch of seconds, the Kamaji controller will reconcile the TCP and its status will pass from Ready, to NotReady and, finally, Ready again:
+In a bunch of seconds, the Steward controller will reconcile the TCP and its status will pass from Ready, to NotReady and, finally, Ready again:
 
 ```
 kubectl get tcp -A

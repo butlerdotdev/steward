@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package resources
@@ -16,8 +16,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 // KubernetesServiceResource must be the first Resource processed by the TenantControlPlane:
@@ -33,21 +33,21 @@ func (r *KubernetesServiceResource) GetHistogram() prometheus.Histogram {
 	return serviceCollector
 }
 
-func (r *KubernetesServiceResource) ShouldStatusBeUpdated(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *KubernetesServiceResource) ShouldStatusBeUpdated(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) bool {
 	return tenantControlPlane.Status.Kubernetes.Service.Name != r.resource.GetName() ||
 		tenantControlPlane.Status.Kubernetes.Service.Namespace != r.resource.GetNamespace() ||
 		tenantControlPlane.Status.Kubernetes.Service.Port != r.resource.Spec.Ports[0].Port
 }
 
-func (r *KubernetesServiceResource) ShouldCleanup(*kamajiv1alpha1.TenantControlPlane) bool {
+func (r *KubernetesServiceResource) ShouldCleanup(*stewardv1alpha1.TenantControlPlane) bool {
 	return false
 }
 
-func (r *KubernetesServiceResource) CleanUp(context.Context, *kamajiv1alpha1.TenantControlPlane) (bool, error) {
+func (r *KubernetesServiceResource) CleanUp(context.Context, *stewardv1alpha1.TenantControlPlane) (bool, error) {
 	return false, nil
 }
 
-func (r *KubernetesServiceResource) UpdateTenantControlPlaneStatus(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (r *KubernetesServiceResource) UpdateTenantControlPlaneStatus(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	tenantControlPlane.Status.Kubernetes.Service.ServiceStatus = r.resource.Status
 	tenantControlPlane.Status.Kubernetes.Service.Name = r.resource.GetName()
 	tenantControlPlane.Status.Kubernetes.Service.Namespace = r.resource.GetNamespace()
@@ -62,7 +62,7 @@ func (r *KubernetesServiceResource) UpdateTenantControlPlaneStatus(ctx context.C
 	return nil
 }
 
-func (r *KubernetesServiceResource) Define(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (r *KubernetesServiceResource) Define(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	r.resource = &corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      tenantControlPlane.GetName(),
@@ -73,11 +73,11 @@ func (r *KubernetesServiceResource) Define(_ context.Context, tenantControlPlane
 	return nil
 }
 
-func (r *KubernetesServiceResource) CreateOrUpdate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
+func (r *KubernetesServiceResource) CreateOrUpdate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
 	return utilities.CreateOrUpdateWithConflict(ctx, r.Client, r.resource, r.mutate(ctx, tenantControlPlane))
 }
 
-func (r *KubernetesServiceResource) mutate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) controllerutil.MutateFn {
+func (r *KubernetesServiceResource) mutate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) controllerutil.MutateFn {
 	// We don't need to check error here: in case of dynamic external IP, the Service must be created in advance.
 	// After that, the specific cloud controller-manager will provide an IP that will be then used.
 	address, _ := tenantControlPlane.DeclaredControlPlaneAddress(ctx, r.Client)
@@ -85,7 +85,7 @@ func (r *KubernetesServiceResource) mutate(ctx context.Context, tenantControlPla
 	return func() error {
 		labels := utilities.MergeMaps(
 			r.resource.GetLabels(),
-			utilities.KamajiLabels(
+			utilities.StewardLabels(
 				tenantControlPlane.GetName(), r.GetName()),
 			tenantControlPlane.Spec.ControlPlane.Service.AdditionalMetadata.Labels,
 		)
@@ -95,7 +95,7 @@ func (r *KubernetesServiceResource) mutate(ctx context.Context, tenantControlPla
 		r.resource.SetAnnotations(annotations)
 
 		r.resource.Spec.Selector = map[string]string{
-			"kamaji.clastix.io/name": tenantControlPlane.GetName(),
+			"steward.butlerlabs.dev/name": tenantControlPlane.GetName(),
 		}
 
 		if r.resource.Spec.Ports == nil {
@@ -131,7 +131,7 @@ func (r *KubernetesServiceResource) mutate(ctx context.Context, tenantControlPla
 		r.resource.Spec.Ports = ports
 
 		switch tenantControlPlane.Spec.ControlPlane.Service.ServiceType {
-		case kamajiv1alpha1.ServiceTypeLoadBalancer:
+		case stewardv1alpha1.ServiceTypeLoadBalancer:
 			r.resource.Spec.Type = corev1.ServiceTypeLoadBalancer
 
 			if tenantControlPlane.Spec.NetworkProfile.LoadBalancerClass != nil {
@@ -141,7 +141,7 @@ func (r *KubernetesServiceResource) mutate(ctx context.Context, tenantControlPla
 			if len(tenantControlPlane.Spec.NetworkProfile.LoadBalancerSourceRanges) > 0 {
 				r.resource.Spec.LoadBalancerSourceRanges = tenantControlPlane.Spec.NetworkProfile.LoadBalancerSourceRanges
 			}
-		case kamajiv1alpha1.ServiceTypeNodePort:
+		case stewardv1alpha1.ServiceTypeNodePort:
 			r.resource.Spec.Type = corev1.ServiceTypeNodePort
 			r.resource.Spec.Ports[0].NodePort = tenantControlPlane.Spec.NetworkProfile.Port
 

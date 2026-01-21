@@ -1,15 +1,20 @@
-Kamaji — The Kubernetes Control Plane Manager: copyright 2022 Clastix Labs
-Licensed under the Apache License, Version 2.0: https://kamaji.clastix.io
+Steward — Hosted Kubernetes Control Plane Manager
+Copyright 2025-2026 Butler Labs
 
-This product includes software developed by Clastix Labs and the Kamaji open-source community under the Apache License, Version 2.0.
+Licensed under the Apache License, Version 2.0
+https://github.com/butlerdotdev/steward
 
-Kamaji powers Kubernetes Control Planes at scale for companies worldwide.
+--------------------------------------------------------------------------------
 
-We encourage all commercial products and services using Kamaji to acknowledge this publicly and join our growing ecosystem of adopters.
+This product is derived from Kamaji, originally developed by Clastix Labs.
 
-You can support the Kamaji community by:
-- Listing Kamaji in your product's "Open Source Credits" or similar section
-- Adding your organization to the Adopters list on GitHub: https://github.com/clastix/kamaji/blob/master/ADOPTERS.md
-- Mentioning Kamaji on your company or product website
+Kamaji — The Kubernetes Control Plane Manager
+Copyright 2022 Clastix Labs
+Licensed under the Apache License, Version 2.0
+https://github.com/clastix/kamaji
 
-Public acknowledgement strengthens the open-source ecosystem and helps ensure the sustainability of the project you rely on.
+--------------------------------------------------------------------------------
+
+For more information:
+- Steward: https://github.com/butlerdotdev/steward
+- Butler Labs: https://butlerlabs.dev

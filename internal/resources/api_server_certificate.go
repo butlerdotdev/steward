@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package resources
@@ -19,12 +19,12 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/constants"
-	"github.com/clastix/kamaji/internal/crypto"
-	"github.com/clastix/kamaji/internal/kubeadm"
-	"github.com/clastix/kamaji/internal/utilities"
-	"github.com/clastix/kamaji/internal/webhook/handlers"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/constants"
+	"github.com/butlerdotdev/steward/internal/crypto"
+	"github.com/butlerdotdev/steward/internal/kubeadm"
+	"github.com/butlerdotdev/steward/internal/utilities"
+	"github.com/butlerdotdev/steward/internal/webhook/handlers"
 )
 
 type APIServerCertificate struct {
@@ -40,19 +40,19 @@ func (r *APIServerCertificate) GetHistogram() prometheus.Histogram {
 	return apiservercertificateCollector
 }
 
-func (r *APIServerCertificate) ShouldStatusBeUpdated(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *APIServerCertificate) ShouldStatusBeUpdated(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) bool {
 	return tenantControlPlane.Status.Certificates.APIServer.Checksum != utilities.GetObjectChecksum(r.resource)
 }
 
-func (r *APIServerCertificate) ShouldCleanup(_ *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *APIServerCertificate) ShouldCleanup(_ *stewardv1alpha1.TenantControlPlane) bool {
 	return false
 }
 
-func (r *APIServerCertificate) CleanUp(context.Context, *kamajiv1alpha1.TenantControlPlane) (bool, error) {
+func (r *APIServerCertificate) CleanUp(context.Context, *stewardv1alpha1.TenantControlPlane) (bool, error) {
 	return false, nil
 }
 
-func (r *APIServerCertificate) Define(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (r *APIServerCertificate) Define(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	r.resource = &corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      r.getPrefixedName(tenantControlPlane),
@@ -63,7 +63,7 @@ func (r *APIServerCertificate) Define(_ context.Context, tenantControlPlane *kam
 	return nil
 }
 
-func (r *APIServerCertificate) getPrefixedName(tenantControlPlane *kamajiv1alpha1.TenantControlPlane) string {
+func (r *APIServerCertificate) getPrefixedName(tenantControlPlane *stewardv1alpha1.TenantControlPlane) string {
 	return utilities.AddTenantPrefix(r.GetName(), tenantControlPlane)
 }
 
@@ -75,7 +75,7 @@ func (r *APIServerCertificate) GetTmpDirectory() string {
 	return r.TmpDirectory
 }
 
-func (r *APIServerCertificate) CreateOrUpdate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (res controllerutil.OperationResult, err error) {
+func (r *APIServerCertificate) CreateOrUpdate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (res controllerutil.OperationResult, err error) {
 	if err = (handlers.TenantControlPlaneCertSANs{}).ValidateCertSANs(tenantControlPlane); err != nil {
 		return controllerutil.OperationResultNone, err
 	}
@@ -87,7 +87,7 @@ func (r *APIServerCertificate) GetName() string {
 	return "api-server-certificate"
 }
 
-func (r *APIServerCertificate) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (r *APIServerCertificate) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	tenantControlPlane.Status.Certificates.APIServer.LastUpdate = metav1.Now()
 	tenantControlPlane.Status.Certificates.APIServer.SecretName = r.resource.GetName()
 	tenantControlPlane.Status.Certificates.APIServer.Checksum = utilities.GetObjectChecksum(r.resource)
@@ -95,7 +95,7 @@ func (r *APIServerCertificate) UpdateTenantControlPlaneStatus(_ context.Context,
 	return nil
 }
 
-func (r *APIServerCertificate) mutate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) controllerutil.MutateFn {
+func (r *APIServerCertificate) mutate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) controllerutil.MutateFn {
 	return func() error {
 		logger := log.FromContext(ctx, "resource", r.GetName())
 		// The Kubeadm configuration must be retrieved in advance:
@@ -118,7 +118,7 @@ func (r *APIServerCertificate) mutate(ctx context.Context, tenantControlPlane *k
 
 		r.resource.SetLabels(utilities.MergeMaps(
 			r.resource.GetLabels(),
-			utilities.KamajiLabels(tenantControlPlane.GetName(), r.GetName()),
+			utilities.StewardLabels(tenantControlPlane.GetName(), r.GetName()),
 			map[string]string{
 				constants.ControllerLabelResource: utilities.CertificateX509Label,
 			},

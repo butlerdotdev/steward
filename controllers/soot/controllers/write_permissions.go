@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package controllers
@@ -25,10 +25,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"sigs.k8s.io/controller-runtime/pkg/source"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	sooterrors "github.com/clastix/kamaji/controllers/soot/controllers/errors"
-	"github.com/clastix/kamaji/controllers/utils"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	sooterrors "github.com/butlerdotdev/steward/controllers/soot/controllers/errors"
+	"github.com/butlerdotdev/steward/controllers/utils"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 type WritePermissions struct {
@@ -59,7 +59,7 @@ func (r *WritePermissions) Reconcile(ctx context.Context, _ reconcile.Request) (
 	}
 
 	switch {
-	case ptr.Deref(tcp.Status.Kubernetes.Version.Status, kamajiv1alpha1.VersionUnknown) == kamajiv1alpha1.VersionWriteLimited &&
+	case ptr.Deref(tcp.Status.Kubernetes.Version.Status, stewardv1alpha1.VersionUnknown) == stewardv1alpha1.VersionWriteLimited &&
 		tcp.Spec.WritePermissions.HasAnyLimitation():
 		err = r.createOrUpdate(ctx, tcp.Spec.WritePermissions)
 	default:
@@ -75,13 +75,13 @@ func (r *WritePermissions) Reconcile(ctx context.Context, _ reconcile.Request) (
 	return reconcile.Result{}, nil
 }
 
-func (r *WritePermissions) createOrUpdate(ctx context.Context, writePermissions kamajiv1alpha1.Permissions) error {
+func (r *WritePermissions) createOrUpdate(ctx context.Context, writePermissions stewardv1alpha1.Permissions) error {
 	obj := r.object().DeepCopy()
 
 	_, err := utilities.CreateOrUpdateWithConflict(ctx, r.Client, obj, func() error {
 		obj.Webhooks = []admissionregistrationv1.ValidatingWebhook{
 			{
-				Name: "leases.write-permissions.kamaji.clastix.io",
+				Name: "leases.write-permissions.steward.butlerlabs.dev",
 				ClientConfig: admissionregistrationv1.WebhookClientConfig{
 					URL:      ptr.To(fmt.Sprintf("https://%s.%s.svc:443/write-permission", r.WebhookServiceName, r.WebhookNamespace)),
 					CABundle: r.WebhookCABundle,
@@ -117,7 +117,7 @@ func (r *WritePermissions) createOrUpdate(ctx context.Context, writePermissions 
 				AdmissionReviewVersions: []string{"v1"},
 			},
 			{
-				Name: "catchall.write-permissions.kamaji.clastix.io",
+				Name: "catchall.write-permissions.steward.butlerlabs.dev",
 				ClientConfig: admissionregistrationv1.WebhookClientConfig{
 					URL:      ptr.To(fmt.Sprintf("https://%s.%s.svc:443/write-permission", r.WebhookServiceName, r.WebhookNamespace)),
 					CABundle: r.WebhookCABundle,
@@ -203,7 +203,7 @@ func (r *WritePermissions) SetupWithManager(mgr manager.Manager) error {
 func (r *WritePermissions) object() *admissionregistrationv1.ValidatingWebhookConfiguration {
 	return &admissionregistrationv1.ValidatingWebhookConfiguration{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: "kamaji-write-permissions",
+			Name: "steward-write-permissions",
 		},
 	}
 }

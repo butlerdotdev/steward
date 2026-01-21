@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package e2e
@@ -18,44 +18,44 @@ import (
 	pointer "k8s.io/utils/ptr"
 	ctrlclient "sigs.k8s.io/controller-runtime/pkg/client"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 func featureTestMigration(driver string) {
-	var tcp *kamajiv1alpha1.TenantControlPlane
+	var tcp *stewardv1alpha1.TenantControlPlane
 	// Create a TenantControlPlane resource into the cluster
 	JustBeforeEach(func() {
 		// Fill TenantControlPlane object
-		tcp = &kamajiv1alpha1.TenantControlPlane{
+		tcp = &stewardv1alpha1.TenantControlPlane{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      fmt.Sprintf("migrating-%s-%s", rand.String(5), driver),
 				Namespace: "default",
 			},
-			Spec: kamajiv1alpha1.TenantControlPlaneSpec{
+			Spec: stewardv1alpha1.TenantControlPlaneSpec{
 				DataStore: fmt.Sprintf("%s-bronze", driver),
-				ControlPlane: kamajiv1alpha1.ControlPlane{
-					Deployment: kamajiv1alpha1.DeploymentSpec{
+				ControlPlane: stewardv1alpha1.ControlPlane{
+					Deployment: stewardv1alpha1.DeploymentSpec{
 						Replicas: pointer.To(int32(1)),
 					},
-					Service: kamajiv1alpha1.ServiceSpec{
+					Service: stewardv1alpha1.ServiceSpec{
 						ServiceType: "NodePort",
 					},
 				},
-				NetworkProfile: kamajiv1alpha1.NetworkProfileSpec{
+				NetworkProfile: stewardv1alpha1.NetworkProfileSpec{
 					Address: GetKindIPAddress(),
 					Port:    int32(rand.Int63nRange(31000, 32000)),
 				},
-				Kubernetes: kamajiv1alpha1.KubernetesSpec{
+				Kubernetes: stewardv1alpha1.KubernetesSpec{
 					Version: "v1.23.6",
-					Kubelet: kamajiv1alpha1.KubeletSpec{
+					Kubelet: stewardv1alpha1.KubeletSpec{
 						CGroupFS: "cgroupfs",
 					},
 				},
 			},
 		}
 		Expect(k8sClient.Create(context.Background(), tcp)).NotTo(HaveOccurred())
-		StatusMustEqualTo(tcp, kamajiv1alpha1.VersionReady)
+		StatusMustEqualTo(tcp, stewardv1alpha1.VersionReady)
 	})
 	// Delete the TenantControlPlane resource after test is finished
 	JustAfterEach(func() {
@@ -82,7 +82,7 @@ func featureTestMigration(driver string) {
 		Expect(err).ToNot(HaveOccurred())
 
 		ns := &corev1.Namespace{}
-		ns.SetName("kamaji-test")
+		ns.SetName("steward-test")
 		Expect(tcpClient.Create(context.Background(), ns)).ToNot(HaveOccurred())
 
 		By("start migration to a new DataStore")
@@ -97,7 +97,7 @@ func featureTestMigration(driver string) {
 		}, time.Minute, time.Second).ShouldNot(HaveOccurred())
 
 		By("waiting for the migrating status")
-		StatusMustEqualTo(tcp, kamajiv1alpha1.VersionMigrating)
+		StatusMustEqualTo(tcp, stewardv1alpha1.VersionMigrating)
 
 		By("ensuring changes are not allowed")
 		Consistently(func() error {
@@ -105,7 +105,7 @@ func featureTestMigration(driver string) {
 		}, 10*time.Second, time.Second).Should(HaveOccurred())
 
 		By("waiting for completion of migration")
-		StatusMustEqualTo(tcp, kamajiv1alpha1.VersionReady)
+		StatusMustEqualTo(tcp, stewardv1alpha1.VersionReady)
 
 		By("checking the DataStore of the TCP")
 		Eventually(func() string {

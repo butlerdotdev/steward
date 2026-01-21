@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package handlers
@@ -13,37 +13,37 @@ import (
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	fakeclient "sigs.k8s.io/controller-runtime/pkg/client/fake"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
 )
 
 var _ = Describe("TCP Datastore webhook", func() {
 	var (
 		ctx context.Context
 		t   TenantControlPlaneDataStore
-		tcp *kamajiv1alpha1.TenantControlPlane
+		tcp *stewardv1alpha1.TenantControlPlane
 	)
 	BeforeEach(func() {
 		scheme := runtime.NewScheme()
-		utilruntime.Must(kamajiv1alpha1.AddToScheme(scheme))
+		utilruntime.Must(stewardv1alpha1.AddToScheme(scheme))
 
 		ctx = context.Background()
 		t = TenantControlPlaneDataStore{
-			Client: fakeclient.NewClientBuilder().WithScheme(scheme).WithObjects(&kamajiv1alpha1.DataStore{
+			Client: fakeclient.NewClientBuilder().WithScheme(scheme).WithObjects(&stewardv1alpha1.DataStore{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: "foo",
 				},
-			}, &kamajiv1alpha1.DataStore{
+			}, &stewardv1alpha1.DataStore{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: "bar",
 				},
 			}).Build(),
 		}
-		tcp = &kamajiv1alpha1.TenantControlPlane{
+		tcp = &stewardv1alpha1.TenantControlPlane{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      "tcp",
 				Namespace: "default",
 			},
-			Spec: kamajiv1alpha1.TenantControlPlaneSpec{},
+			Spec: stewardv1alpha1.TenantControlPlaneSpec{},
 		}
 	})
 	Describe("validation should succeed without DataStoreOverrides", func() {
@@ -55,7 +55,7 @@ var _ = Describe("TCP Datastore webhook", func() {
 
 	Describe("validation should fail with duplicate resources in DataStoreOverrides", func() {
 		It("should fail to validate TCP with duplicate resources in DataStoreOverrides", func() {
-			tcp.Spec.DataStoreOverrides = []kamajiv1alpha1.DataStoreOverride{{
+			tcp.Spec.DataStoreOverrides = []stewardv1alpha1.DataStoreOverride{{
 				Resource:  "/event",
 				DataStore: "foo",
 			}, {
@@ -69,7 +69,7 @@ var _ = Describe("TCP Datastore webhook", func() {
 
 	Describe("validation should succeed with valid DataStoreOverrides", func() {
 		It("should validate TCP with valid DataStoreOverrides", func() {
-			tcp.Spec.DataStoreOverrides = []kamajiv1alpha1.DataStoreOverride{{
+			tcp.Spec.DataStoreOverrides = []stewardv1alpha1.DataStoreOverride{{
 				Resource:  "/leases",
 				DataStore: "foo",
 			}, {
@@ -83,7 +83,7 @@ var _ = Describe("TCP Datastore webhook", func() {
 
 	Describe("validation should fail with nonexistent DataStoreOverrides", func() {
 		It("should fail to validate TCP with nonexistent DataStoreOverrides", func() {
-			tcp.Spec.DataStoreOverrides = []kamajiv1alpha1.DataStoreOverride{{
+			tcp.Spec.DataStoreOverrides = []stewardv1alpha1.DataStoreOverride{{
 				Resource:  "/leases",
 				DataStore: "baz",
 			}}

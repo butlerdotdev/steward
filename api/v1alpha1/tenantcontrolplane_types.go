@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package v1alpha1
@@ -100,7 +100,7 @@ type KubernetesSpec struct {
 }
 
 type AdditionalPort struct {
-	// The name of this port within the Service created by Kamaji.
+	// The name of this port within the Service created by Steward.
 	// This must be a DNS_LABEL, must have unique names, and cannot be `kube-apiserver`, or `konnectivity-server`.
 	Name string `json:"name"`
 	// The IP protocol for this port. Supports "TCP", "UDP", and "SCTP".
@@ -155,7 +155,7 @@ type IngressSpec struct {
 }
 
 // GatewaySpec defines the options for the Gateway which will expose API Server of the Tenant Control Plane.
-// +kubebuilder:validation:XValidation:rule="!has(self.parentRefs) || size(self.parentRefs) == 0 || self.parentRefs.all(ref, !has(ref.port) && !has(ref.sectionName))",message="parentRefs must not specify port or sectionName, these are set automatically by Kamaji"
+// +kubebuilder:validation:XValidation:rule="!has(self.parentRefs) || size(self.parentRefs) == 0 || self.parentRefs.all(ref, !has(ref.port) && !has(ref.sectionName))",message="parentRefs must not specify port or sectionName, these are set automatically by Steward"
 type GatewaySpec struct {
 	// AdditionalMetadata to add Labels and Annotations support.
 	AdditionalMetadata AdditionalMetadata `json:"additionalMetadata,omitempty"`
@@ -170,7 +170,7 @@ type ControlPlaneComponentsResources struct {
 	ControllerManager *corev1.ResourceRequirements `json:"controllerManager,omitempty"`
 	Scheduler         *corev1.ResourceRequirements `json:"scheduler,omitempty"`
 	// Define the kine container resources.
-	// Available only if Kamaji is running using Kine as backing storage.
+	// Available only if Steward is running using Kine as backing storage.
 	Kine *corev1.ResourceRequirements `json:"kine,omitempty"`
 }
 
@@ -203,7 +203,7 @@ type DeploymentSpec struct {
 	Affinity *corev1.Affinity `json:"affinity,omitempty"`
 	// TopologySpreadConstraints describes how the Tenant Control Plane pods ought to spread across topology
 	// domains. Scheduler will schedule pods in a way which abides by the constraints.
-	// In case of nil underlying LabelSelector, the Kamaji one for the given Tenant Control Plane will be used.
+	// In case of nil underlying LabelSelector, the Steward one for the given Tenant Control Plane will be used.
 	// All topologySpreadConstraints are ANDed.
 	TopologySpreadConstraints []corev1.TopologySpreadConstraint `json:"topologySpreadConstraints,omitempty"`
 	// Resources defines the amount of memory and CPU to allocate to each component of the Control Plane
@@ -242,13 +242,13 @@ type ControlPlaneExtraArgs struct {
 	APIServer         []string `json:"apiServer,omitempty"`
 	ControllerManager []string `json:"controllerManager,omitempty"`
 	Scheduler         []string `json:"scheduler,omitempty"`
-	// Available only if Kamaji is running using Kine as backing storage.
+	// Available only if Steward is running using Kine as backing storage.
 	Kine []string `json:"kine,omitempty"`
 }
 
 type ServiceSpec struct {
 	AdditionalMetadata AdditionalMetadata `json:"additionalMetadata,omitempty"`
-	// AdditionalPorts allows adding additional ports to the Service generated Kamaji
+	// AdditionalPorts allows adding additional ports to the Service generated Steward
 	// which targets the Tenant Control Plane pods.
 	AdditionalPorts []AdditionalPort `json:"additionalPorts,omitempty"`
 	// ServiceType allows specifying how to expose the Tenant Control Plane.
@@ -279,7 +279,7 @@ type KonnectivityServerSpec struct {
 	// The port which Konnectivity server is listening to.
 	Port int32 `json:"port"`
 	// Container image version of the Konnectivity server.
-	// If left empty, Kamaji will automatically inflect the version from the deployed Tenant Control Plane.
+	// If left empty, Steward will automatically inflect the version from the deployed Tenant Control Plane.
 	//
 	// WARNING: for last cut-off releases, the container image could be not available.
 	Version string `json:"version,omitempty"`
@@ -305,7 +305,7 @@ type KonnectivityAgentSpec struct {
 	//+kubebuilder:default=registry.k8s.io/kas-network-proxy/proxy-agent
 	Image string `json:"image,omitempty"`
 	// Version for Konnectivity agent.
-	// If left empty, Kamaji will automatically inflect the version from the deployed Tenant Control Plane.
+	// If left empty, Steward will automatically inflect the version from the deployed Tenant Control Plane.
 	//
 	// WARNING: for last cut-off releases, the container image could be not available.
 	Version string `json:"version,omitempty"`
@@ -389,21 +389,21 @@ type TenantControlPlaneSpec struct {
 	// (e.g.: blocking creation and update, but allowing deletion to "clean up" space).
 	WritePermissions Permissions `json:"writePermissions,omitempty"`
 	// DataStore specifies the DataStore that should be used to store the Kubernetes data for the given Tenant Control Plane.
-	// When Kamaji runs with the default DataStore flag, all empty values will inherit the default value.
-	// By leaving it empty and running Kamaji with no default DataStore flag, it is possible to achieve automatic assignment to a specific DataStore object.
+	// When Steward runs with the default DataStore flag, all empty values will inherit the default value.
+	// By leaving it empty and running Steward with no default DataStore flag, it is possible to achieve automatic assignment to a specific DataStore object.
 	//
-	// Migration from one DataStore to another backed by the same Driver is possible. See: https://kamaji.clastix.io/guides/datastore-migration/
+	// Migration from one DataStore to another backed by the same Driver is possible. See: https://steward.butlerlabs.dev/guides/datastore-migration/
 	// Migration from one DataStore to another backed by a different Driver is not supported.
 	DataStore string `json:"dataStore,omitempty"`
 	// DataStoreSchema allows to specify the name of the database (for relational DataStores) or the key prefix (for etcd). This
-	// value is optional and immutable. Note that Kamaji currently doesn't ensure that DataStoreSchema values are unique. It's up
-	// to the user to avoid clashes between different TenantControlPlanes. If not set upon creation, Kamaji will default the
+	// value is optional and immutable. Note that Steward currently doesn't ensure that DataStoreSchema values are unique. It's up
+	// to the user to avoid clashes between different TenantControlPlanes. If not set upon creation, Steward will default the
 	// DataStoreSchema by concatenating the namespace and name of the TenantControlPlane.
 	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="changing the dataStoreSchema is not supported"
 	DataStoreSchema string `json:"dataStoreSchema,omitempty"`
 	// DataStoreUsername allows to specify the username of the database (for relational DataStores). This
-	// value is optional and immutable. Note that Kamaji currently doesn't ensure that DataStoreUsername values are unique. It's up
-	// to the user to avoid clashes between different TenantControlPlanes. If not set upon creation, Kamaji will default the
+	// value is optional and immutable. Note that Steward currently doesn't ensure that DataStoreUsername values are unique. It's up
+	// to the user to avoid clashes between different TenantControlPlanes. If not set upon creation, Steward will default the
 	// DataStoreUsername by concatenating the namespace and name of the TenantControlPlane.
 	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="changing the dataStoreUsername is not supported"
 	DataStoreUsername string `json:"dataStoreUsername,omitempty"`
@@ -421,7 +421,7 @@ type TenantControlPlaneSpec struct {
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 //+kubebuilder:subresource:scale:specpath=.spec.controlPlane.deployment.replicas,statuspath=.status.kubernetesResources.deployment.replicas,selectorpath=.status.kubernetesResources.deployment.selector
-//+kubebuilder:resource:categories=kamaji,shortName=tcp
+//+kubebuilder:resource:categories=steward,shortName=tcp
 //+kubebuilder:printcolumn:name="Version",type="string",JSONPath=".spec.kubernetes.version",description="Kubernetes version"
 //+kubebuilder:printcolumn:name="Installed Version",type="string",JSONPath=".status.kubernetesResources.version.version",description="The actual installed Kubernetes version from status"
 //+kubebuilder:printcolumn:name="Status",type="string",JSONPath=".status.kubernetesResources.version.status",description="Status"
@@ -429,7 +429,7 @@ type TenantControlPlaneSpec struct {
 //+kubebuilder:printcolumn:name="Kubeconfig",type="string",JSONPath=".status.kubeconfig.admin.secretName",description="Secret which contains admin kubeconfig"
 //+kubebuilder:printcolumn:name="Datastore",type="string",JSONPath=".status.storage.dataStoreName",description="DataStore actually used"
 //+kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp",description="Age"
-//+kubebuilder:metadata:annotations={"cert-manager.io/inject-ca-from=kamaji-system/kamaji-serving-cert"}
+//+kubebuilder:metadata:annotations={"cert-manager.io/inject-ca-from=steward-system/steward-serving-cert"}
 
 // TenantControlPlane is the Schema for the tenantcontrolplanes API.
 type TenantControlPlane struct {

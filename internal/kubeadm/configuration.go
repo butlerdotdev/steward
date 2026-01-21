@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package kubeadm
@@ -11,7 +11,7 @@ import (
 	kubeadmconstants "k8s.io/kubernetes/cmd/kubeadm/app/constants"
 	"k8s.io/kubernetes/cmd/kubeadm/app/util/config"
 
-	"github.com/clastix/kamaji/internal/utilities"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 const (

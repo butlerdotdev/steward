@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package datastore
@@ -10,17 +10,17 @@ import (
 	"github.com/pkg/errors"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
 )
 
-func NewStorageConnection(ctx context.Context, client client.Client, ds kamajiv1alpha1.DataStore) (Connection, error) {
+func NewStorageConnection(ctx context.Context, client client.Client, ds stewardv1alpha1.DataStore) (Connection, error) {
 	cc, err := NewConnectionConfig(ctx, client, ds)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to create connection config object")
 	}
 
 	switch ds.Spec.Driver {
-	case kamajiv1alpha1.KineMySQLDriver:
+	case stewardv1alpha1.KineMySQLDriver:
 
 		if ds.Spec.TLSConfig != nil {
 			cc.TLSConfig.ServerName = cc.Endpoints[0].Host
@@ -31,15 +31,15 @@ func NewStorageConnection(ctx context.Context, client client.Client, ds kamajiv1
 		}
 
 		return NewMySQLConnection(*cc)
-	case kamajiv1alpha1.KinePostgreSQLDriver:
+	case stewardv1alpha1.KinePostgreSQLDriver:
 		if ds.Spec.TLSConfig != nil {
 			cc.TLSConfig.ServerName = cc.Endpoints[0].Host
 		}
 
 		return NewPostgreSQLConnection(*cc)
-	case kamajiv1alpha1.EtcdDriver:
+	case stewardv1alpha1.EtcdDriver:
 		return NewETCDConnection(*cc)
-	case kamajiv1alpha1.KineNatsDriver:
+	case stewardv1alpha1.KineNatsDriver:
 		return NewNATSConnection(*cc)
 	default:
 		return nil, fmt.Errorf("%s is not a valid driver", ds.Spec.Driver)
@@ -60,5 +60,5 @@ type Connection interface {
 	Close() error
 	Check(ctx context.Context) error
 	Driver() string
-	Migrate(ctx context.Context, tcp kamajiv1alpha1.TenantControlPlane, target Connection) error
+	Migrate(ctx context.Context, tcp stewardv1alpha1.TenantControlPlane, target Connection) error
 }

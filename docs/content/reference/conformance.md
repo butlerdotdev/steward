@@ -7,7 +7,7 @@ The Cloud Computing Native Foundation (_CNCF_) provides the [Certified Kubernete
   <img src="https://raw.githubusercontent.com/cncf/artwork/master/projects/kubernetes/certified-kubernetes/versionless/color/certified-kubernetes-color.png" width="100" />
 </p>
 
-All the _“Tenant Clusters”_ built with Kamaji are CNCF conformant.
+All the _“Tenant Clusters”_ built with Steward are CNCF conformant.
 
 !!! note "Conformance Test Suite"
      The standard set of conformance tests is currently those defined by the `[Conformance]` tag in the [kubernetes e2e](https://github.com/kubernetes/kubernetes/tree/master/test/e2e) repository.

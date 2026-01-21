@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package manager
@@ -8,12 +8,10 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"net/http"
 	"os"
 	goRuntime "runtime"
 	"time"
 
-	telemetryclient "github.com/clastix/kamaji-telemetry/pkg/client"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -28,17 +26,17 @@ import (
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 	ctrlwebhook "sigs.k8s.io/controller-runtime/pkg/webhook"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	cmdutils "github.com/clastix/kamaji/cmd/utils"
-	"github.com/clastix/kamaji/controllers"
-	"github.com/clastix/kamaji/controllers/soot"
-	"github.com/clastix/kamaji/internal"
-	"github.com/clastix/kamaji/internal/builders/controlplane"
-	datastoreutils "github.com/clastix/kamaji/internal/datastore/utils"
-	"github.com/clastix/kamaji/internal/utilities"
-	"github.com/clastix/kamaji/internal/webhook"
-	"github.com/clastix/kamaji/internal/webhook/handlers"
-	"github.com/clastix/kamaji/internal/webhook/routes"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	cmdutils "github.com/butlerdotdev/steward/cmd/utils"
+	"github.com/butlerdotdev/steward/controllers"
+	"github.com/butlerdotdev/steward/controllers/soot"
+	"github.com/butlerdotdev/steward/internal"
+	"github.com/butlerdotdev/steward/internal/builders/controlplane"
+	datastoreutils "github.com/butlerdotdev/steward/internal/datastore/utils"
+	"github.com/butlerdotdev/steward/internal/utilities"
+	"github.com/butlerdotdev/steward/internal/webhook"
+	"github.com/butlerdotdev/steward/internal/webhook/handlers"
+	"github.com/butlerdotdev/steward/internal/webhook/routes"
 )
 
 //nolint:maintidx
@@ -59,7 +57,6 @@ func NewCmd(scheme *runtime.Scheme) *cobra.Command {
 		webhookCABundle               []byte
 		migrateJobImage               string
 		maxConcurrentReconciles       int
-		disableTelemetry              bool
 		certificateExpirationDeadline time.Duration
 
 		webhookCAPath string
@@ -67,11 +64,11 @@ func NewCmd(scheme *runtime.Scheme) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:           "manager",
-		Short:         "Start the Kamaji Kubernetes Operator",
+		Short:         "Start the Steward Kubernetes Operator",
 		SilenceErrors: false,
 		SilenceUsage:  true,
 		PreRunE: func(cmd *cobra.Command, _ []string) (err error) {
-			// Avoid to pollute Kamaji stdout with useless details by the underlying klog implementations
+			// Avoid to pollute Steward stdout with useless details by the underlying klog implementations
 			klog.SetOutput(io.Discard)
 			klog.LogToStderr(false)
 
@@ -102,17 +99,11 @@ func NewCmd(scheme *runtime.Scheme) *cobra.Command {
 
 			setupLog := ctrl.Log.WithName("setup")
 
-			setupLog.Info(fmt.Sprintf("Kamaji version %s %s%s", internal.GitTag, internal.GitCommit, internal.GitDirty))
+			setupLog.Info(fmt.Sprintf("Steward version %s %s%s", internal.GitTag, internal.GitCommit, internal.GitDirty))
 			setupLog.Info(fmt.Sprintf("Build from: %s", internal.GitRepo))
 			setupLog.Info(fmt.Sprintf("Build date: %s", internal.BuildTime))
 			setupLog.Info(fmt.Sprintf("Go Version: %s", goRuntime.Version()))
 			setupLog.Info(fmt.Sprintf("Go OS/Arch: %s/%s", goRuntime.GOOS, goRuntime.GOARCH))
-			setupLog.Info(fmt.Sprintf("Telemetry enabled: %t", !disableTelemetry))
-
-			telemetryClient := telemetryclient.New(http.Client{Timeout: 5 * time.Second}, "https://telemetry.clastix.io")
-			if disableTelemetry {
-				telemetryClient = telemetryclient.NewNewOp()
-			}
 
 			ctrlOpts := ctrl.Options{
 				Scheme: scheme,
@@ -125,7 +116,7 @@ func NewCmd(scheme *runtime.Scheme) *cobra.Command {
 				HealthProbeBindAddress:  healthProbeBindAddress,
 				LeaderElection:          leaderElect,
 				LeaderElectionNamespace: managerNamespace,
-				LeaderElectionID:        "kamaji.clastix.io",
+				LeaderElectionID:        "steward.butlerlabs.dev",
 				NewCache: func(config *rest.Config, opts cache.Options) (cache.Cache, error) {
 					opts.SyncPeriod = &cacheResyncPeriod
 
@@ -167,10 +158,10 @@ func NewCmd(scheme *runtime.Scheme) *cobra.Command {
 				ReconcileTimeout:        controllerReconcileTimeout,
 				CertificateChan:         certChannel,
 				TriggerChan:             tcpChannel,
-				KamajiNamespace:         managerNamespace,
-				KamajiServiceAccount:    managerServiceAccountName,
-				KamajiService:           managerServiceName,
-				KamajiMigrateImage:      migrateJobImage,
+				StewardNamespace:        managerNamespace,
+				StewardServiceAccount:   managerServiceAccountName,
+				StewardService:          managerServiceName,
+				StewardMigrateImage:     migrateJobImage,
 				MaxConcurrentReconciles: maxConcurrentReconciles,
 				DiscoveryClient:         discoveryClient,
 			}
@@ -179,29 +170,6 @@ func NewCmd(scheme *runtime.Scheme) *cobra.Command {
 				setupLog.Error(err, "unable to create controller", "controller", "Namespace")
 
 				return err
-			}
-
-			k8sVersion, versionErr := cmdutils.KubernetesVersion(mgr.GetConfig())
-			if versionErr != nil {
-				setupLog.Error(err, "unable to get kubernetes version")
-
-				k8sVersion = "Unknown"
-			}
-
-			if !disableTelemetry {
-				err = mgr.Add(&controllers.TelemetryController{
-					Client:                  mgr.GetClient(),
-					KubernetesVersion:       k8sVersion,
-					KamajiVersion:           internal.GitTag,
-					TelemetryClient:         telemetryClient,
-					LeaderElectionNamespace: ctrlOpts.LeaderElectionNamespace,
-					LeaderElectionID:        ctrlOpts.LeaderElectionID,
-				})
-				if err != nil {
-					setupLog.Error(err, "unable to create controller", "controller", "TelemetryController")
-
-					return err
-				}
 			}
 
 			certController := &controllers.CertificateLifecycle{Channel: certChannel, Deadline: certificateExpirationDeadline}
@@ -213,13 +181,13 @@ func NewCmd(scheme *runtime.Scheme) *cobra.Command {
 				return err
 			}
 
-			if err = (&kamajiv1alpha1.DatastoreUsedSecret{}).SetupWithManager(ctx, mgr); err != nil {
+			if err = (&stewardv1alpha1.DatastoreUsedSecret{}).SetupWithManager(ctx, mgr); err != nil {
 				setupLog.Error(err, "unable to create indexer", "indexer", "DatastoreUsedSecret")
 
 				return err
 			}
 
-			if err = (&kamajiv1alpha1.TenantControlPlaneStatusDataStore{}).SetupWithManager(ctx, mgr); err != nil {
+			if err = (&stewardv1alpha1.TenantControlPlaneStatusDataStore{}).SetupWithManager(ctx, mgr); err != nil {
 				setupLog.Error(err, "unable to create indexer", "indexer", "TenantControlPlaneStatusDataStore")
 
 				return err
@@ -227,7 +195,7 @@ func NewCmd(scheme *runtime.Scheme) *cobra.Command {
 
 			// Only requires to look for the core api group.
 			if utilities.AreGatewayResourcesAvailable(ctx, mgr.GetClient(), discoveryClient) {
-				if err = (&kamajiv1alpha1.GatewayListener{}).SetupWithManager(ctx, mgr); err != nil {
+				if err = (&stewardv1alpha1.GatewayListener{}).SetupWithManager(ctx, mgr); err != nil {
 					setupLog.Error(err, "unable to create indexer", "indexer", "GatewayListener")
 
 					return err
@@ -266,14 +234,6 @@ func NewCmd(scheme *runtime.Scheme) *cobra.Command {
 					handlers.TenantControlPlaneGatewayValidation{
 						Client:          mgr.GetClient(),
 						DiscoveryClient: discoveryClient,
-					},
-				},
-				routes.TenantControlPlaneTelemetry{}: {
-					handlers.TenantControlPlaneTelemetry{
-						Enabled:           !disableTelemetry,
-						TelemetryClient:   telemetryClient,
-						KamajiVersion:     internal.GitTag,
-						KubernetesVersion: k8sVersion,
 					},
 				},
 				routes.DataStoreValidate{}: {
@@ -334,18 +294,17 @@ func NewCmd(scheme *runtime.Scheme) *cobra.Command {
 	cmd.Flags().StringVar(&metricsBindAddress, "metrics-bind-address", ":8080", "The address the metric endpoint binds to.")
 	cmd.Flags().StringVar(&healthProbeBindAddress, "health-probe-bind-address", ":8081", "The address the probe endpoint binds to.")
 	cmd.Flags().BoolVar(&leaderElect, "leader-elect", true, "Enable leader election for controller manager. Enabling this will ensure there is only one active controller manager.")
-	cmd.Flags().StringVar(&tmpDirectory, "tmp-directory", "/tmp/kamaji", "Directory which will be used to work with temporary files.")
+	cmd.Flags().StringVar(&tmpDirectory, "tmp-directory", "/tmp/steward", "Directory which will be used to work with temporary files.")
 	cmd.Flags().StringVar(&kineImage, "kine-image", "rancher/kine:v0.11.10-amd64", "Container image along with tag to use for the Kine sidecar container (used only if etcd-storage-type is set to one of kine strategies).")
-	cmd.Flags().StringVar(&datastore, "datastore", "", "Optional, the default DataStore that should be used by Kamaji to setup the required storage of Tenant Control Planes with undeclared DataStore.")
-	cmd.Flags().StringVar(&migrateJobImage, "migrate-image", fmt.Sprintf("%s/clastix/kamaji:%s", internal.ContainerRepository, internal.GitTag), "Specify the container image to launch when a TenantControlPlane is migrated to a new datastore.")
+	cmd.Flags().StringVar(&datastore, "datastore", "", "Optional, the default DataStore that should be used by Steward to setup the required storage of Tenant Control Planes with undeclared DataStore.")
+	cmd.Flags().StringVar(&migrateJobImage, "migrate-image", fmt.Sprintf("%s/butlerlabs/steward:%s", internal.ContainerRepository, internal.GitTag), "Specify the container image to launch when a TenantControlPlane is migrated to a new datastore.")
 	cmd.Flags().IntVar(&maxConcurrentReconciles, "max-concurrent-tcp-reconciles", 1, "Specify the number of workers for the Tenant Control Plane controller (beware of CPU consumption)")
 	cmd.Flags().StringVar(&managerNamespace, "pod-namespace", os.Getenv("POD_NAMESPACE"), "The Kubernetes Namespace on which the Operator is running in, required for the TenantControlPlane migration jobs.")
-	cmd.Flags().StringVar(&managerServiceName, "webhook-service-name", "kamaji-webhook-service", "The Kamaji webhook server Service name which is used to get validation webhooks, required for the TenantControlPlane migration jobs.")
+	cmd.Flags().StringVar(&managerServiceName, "webhook-service-name", "steward-webhook-service", "The Steward webhook server Service name which is used to get validation webhooks, required for the TenantControlPlane migration jobs.")
 	cmd.Flags().StringVar(&managerServiceAccountName, "serviceaccount-name", os.Getenv("SERVICE_ACCOUNT"), "The Kubernetes Namespace on which the Operator is running in, required for the TenantControlPlane migration jobs.")
 	cmd.Flags().StringVar(&webhookCAPath, "webhook-ca-path", "/tmp/k8s-webhook-server/serving-certs/ca.crt", "Path to the Manager webhook server CA, required for the TenantControlPlane migration jobs.")
 	cmd.Flags().DurationVar(&controllerReconcileTimeout, "controller-reconcile-timeout", 30*time.Second, "The reconciliation request timeout before the controller withdraw the external resource calls, such as dealing with the Datastore, or the Tenant Control Plane API endpoint.")
 	cmd.Flags().DurationVar(&cacheResyncPeriod, "cache-resync-period", 10*time.Hour, "The controller-runtime.Manager cache resync period.")
-	cmd.Flags().BoolVar(&disableTelemetry, "disable-telemetry", false, "Disable the analytics traces collection.")
 	cmd.Flags().DurationVar(&certificateExpirationDeadline, "certificate-expiration-deadline", 24*time.Hour, "Define the deadline upon certificate expiration to start the renewal process, cannot be less than a 24 hours.")
 
 	cobra.OnInitialize(func() {

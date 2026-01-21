@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package v1alpha1
@@ -49,7 +49,7 @@ type DataStoreSpec struct {
 // TLSConfig contains the information used to connect to the data store using a secured connection.
 type TLSConfig struct {
 	// Retrieve the Certificate Authority certificate and private key, such as bare content of the file, or a SecretReference.
-	// The key reference is required since etcd authentication is based on certificates, and Kamaji is responsible in creating this.
+	// The key reference is required since etcd authentication is based on certificates, and Steward is responsible in creating this.
 	CertificateAuthority CertKeyPair `json:"certificateAuthority"`
 	// Specifies the SSL/TLS key and private key pair used to connect to the data store.
 	ClientCertificate *ClientCertificate `json:"clientCertificate,omitempty"`
@@ -97,9 +97,9 @@ type DataStoreStatus struct {
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 //+kubebuilder:resource:scope=Cluster
-//+kubebuilder:printcolumn:name="Driver",type="string",JSONPath=".spec.driver",description="Kamaji data store driver"
+//+kubebuilder:printcolumn:name="Driver",type="string",JSONPath=".spec.driver",description="Steward data store driver"
 //+kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp",description="Age"
-//+kubebuilder:metadata:annotations={"cert-manager.io/inject-ca-from=kamaji-system/kamaji-serving-cert"}
+//+kubebuilder:metadata:annotations={"cert-manager.io/inject-ca-from=steward-system/steward-serving-cert"}
 
 // DataStore is the Schema for the datastores API.
 type DataStore struct {

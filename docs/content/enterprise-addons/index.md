@@ -1,19 +1,19 @@
 # Enterprise Addons
 
-This document contains the documentation of the available Kamaji addons. 
+This document contains the documentation of the available Steward addons. 
 
-## What is a Kamaji Addon
+## What is a Steward Addon
 
-A Kamaji Addon is a separate component installed in the same Kamaji cluster.
+A Steward Addon is a separate component installed in the same Steward cluster.
 It offers an additional set of features required for enterprise-grade usage.
 
-The developed Kamaji addons are closed-source available and work with the upstream Kamaji edition.
+The developed Steward addons are closed-source available and work with the upstream Steward edition.
 
 ## Distribution of Addons
 
-The Kamaji Addons are available behind an active [subscription license](https://clastix.io/support/).
+The Steward Addons are available behind an active [subscription license](https://butlerlabs.io/support/).
 
-Once a subscription is activated, the [CLASTIX](https://clastix.io) team will automate the push of required OCI (container images) and Helm Chart artefacts to the customer's OCI-compatible repository.
+Once a subscription is activated, the [BUTLERLABS](https://butlerlabs.io) team will automate the push of required OCI (container images) and Helm Chart artefacts to the customer's OCI-compatible repository.
 
 ## Available addons
 

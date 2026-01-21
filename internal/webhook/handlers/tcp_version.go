@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package handlers
@@ -14,16 +14,16 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/upgrade"
-	"github.com/clastix/kamaji/internal/webhook/utils"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/upgrade"
+	"github.com/butlerdotdev/steward/internal/webhook/utils"
 )
 
 type TenantControlPlaneVersion struct{}
 
 func (t TenantControlPlaneVersion) OnCreate(object runtime.Object) AdmissionResponse {
 	return func(context.Context, admission.Request) ([]jsonpatch.JsonPatchOperation, error) {
-		tcp := object.(*kamajiv1alpha1.TenantControlPlane) //nolint:forcetypeassert
+		tcp := object.(*stewardv1alpha1.TenantControlPlane) //nolint:forcetypeassert
 
 		ver, err := semver.New(t.normalizeKubernetesVersion(tcp.Spec.Kubernetes.Version))
 		if err != nil {
@@ -34,7 +34,7 @@ func (t TenantControlPlaneVersion) OnCreate(object runtime.Object) AdmissionResp
 
 		supportedVer, supportedErr := semver.Make(t.normalizeKubernetesVersion(upgrade.KubeadmVersion))
 		if supportedErr != nil {
-			return nil, errors.Wrap(supportedErr, "unable to parse the Kamaji supported Kubernetes version")
+			return nil, errors.Wrap(supportedErr, "unable to parse the Steward supported Kubernetes version")
 		}
 
 		if ver.GT(supportedVer) {
@@ -59,7 +59,7 @@ func (t TenantControlPlaneVersion) OnDelete(runtime.Object) AdmissionResponse {
 
 func (t TenantControlPlaneVersion) OnUpdate(object runtime.Object, oldObject runtime.Object) AdmissionResponse {
 	return func(context.Context, admission.Request) ([]jsonpatch.JsonPatchOperation, error) {
-		newTCP, oldTCP := object.(*kamajiv1alpha1.TenantControlPlane), oldObject.(*kamajiv1alpha1.TenantControlPlane) //nolint:forcetypeassert
+		newTCP, oldTCP := object.(*stewardv1alpha1.TenantControlPlane), oldObject.(*stewardv1alpha1.TenantControlPlane) //nolint:forcetypeassert
 
 		if newTCP.DeletionTimestamp != nil {
 			return nil, nil
@@ -81,7 +81,7 @@ func (t TenantControlPlaneVersion) OnUpdate(object runtime.Object, oldObject run
 
 		supportedVer, supportedErr := semver.Make(t.normalizeKubernetesVersion(upgrade.KubeadmVersion))
 		if supportedErr != nil {
-			return nil, errors.Wrap(supportedErr, "unable to parse the Kamaji supported Kubernetes version")
+			return nil, errors.Wrap(supportedErr, "unable to parse the Steward supported Kubernetes version")
 		}
 
 		switch {

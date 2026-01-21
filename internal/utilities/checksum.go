@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package utilities
@@ -10,7 +10,7 @@ import (
 
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/clastix/kamaji/internal/constants"
+	"github.com/butlerdotdev/steward/internal/constants"
 )
 
 // GetObjectChecksum returns the annotation checksum in case this is set,

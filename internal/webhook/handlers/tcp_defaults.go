@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package handlers
@@ -13,8 +13,8 @@ import (
 	pointer "k8s.io/utils/ptr"
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/webhook/utils"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/webhook/utils"
 )
 
 type TenantControlPlaneDefaults struct {
@@ -23,7 +23,7 @@ type TenantControlPlaneDefaults struct {
 
 func (t TenantControlPlaneDefaults) OnCreate(object runtime.Object) AdmissionResponse {
 	return func(context.Context, admission.Request) ([]jsonpatch.JsonPatchOperation, error) {
-		original := object.(*kamajiv1alpha1.TenantControlPlane) //nolint:forcetypeassert
+		original := object.(*stewardv1alpha1.TenantControlPlane) //nolint:forcetypeassert
 
 		defaulted := original.DeepCopy()
 		t.defaultUnsetFields(defaulted)
@@ -61,7 +61,7 @@ func (t TenantControlPlaneDefaults) OnUpdate(runtime.Object, runtime.Object) Adm
 	return utils.NilOp()
 }
 
-func (t TenantControlPlaneDefaults) defaultUnsetFields(tcp *kamajiv1alpha1.TenantControlPlane) {
+func (t TenantControlPlaneDefaults) defaultUnsetFields(tcp *stewardv1alpha1.TenantControlPlane) {
 	if len(tcp.Spec.DataStore) == 0 && t.DefaultDatastore != "" {
 		tcp.Spec.DataStore = t.DefaultDatastore
 	}

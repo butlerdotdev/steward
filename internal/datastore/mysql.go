@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package datastore
@@ -14,8 +14,8 @@ import (
 	"github.com/JamesStewy/go-mysqldump"
 	"github.com/go-sql-driver/mysql"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/datastore/errors"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/datastore/errors"
 )
 
 const (
@@ -40,7 +40,7 @@ type MySQLConnection struct {
 	connector ConnectionEndpoint
 }
 
-func (c *MySQLConnection) Migrate(ctx context.Context, tcp kamajiv1alpha1.TenantControlPlane, target Connection) error {
+func (c *MySQLConnection) Migrate(ctx context.Context, tcp stewardv1alpha1.TenantControlPlane, target Connection) error {
 	// Ensuring the connection is working as expected
 	if err := target.Check(ctx); err != nil {
 		return err
@@ -92,7 +92,7 @@ func (c *MySQLConnection) Migrate(ctx context.Context, tcp kamajiv1alpha1.Tenant
 }
 
 func (c *MySQLConnection) Driver() string {
-	return string(kamajiv1alpha1.KineMySQLDriver)
+	return string(stewardv1alpha1.KineMySQLDriver)
 }
 
 func NewMySQLConnection(config ConnectionConfig) (Connection, error) {

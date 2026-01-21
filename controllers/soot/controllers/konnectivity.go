@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package controllers
@@ -25,11 +25,11 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"sigs.k8s.io/controller-runtime/pkg/source"
 
-	"github.com/clastix/kamaji/controllers"
-	sooterrors "github.com/clastix/kamaji/controllers/soot/controllers/errors"
-	"github.com/clastix/kamaji/controllers/utils"
-	"github.com/clastix/kamaji/internal/resources"
-	"github.com/clastix/kamaji/internal/resources/konnectivity"
+	"github.com/butlerdotdev/steward/controllers"
+	sooterrors "github.com/butlerdotdev/steward/controllers/soot/controllers/errors"
+	"github.com/butlerdotdev/steward/controllers/utils"
+	"github.com/butlerdotdev/steward/internal/resources"
+	"github.com/butlerdotdev/steward/internal/resources/konnectivity"
 )
 
 type KonnectivityAgent struct {

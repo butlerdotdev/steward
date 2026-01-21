@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package controllers
@@ -22,8 +22,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/controllers/utils"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/controllers/utils"
 )
 
 type DataStore struct {
@@ -34,13 +34,13 @@ type DataStore struct {
 	TenantControlPlaneTrigger chan event.GenericEvent
 }
 
-//+kubebuilder:rbac:groups=kamaji.clastix.io,resources=datastores,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=kamaji.clastix.io,resources=datastores/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=steward.butlerlabs.dev,resources=datastores,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=steward.butlerlabs.dev,resources=datastores/status,verbs=get;update;patch
 
 func (r *DataStore) Reconcile(ctx context.Context, request reconcile.Request) (reconcile.Result, error) {
 	logger := log.FromContext(ctx)
 
-	var ds kamajiv1alpha1.DataStore
+	var ds stewardv1alpha1.DataStore
 	if err := r.Client.Get(ctx, request.NamespacedName, &ds); err != nil {
 		if k8serrors.IsNotFound(err) {
 			logger.Info("resource may have been deleted, skipping")
@@ -59,11 +59,11 @@ func (r *DataStore) Reconcile(ctx context.Context, request reconcile.Request) (r
 		return reconcile.Result{}, nil
 	}
 
-	var tcpList kamajiv1alpha1.TenantControlPlaneList
+	var tcpList stewardv1alpha1.TenantControlPlaneList
 
 	updateErr := retry.RetryOnConflict(retry.DefaultRetry, func() error {
 		if lErr := r.Client.List(ctx, &tcpList, client.MatchingFieldsSelector{
-			Selector: fields.OneTermEqualSelector(kamajiv1alpha1.TenantControlPlaneUsedDataStoreKey, ds.GetName()),
+			Selector: fields.OneTermEqualSelector(stewardv1alpha1.TenantControlPlaneUsedDataStoreKey, ds.GetName()),
 		}); lErr != nil {
 			return errors.Wrap(lErr, "cannot retrieve list of the Tenant Control Plane using the following instance")
 		}
@@ -88,7 +88,7 @@ func (r *DataStore) Reconcile(ctx context.Context, request reconcile.Request) (r
 	}
 	// Triggering the reconciliation of the Tenant Control Plane upon a Secret change
 	for _, tcp := range tcpList.Items {
-		var shrunkTCP kamajiv1alpha1.TenantControlPlane
+		var shrunkTCP stewardv1alpha1.TenantControlPlane
 
 		shrunkTCP.Name = tcp.Name
 		shrunkTCP.Namespace = tcp.Namespace
@@ -100,7 +100,7 @@ func (r *DataStore) Reconcile(ctx context.Context, request reconcile.Request) (r
 }
 
 func (r *DataStore) SetupWithManager(mgr controllerruntime.Manager) error {
-	enqueueFn := func(tcp *kamajiv1alpha1.TenantControlPlane, limitingInterface workqueue.TypedRateLimitingInterface[reconcile.Request]) {
+	enqueueFn := func(tcp *stewardv1alpha1.TenantControlPlane, limitingInterface workqueue.TypedRateLimitingInterface[reconcile.Request]) {
 		if dataStoreName := tcp.Status.Storage.DataStoreName; len(dataStoreName) > 0 {
 			limitingInterface.AddRateLimited(reconcile.Request{
 				NamespacedName: k8stypes.NamespacedName{
@@ -111,19 +111,19 @@ func (r *DataStore) SetupWithManager(mgr controllerruntime.Manager) error {
 	}
 	//nolint:forcetypeassert
 	return controllerruntime.NewControllerManagedBy(mgr).
-		For(&kamajiv1alpha1.DataStore{}, builder.WithPredicates(
+		For(&stewardv1alpha1.DataStore{}, builder.WithPredicates(
 			predicate.GenerationChangedPredicate{},
 		)).
-		Watches(&kamajiv1alpha1.TenantControlPlane{}, handler.Funcs{
+		Watches(&stewardv1alpha1.TenantControlPlane{}, handler.Funcs{
 			CreateFunc: func(_ context.Context, createEvent event.TypedCreateEvent[client.Object], w workqueue.TypedRateLimitingInterface[reconcile.Request]) {
-				enqueueFn(createEvent.Object.(*kamajiv1alpha1.TenantControlPlane), w)
+				enqueueFn(createEvent.Object.(*stewardv1alpha1.TenantControlPlane), w)
 			},
 			UpdateFunc: func(_ context.Context, updateEvent event.TypedUpdateEvent[client.Object], w workqueue.TypedRateLimitingInterface[reconcile.Request]) {
-				enqueueFn(updateEvent.ObjectOld.(*kamajiv1alpha1.TenantControlPlane), w)
-				enqueueFn(updateEvent.ObjectNew.(*kamajiv1alpha1.TenantControlPlane), w)
+				enqueueFn(updateEvent.ObjectOld.(*stewardv1alpha1.TenantControlPlane), w)
+				enqueueFn(updateEvent.ObjectNew.(*stewardv1alpha1.TenantControlPlane), w)
 			},
 			DeleteFunc: func(_ context.Context, deleteEvent event.TypedDeleteEvent[client.Object], w workqueue.TypedRateLimitingInterface[reconcile.Request]) {
-				enqueueFn(deleteEvent.Object.(*kamajiv1alpha1.TenantControlPlane), w)
+				enqueueFn(deleteEvent.Object.(*stewardv1alpha1.TenantControlPlane), w)
 			},
 		}).
 		Complete(r)

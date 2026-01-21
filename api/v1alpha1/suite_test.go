@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package v1alpha1
@@ -30,8 +30,8 @@ var _ = BeforeSuite(func() {
 	By("bootstrapping test environment")
 	testEnv = &envtest.Environment{
 		CRDDirectoryPaths: []string{
-			filepath.Join("..", "..", "charts", "kamaji", "crds"),
-			// filepath.Join("../..", "chart", "kamaji", "crds"),
+			filepath.Join("..", "..", "charts", "steward", "crds"),
+			// filepath.Join("../..", "chart", "steward", "crds"),
 		},
 	}
 

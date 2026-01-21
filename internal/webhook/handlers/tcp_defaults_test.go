@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package handlers_test
@@ -13,28 +13,28 @@ import (
 	"k8s.io/utils/ptr"
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/webhook/handlers"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/webhook/handlers"
 )
 
 var _ = Describe("TCP Defaulting Webhook", func() {
 	var (
 		ctx context.Context
 		t   handlers.TenantControlPlaneDefaults
-		tcp *kamajiv1alpha1.TenantControlPlane
+		tcp *stewardv1alpha1.TenantControlPlane
 	)
 
 	BeforeEach(func() {
 		t = handlers.TenantControlPlaneDefaults{
 			DefaultDatastore: "etcd",
 		}
-		tcp = &kamajiv1alpha1.TenantControlPlane{
+		tcp = &stewardv1alpha1.TenantControlPlane{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      "tcp",
 				Namespace: "default",
 			},
-			Spec: kamajiv1alpha1.TenantControlPlaneSpec{
-				NetworkProfile: kamajiv1alpha1.NetworkProfileSpec{
+			Spec: stewardv1alpha1.TenantControlPlaneSpec{
+				NetworkProfile: stewardv1alpha1.NetworkProfileSpec{
 					ServiceCIDR: "10.96.0.0/12",
 					DNSServiceIPs: []string{
 						"10.96.0.10",

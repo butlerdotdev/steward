@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package utils
@@ -13,7 +13,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
 )
 
 // CheckExists ensures that the default Datastore exists before starting the manager.
@@ -27,7 +27,7 @@ func CheckExists(ctx context.Context, scheme *runtime.Scheme, datastoreName stri
 		return fmt.Errorf("unable to create controlerruntime.Client: %w", err)
 	}
 
-	if err = ctrlClient.Get(ctx, types.NamespacedName{Name: datastoreName}, &kamajiv1alpha1.DataStore{}); err != nil {
+	if err = ctrlClient.Get(ctx, types.NamespacedName{Name: datastoreName}, &stewardv1alpha1.DataStore{}); err != nil {
 		if errors.IsNotFound(err) {
 			return fmt.Errorf("the default Datastore %s doesn't exist", datastoreName)
 		}

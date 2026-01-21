@@ -3,8 +3,8 @@
 A Kubernetes API Server could be announced to users in several ways.
 The most preferred way is leveraging on Load Balancers with their dedicated IP.
 
-![Load Balancer setup](../images/kamaji-addon-ingress-lb.png#only-light)
-![Load Balancer setup](../images/kamaji-addon-ingress-lb-dark.png#only-dark)
+![Load Balancer setup](../images/steward-addon-ingress-lb.png#only-light)
+![Load Balancer setup](../images/steward-addon-ingress-lb-dark.png#only-dark)
 
 However, IPv4 addresses could be limited and scarce in availability, as well as expensive for public ones when running in the Cloud.
 A possible optimisation could be implementing an Ingress Controller which routes traffic to Kubernetes API Servers on a host-routing basis.
@@ -21,11 +21,11 @@ making impossible a routing based on the FQDN.
 
 ## Solution
 
-The `kamaji-addon-ingress` is an addon that will expose the Tenant Control Plane behind an Ingress Controller.
+The `steward-addon-ingress` is an addon that will expose the Tenant Control Plane behind an Ingress Controller.
 It's responsible for creating an `Ingress` object with the required HTTP rules, as well as the annotations needed for the TLS/SSL passthrough.
 
-![Ingress Controller setup](../images/kamaji-addon-ingress-ic.png#only-light)
-![Ingress Controller setup](../images/kamaji-addon-ingress-ic-dark.png#only-dark)
+![Ingress Controller setup](../images/steward-addon-ingress-ic.png#only-light)
+![Ingress Controller setup](../images/steward-addon-ingress-ic-dark.png#only-dark)
 
 Following is the list of supported Ingress Controllers:
 
@@ -36,22 +36,22 @@ Following is the list of supported Ingress Controllers:
 
 ## How to enable the Addon
 
-Annotate the Tenant Control Plane instances with the key `kamaji.clastix.io/ingress.domain` and the domain suffix domain value:
+Annotate the Tenant Control Plane instances with the key `steward.butlerlabs.io/ingress.domain` and the domain suffix domain value:
 
 ```shell
-kubectl annotate tenantcontrolplane $NAME kamaji.clastix.io/ingress.domain=$SUFFIX_DOMAIN
+kubectl annotate tenantcontrolplane $NAME steward.butlerlabs.io/ingress.domain=$SUFFIX_DOMAIN
 ```
 
 The value must be the expected suffix domain of generated resources.
 
 ```yaml
-apiVersion: kamaji.clastix.io/v1alpha1
+apiVersion: steward.butlerlabs.io/v1alpha1
 kind: TenantControlPlane
 metadata:
   annotations:
-    kamaji.clastix.io/ingress.domain: clastix.cloud  # the expected kamaji-addon-ingress label
+    steward.butlerlabs.io/ingress.domain: example.com  # the expected steward-addon-ingress label
   name: tenant-00
-  namespace: apezzuto
+  namespace: example
 ```
 
 Once a Tenant Control Plane has been annotated with this key, the addon will generate the following `Ingress` object.
@@ -63,11 +63,11 @@ metadata:
   annotations:
     haproxy.org/ssl-passthrough: "true"
   name: 592ee7b8-cd07-48cf-b754-76f370c3f87c
-  namespace: apezzuto
+  namespace: example
 spec:
   ingressClassName: haproxy
   rules:
-  - host: apezzuto-tenant-00.k8s.clastix.cloud
+  - host: example-tenant-00.k8s.example.com
     http:
       paths:
       - backend:
@@ -77,7 +77,7 @@ spec:
               number: 6443
         path: /
         pathType: Prefix
-  - host: apezzuto-tenant-00.konnectivity.clastix.cloud
+  - host: example-tenant-00.konnectivity.example.com
     http:
       paths:
       - backend:
@@ -99,15 +99,15 @@ For Tenant Control Plane objects leveraging on this addon, the following changes
 ### Ingress Controller
 
 The Ingress Controller must be deployed to listen for `https` connection on the default port `443`:
-if you have different requirements, please, engage with the CLASTIX team.
+if you have different requirements, please, engage with the BUTLERLABS team.
 
 ### DNS resolution
 
 The following zones must be configured properly according to your DNS provider:
 
 ```
-*.konnectivity.clastix.cloud    A   <YOUR_INGRESS_CONTROLLER_IP>
-*.k8s.clastix.cloud             A   <YOUR_INGRESS_CONTROLLER_IP>
+*.konnectivity.example.com    A   <YOUR_INGRESS_CONTROLLER_IP>
+*.k8s.example.com             A   <YOUR_INGRESS_CONTROLLER_IP>
 ```
 
 ### Certificate SANs
@@ -115,8 +115,8 @@ The following zones must be configured properly according to your DNS provider:
 ```yaml
   networkProfile:
     certSANs:
-    - apezzuto-tenant-00.k8s.clastix.cloud
-    - apezzuto-tenant-00.konnectivity.clastix.cloud
+    - example-tenant-00.k8s.example.com
+    - example-tenant-00.konnectivity.example.com
     dnsServiceIPs:
     - 10.96.0.10
     podCidr: 10.244.0.0/16
@@ -134,7 +134,7 @@ spec:
     service:
       serviceType: ClusterIP
     ingress:
-      hostname: apezzuto-tenant-00.k8s.clastix.cloud:443
+      hostname: example-tenant-00.k8s.example.com:443
       ingressClassName: unhandled
 ```
 
@@ -157,7 +157,7 @@ spec:
           - --endpoint-reconciler-type=none
 ```
 
-The `kamaji-addon-ingress` will be responsible for populating the `kubernetes` EndpointSlice object in the Tenant cluster.
+The `steward-addon-ingress` will be responsible for populating the `kubernetes` EndpointSlice object in the Tenant cluster.
 
 If you're running with `konnectivity`, also this extra argument must be enforced:
 
@@ -167,13 +167,13 @@ spec:
     konnectivity:
       agent:
         extraArgs:
-        - --proxy-server-host=apezzuto-tenant-00.konnectivity.clastix.cloud
+        - --proxy-server-host=example-tenant-00.konnectivity.example.com
         - --proxy-server-port=443
 ```
 
 ## Air-gapped environments
 
-The `kamaji-addon-ingress` works with a deployed component in the Tenant Cluster based on the container image `docker.io/clastix/tcp-proxy:latest`.
+The `steward-addon-ingress` works with a deployed component in the Tenant Cluster based on the container image `docker.io/butlerlabs/tcp-proxy:latest`.
 
 The same image can be replaced by customising the Addon Helm value upon installation:
 

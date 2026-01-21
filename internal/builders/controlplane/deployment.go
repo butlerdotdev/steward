@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package controlplane
@@ -23,8 +23,8 @@ import (
 	pointer "k8s.io/utils/ptr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 // Volume names.
@@ -43,8 +43,8 @@ const (
 )
 
 const (
-	apiServerFlagsAnnotation = "kube-apiserver.kamaji.clastix.io/args"
-	// Kamaji container names.
+	apiServerFlagsAnnotation = "kube-apiserver.steward.butlerlabs.dev/args"
+	// Steward container names.
 	apiServerContainerName    = "kube-apiserver"
 	controlPlaneContainerName = "kube-controller-manager"
 	schedulerContainerName    = "kube-scheduler"
@@ -54,23 +54,23 @@ const (
 
 type DataStoreOverrides struct {
 	Resource  string
-	DataStore kamajiv1alpha1.DataStore
+	DataStore stewardv1alpha1.DataStore
 }
 
 type Deployment struct {
 	KineContainerImage string
-	DataStore          kamajiv1alpha1.DataStore
+	DataStore          stewardv1alpha1.DataStore
 	DataStoreOverrides []DataStoreOverrides
 	Client             client.Client
 }
 
-func (d Deployment) Build(ctx context.Context, deployment *appsv1.Deployment, tenantControlPlane kamajiv1alpha1.TenantControlPlane) {
+func (d Deployment) Build(ctx context.Context, deployment *appsv1.Deployment, tenantControlPlane stewardv1alpha1.TenantControlPlane) {
 	address, _, _ := tenantControlPlane.AssignedControlPlaneAddress()
 
-	d.setLabels(deployment, utilities.MergeMaps(utilities.KamajiLabels(tenantControlPlane.GetName(), "deployment"), tenantControlPlane.Spec.ControlPlane.Deployment.AdditionalMetadata.Labels))
+	d.setLabels(deployment, utilities.MergeMaps(utilities.StewardLabels(tenantControlPlane.GetName(), "deployment"), tenantControlPlane.Spec.ControlPlane.Deployment.AdditionalMetadata.Labels))
 	d.setAnnotations(deployment, utilities.MergeMaps(deployment.Annotations, tenantControlPlane.Spec.ControlPlane.Deployment.AdditionalMetadata.Annotations))
 	d.setTemplateLabels(&deployment.Spec.Template, utilities.MergeMaps(d.templateLabels(ctx, &tenantControlPlane), tenantControlPlane.Spec.ControlPlane.Deployment.PodAdditionalMetadata.Labels))
-	d.setTemplateAnnotations(&deployment.Spec.Template, utilities.MergeMaps(tenantControlPlane.Spec.ControlPlane.Deployment.PodAdditionalMetadata.Annotations, map[string]string{"storage.kamaji.clastix.io/config": tenantControlPlane.Status.Storage.Config.Checksum}))
+	d.setTemplateAnnotations(&deployment.Spec.Template, utilities.MergeMaps(tenantControlPlane.Spec.ControlPlane.Deployment.PodAdditionalMetadata.Annotations, map[string]string{"storage.steward.butlerlabs.dev/config": tenantControlPlane.Status.Storage.Config.Checksum}))
 	d.setNodeSelector(&deployment.Spec.Template.Spec, tenantControlPlane)
 	d.setToleration(&deployment.Spec.Template.Spec, tenantControlPlane)
 	d.setAffinity(&deployment.Spec.Template.Spec, tenantControlPlane)
@@ -89,7 +89,7 @@ func (d Deployment) Build(ctx context.Context, deployment *appsv1.Deployment, te
 	d.Client.Scheme().Default(deployment)
 }
 
-func (d Deployment) setContainers(podSpec *corev1.PodSpec, tcp kamajiv1alpha1.TenantControlPlane, address string) {
+func (d Deployment) setContainers(podSpec *corev1.PodSpec, tcp stewardv1alpha1.TenantControlPlane, address string) {
 	d.buildKubeAPIServer(podSpec, tcp, address)
 	d.buildScheduler(podSpec, tcp)
 	d.buildControllerManager(podSpec, tcp)
@@ -98,10 +98,10 @@ func (d Deployment) setContainers(podSpec *corev1.PodSpec, tcp kamajiv1alpha1.Te
 
 // setInitContainers allows adding extra init containers from the user-space:
 // this function must be called priorit the setContainers to ensure the idempotency of podSpec building.
-func (d Deployment) setInitContainers(podSpec *corev1.PodSpec, tcp kamajiv1alpha1.TenantControlPlane) {
+func (d Deployment) setInitContainers(podSpec *corev1.PodSpec, tcp stewardv1alpha1.TenantControlPlane) {
 	initContainers := tcp.Spec.ControlPlane.Deployment.AdditionalInitContainers
 
-	if d.DataStore.Spec.Driver == kamajiv1alpha1.EtcdDriver {
+	if d.DataStore.Spec.Driver == stewardv1alpha1.EtcdDriver {
 		podSpec.InitContainers = initContainers
 	}
 
@@ -114,8 +114,8 @@ func (d Deployment) setInitContainers(podSpec *corev1.PodSpec, tcp kamajiv1alpha
 }
 
 // setAdditionalContainers must be called before setContainers: the user-space ones are going to be prepended
-// to simplify the management of the Kamaji ones during the create or update action.
-func (d Deployment) setAdditionalContainers(podSpec *corev1.PodSpec, tcp kamajiv1alpha1.TenantControlPlane) {
+// to simplify the management of the Steward ones during the create or update action.
+func (d Deployment) setAdditionalContainers(podSpec *corev1.PodSpec, tcp stewardv1alpha1.TenantControlPlane) {
 	containers := tcp.Spec.ControlPlane.Deployment.AdditionalContainers
 
 	found, index := utilities.HasNamedContainer(podSpec.Containers, apiServerContainerName)
@@ -126,7 +126,7 @@ func (d Deployment) setAdditionalContainers(podSpec *corev1.PodSpec, tcp kamajiv
 	podSpec.Containers = containers
 }
 
-func (d Deployment) setStrategy(deployment *appsv1.DeploymentSpec, tcp kamajiv1alpha1.TenantControlPlane) {
+func (d Deployment) setStrategy(deployment *appsv1.DeploymentSpec, tcp stewardv1alpha1.TenantControlPlane) {
 	deployment.Strategy = appsv1.DeploymentStrategy{
 		Type: tcp.Spec.ControlPlane.Deployment.Strategy.Type,
 	}
@@ -136,7 +136,7 @@ func (d Deployment) setStrategy(deployment *appsv1.DeploymentSpec, tcp kamajiv1a
 
 		return
 	}
-	// In case of no RollingUpdate options, Kamaji will perform a blue/green rollout:
+	// In case of no RollingUpdate options, Steward will perform a blue/green rollout:
 	// this will ensure to avoid round-robin between old and new version,
 	// useful especially during the Kubernetes version upgrade phase.
 	if tcp.Spec.ControlPlane.Deployment.Strategy.RollingUpdate == nil {
@@ -163,8 +163,8 @@ func (d Deployment) setStrategy(deployment *appsv1.DeploymentSpec, tcp kamajiv1a
 	}
 }
 
-func (d Deployment) setVolumes(podSpec *corev1.PodSpec, tcp kamajiv1alpha1.TenantControlPlane) {
-	for _, fn := range []func(*corev1.PodSpec, kamajiv1alpha1.TenantControlPlane){
+func (d Deployment) setVolumes(podSpec *corev1.PodSpec, tcp stewardv1alpha1.TenantControlPlane) {
+	for _, fn := range []func(*corev1.PodSpec, stewardv1alpha1.TenantControlPlane){
 		d.buildPKIVolume,
 		d.buildCAVolume,
 		d.buildShareCAVolume,
@@ -177,7 +177,7 @@ func (d Deployment) setVolumes(podSpec *corev1.PodSpec, tcp kamajiv1alpha1.Tenan
 	}
 }
 
-func (d Deployment) buildPKIVolume(podSpec *corev1.PodSpec, tcp kamajiv1alpha1.TenantControlPlane) {
+func (d Deployment) buildPKIVolume(podSpec *corev1.PodSpec, tcp stewardv1alpha1.TenantControlPlane) {
 	found, index := utilities.HasNamedVolume(podSpec.Volumes, kubernetesPKIVolumeName)
 	if !found {
 		index = len(podSpec.Volumes)
@@ -205,7 +205,7 @@ func (d Deployment) buildPKIVolume(podSpec *corev1.PodSpec, tcp kamajiv1alpha1.T
 		},
 	}
 
-	if d.DataStore.Spec.Driver == kamajiv1alpha1.EtcdDriver {
+	if d.DataStore.Spec.Driver == stewardv1alpha1.EtcdDriver {
 		sources = append(sources, corev1.VolumeProjection{
 			Secret: &corev1.SecretProjection{
 				LocalObjectReference: corev1.LocalObjectReference{
@@ -238,7 +238,7 @@ func (d Deployment) buildPKIVolume(podSpec *corev1.PodSpec, tcp kamajiv1alpha1.T
 	}
 }
 
-func (d Deployment) buildCAVolume(podSpec *corev1.PodSpec, tcp kamajiv1alpha1.TenantControlPlane) {
+func (d Deployment) buildCAVolume(podSpec *corev1.PodSpec, tcp stewardv1alpha1.TenantControlPlane) {
 	found, index := utilities.HasNamedVolume(podSpec.Volumes, caCertificatesVolumeName)
 	if !found {
 		index = len(podSpec.Volumes)
@@ -254,7 +254,7 @@ func (d Deployment) buildCAVolume(podSpec *corev1.PodSpec, tcp kamajiv1alpha1.Te
 	}
 }
 
-func (d Deployment) buildShareCAVolume(podSpec *corev1.PodSpec, tcp kamajiv1alpha1.TenantControlPlane) {
+func (d Deployment) buildShareCAVolume(podSpec *corev1.PodSpec, tcp stewardv1alpha1.TenantControlPlane) {
 	found, index := utilities.HasNamedVolume(podSpec.Volumes, usrShareCACertificatesVolumeName)
 	if !found {
 		index = len(podSpec.Volumes)
@@ -270,7 +270,7 @@ func (d Deployment) buildShareCAVolume(podSpec *corev1.PodSpec, tcp kamajiv1alph
 	}
 }
 
-func (d Deployment) buildLocalShareCAVolume(podSpec *corev1.PodSpec, tcp kamajiv1alpha1.TenantControlPlane) {
+func (d Deployment) buildLocalShareCAVolume(podSpec *corev1.PodSpec, tcp stewardv1alpha1.TenantControlPlane) {
 	found, index := utilities.HasNamedVolume(podSpec.Volumes, usrLocalShareCaCertificateVolumeName)
 	if !found {
 		index = len(podSpec.Volumes)
@@ -286,7 +286,7 @@ func (d Deployment) buildLocalShareCAVolume(podSpec *corev1.PodSpec, tcp kamajiv
 	}
 }
 
-func (d Deployment) buildSchedulerVolume(podSpec *corev1.PodSpec, tcp kamajiv1alpha1.TenantControlPlane) {
+func (d Deployment) buildSchedulerVolume(podSpec *corev1.PodSpec, tcp stewardv1alpha1.TenantControlPlane) {
 	found, index := utilities.HasNamedVolume(podSpec.Volumes, schedulerKubeconfigVolumeName)
 	if !found {
 		index = len(podSpec.Volumes)
@@ -302,7 +302,7 @@ func (d Deployment) buildSchedulerVolume(podSpec *corev1.PodSpec, tcp kamajiv1al
 	}
 }
 
-func (d Deployment) buildControllerManagerVolume(podSpec *corev1.PodSpec, tcp kamajiv1alpha1.TenantControlPlane) {
+func (d Deployment) buildControllerManagerVolume(podSpec *corev1.PodSpec, tcp stewardv1alpha1.TenantControlPlane) {
 	found, index := utilities.HasNamedVolume(podSpec.Volumes, controllerManagerKubeconfigVolumeName)
 	if !found {
 		index = len(podSpec.Volumes)
@@ -319,8 +319,8 @@ func (d Deployment) buildControllerManagerVolume(podSpec *corev1.PodSpec, tcp ka
 }
 
 // setAdditionalVolumes must be called before setVolumes: the user-space ones are going to be prepended
-// to simplify the management of the Kamaji ones during the create or update action.
-func (d Deployment) setAdditionalVolumes(podSpec *corev1.PodSpec, tcp kamajiv1alpha1.TenantControlPlane) {
+// to simplify the management of the Steward ones during the create or update action.
+func (d Deployment) setAdditionalVolumes(podSpec *corev1.PodSpec, tcp stewardv1alpha1.TenantControlPlane) {
 	volumes := tcp.Spec.ControlPlane.Deployment.AdditionalVolumes
 
 	found, index := utilities.HasNamedVolume(podSpec.Volumes, kubernetesPKIVolumeName)
@@ -331,7 +331,7 @@ func (d Deployment) setAdditionalVolumes(podSpec *corev1.PodSpec, tcp kamajiv1al
 	podSpec.Volumes = volumes
 }
 
-func (d Deployment) buildScheduler(podSpec *corev1.PodSpec, tenantControlPlane kamajiv1alpha1.TenantControlPlane) {
+func (d Deployment) buildScheduler(podSpec *corev1.PodSpec, tenantControlPlane stewardv1alpha1.TenantControlPlane) {
 	found, index := utilities.HasNamedContainer(podSpec.Containers, schedulerContainerName)
 	if !found {
 		index = len(podSpec.Containers)
@@ -411,7 +411,7 @@ func (d Deployment) buildScheduler(podSpec *corev1.PodSpec, tenantControlPlane k
 	podSpec.Containers[index].VolumeMounts = volumeMounts
 }
 
-func (d Deployment) buildControllerManager(podSpec *corev1.PodSpec, tenantControlPlane kamajiv1alpha1.TenantControlPlane) {
+func (d Deployment) buildControllerManager(podSpec *corev1.PodSpec, tenantControlPlane stewardv1alpha1.TenantControlPlane) {
 	found, index := utilities.HasNamedContainer(podSpec.Containers, controlPlaneContainerName)
 	if !found {
 		index = len(podSpec.Containers)
@@ -538,7 +538,7 @@ func (d Deployment) ensureVolumeMount(in *[]corev1.VolumeMount, desired corev1.V
 }
 
 // initVolumeMounts is responsible to create the idempotent slice of corev1.VolumeMount:
-// firstSystemVolumeMountName must refer to the first Kamaji-space volume mount to detect properly user-space ones.
+// firstSystemVolumeMountName must refer to the first Steward-space volume mount to detect properly user-space ones.
 func (d Deployment) initVolumeMounts(firstSystemVolumeMountName string, actual []corev1.VolumeMount, extra ...corev1.VolumeMount) []corev1.VolumeMount {
 	var volumeMounts []corev1.VolumeMount
 
@@ -552,7 +552,7 @@ func (d Deployment) initVolumeMounts(firstSystemVolumeMountName string, actual [
 	return volumeMounts
 }
 
-func (d Deployment) buildKubeAPIServer(podSpec *corev1.PodSpec, tenantControlPlane kamajiv1alpha1.TenantControlPlane, address string) {
+func (d Deployment) buildKubeAPIServer(podSpec *corev1.PodSpec, tenantControlPlane stewardv1alpha1.TenantControlPlane, address string) {
 	found, index := utilities.HasNamedContainer(podSpec.Containers, apiServerContainerName)
 	if !found {
 		index = len(podSpec.Containers)
@@ -617,9 +617,9 @@ func (d Deployment) buildKubeAPIServer(podSpec *corev1.PodSpec, tenantControlPla
 
 	volumeMounts := d.initVolumeMounts(kubernetesPKIVolumeName, podSpec.Containers[index].VolumeMounts, extraVolumeMounts...)
 
-	if d.DataStore.Spec.Driver == kamajiv1alpha1.KineMySQLDriver ||
-		d.DataStore.Spec.Driver == kamajiv1alpha1.KinePostgreSQLDriver ||
-		d.DataStore.Spec.Driver == kamajiv1alpha1.KineNatsDriver {
+	if d.DataStore.Spec.Driver == stewardv1alpha1.KineMySQLDriver ||
+		d.DataStore.Spec.Driver == stewardv1alpha1.KinePostgreSQLDriver ||
+		d.DataStore.Spec.Driver == stewardv1alpha1.KineNatsDriver {
 		d.ensureVolumeMount(&volumeMounts, corev1.VolumeMount{
 			Name:      kineUDSVolume,
 			ReadOnly:  false,
@@ -660,7 +660,7 @@ func (d Deployment) buildKubeAPIServer(podSpec *corev1.PodSpec, tenantControlPla
 	}
 }
 
-func (d Deployment) buildKubeAPIServerCommand(tenantControlPlane kamajiv1alpha1.TenantControlPlane, address string, current map[string]string) map[string]string {
+func (d Deployment) buildKubeAPIServerCommand(tenantControlPlane stewardv1alpha1.TenantControlPlane, address string, current map[string]string) map[string]string {
 	var extraArgs map[string]string
 
 	if tenantControlPlane.Spec.ControlPlane.Deployment.ExtraArgs != nil {
@@ -700,9 +700,9 @@ func (d Deployment) buildKubeAPIServerCommand(tenantControlPlane kamajiv1alpha1.
 	}
 
 	switch d.DataStore.Spec.Driver {
-	case kamajiv1alpha1.KineMySQLDriver, kamajiv1alpha1.KinePostgreSQLDriver, kamajiv1alpha1.KineNatsDriver:
+	case stewardv1alpha1.KineMySQLDriver, stewardv1alpha1.KinePostgreSQLDriver, stewardv1alpha1.KineNatsDriver:
 		desiredArgs["--etcd-servers"] = "unix://" + kineUDSPath
-	case kamajiv1alpha1.EtcdDriver:
+	case stewardv1alpha1.EtcdDriver:
 		httpsEndpoints := make([]string, 0, len(d.DataStore.Spec.Endpoints))
 
 		for _, ep := range d.DataStore.Spec.Endpoints {
@@ -721,7 +721,7 @@ func (d Deployment) buildKubeAPIServerCommand(tenantControlPlane kamajiv1alpha1.
 		desiredArgs["--etcd-servers-overrides"] = d.etcdServersOverrides()
 	}
 
-	// Order matters, here: extraArgs could try to overwrite some arguments managed by Kamaji and that would be crucial.
+	// Order matters, here: extraArgs could try to overwrite some arguments managed by Steward and that would be crucial.
 	// Adding as first element of the array of maps, we're sure that these overrides will be sanitized by our configuration.
 	return utilities.MergeMaps(current, desiredArgs, extraArgs)
 }
@@ -771,8 +771,8 @@ func (d Deployment) removeKineVolumes(podSpec *corev1.PodSpec) {
 	}
 }
 
-func (d Deployment) buildKineVolume(podSpec *corev1.PodSpec, tcp kamajiv1alpha1.TenantControlPlane) {
-	if d.DataStore.Spec.Driver == kamajiv1alpha1.EtcdDriver {
+func (d Deployment) buildKineVolume(podSpec *corev1.PodSpec, tcp stewardv1alpha1.TenantControlPlane) {
+	if d.DataStore.Spec.Driver == stewardv1alpha1.EtcdDriver {
 		return
 	}
 
@@ -840,8 +840,8 @@ func (d Deployment) removeKineInitContainers(podSpec *corev1.PodSpec) {
 	}
 }
 
-func (d Deployment) buildKine(podSpec *corev1.PodSpec, tcp kamajiv1alpha1.TenantControlPlane) {
-	if d.DataStore.Spec.Driver == kamajiv1alpha1.EtcdDriver {
+func (d Deployment) buildKine(podSpec *corev1.PodSpec, tcp stewardv1alpha1.TenantControlPlane) {
+	if d.DataStore.Spec.Driver == stewardv1alpha1.EtcdDriver {
 		d.removeKineContainers(podSpec)
 		d.removeKineVolumes(podSpec)
 
@@ -906,18 +906,18 @@ func (d Deployment) buildKine(podSpec *corev1.PodSpec, tcp kamajiv1alpha1.Tenant
 	if tcp.Spec.ControlPlane.Deployment.ExtraArgs != nil {
 		utilArgs := utilities.ArgsFromSliceToMap(tcp.Spec.ControlPlane.Deployment.ExtraArgs.Kine)
 
-		// Merging the user-space arguments with the Kamaji ones.
+		// Merging the user-space arguments with the Steward ones.
 		for k, v := range utilArgs {
 			args[k] = v
 		}
 	}
 
 	switch d.DataStore.Spec.Driver {
-	case kamajiv1alpha1.KineMySQLDriver:
+	case stewardv1alpha1.KineMySQLDriver:
 		args["--endpoint"] = "mysql://$(DB_USER):$(DB_PASSWORD)@tcp($(DB_CONNECTION_STRING))/$(DB_SCHEMA)"
-	case kamajiv1alpha1.KinePostgreSQLDriver:
+	case stewardv1alpha1.KinePostgreSQLDriver:
 		args["--endpoint"] = "postgres://$(DB_USER):$(DB_PASSWORD)@$(DB_CONNECTION_STRING)/$(DB_SCHEMA)"
-	case kamajiv1alpha1.KineNatsDriver:
+	case stewardv1alpha1.KineNatsDriver:
 		args["--endpoint"] = "nats://$(DB_USER):$(DB_PASSWORD)@$(DB_CONNECTION_STRING)?bucket=$(DB_SCHEMA)&noEmbed"
 	}
 
@@ -972,19 +972,19 @@ func (d Deployment) buildKine(podSpec *corev1.PodSpec, tcp kamajiv1alpha1.Tenant
 	}
 }
 
-func (d Deployment) setSelector(deploymentSpec *appsv1.DeploymentSpec, tcp kamajiv1alpha1.TenantControlPlane) {
+func (d Deployment) setSelector(deploymentSpec *appsv1.DeploymentSpec, tcp stewardv1alpha1.TenantControlPlane) {
 	deploymentSpec.Selector = &metav1.LabelSelector{
 		MatchLabels: map[string]string{
-			"kamaji.clastix.io/name": tcp.GetName(),
+			"steward.butlerlabs.dev/name": tcp.GetName(),
 		},
 	}
 }
 
-func (d Deployment) setReplicas(deploymentSpec *appsv1.DeploymentSpec, tcp kamajiv1alpha1.TenantControlPlane) {
+func (d Deployment) setReplicas(deploymentSpec *appsv1.DeploymentSpec, tcp stewardv1alpha1.TenantControlPlane) {
 	deploymentSpec.Replicas = tcp.Spec.ControlPlane.Deployment.Replicas
 }
 
-func (d Deployment) setRuntimeClass(spec *corev1.PodSpec, tcp kamajiv1alpha1.TenantControlPlane) {
+func (d Deployment) setRuntimeClass(spec *corev1.PodSpec, tcp stewardv1alpha1.TenantControlPlane) {
 	if len(tcp.Spec.ControlPlane.Deployment.RuntimeClassName) > 0 {
 		spec.RuntimeClassName = pointer.To(tcp.Spec.ControlPlane.Deployment.RuntimeClassName)
 
@@ -994,7 +994,7 @@ func (d Deployment) setRuntimeClass(spec *corev1.PodSpec, tcp kamajiv1alpha1.Ten
 	spec.RuntimeClassName = nil
 }
 
-func (d Deployment) templateLabels(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (labels map[string]string) {
+func (d Deployment) templateLabels(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (labels map[string]string) {
 	hash := func(ctx context.Context, namespace, secretName string) string {
 		h, _ := d.secretHashValue(ctx, d.Client, namespace, secretName)
 
@@ -1002,17 +1002,17 @@ func (d Deployment) templateLabels(ctx context.Context, tenantControlPlane *kama
 	}
 
 	labels = map[string]string{
-		"kamaji.clastix.io/name":                                            tenantControlPlane.GetName(),
-		"kamaji.clastix.io/component":                                       "deployment",
-		"component.kamaji.clastix.io/api-server-certificate":                hash(ctx, tenantControlPlane.GetNamespace(), tenantControlPlane.Status.Certificates.APIServer.SecretName),
-		"component.kamaji.clastix.io/api-server-kubelet-client-certificate": hash(ctx, tenantControlPlane.GetNamespace(), tenantControlPlane.Status.Certificates.APIServerKubeletClient.SecretName),
-		"component.kamaji.clastix.io/ca":                                    hash(ctx, tenantControlPlane.GetNamespace(), tenantControlPlane.Status.Certificates.CA.SecretName),
-		"component.kamaji.clastix.io/controller-manager-kubeconfig":         hash(ctx, tenantControlPlane.GetNamespace(), tenantControlPlane.Status.KubeConfig.ControllerManager.SecretName),
-		"component.kamaji.clastix.io/front-proxy-ca-certificate":            hash(ctx, tenantControlPlane.GetNamespace(), tenantControlPlane.Status.Certificates.FrontProxyCA.SecretName),
-		"component.kamaji.clastix.io/front-proxy-client-certificate":        hash(ctx, tenantControlPlane.GetNamespace(), tenantControlPlane.Status.Certificates.FrontProxyClient.SecretName),
-		"component.kamaji.clastix.io/service-account":                       hash(ctx, tenantControlPlane.GetNamespace(), tenantControlPlane.Status.Certificates.SA.SecretName),
-		"component.kamaji.clastix.io/scheduler-kubeconfig":                  hash(ctx, tenantControlPlane.GetNamespace(), tenantControlPlane.Status.KubeConfig.Scheduler.SecretName),
-		"component.kamaji.clastix.io/datastore":                             tenantControlPlane.Status.Storage.DataStoreName,
+		"steward.butlerlabs.dev/name":                                            tenantControlPlane.GetName(),
+		"steward.butlerlabs.dev/component":                                       "deployment",
+		"component.steward.butlerlabs.dev/api-server-certificate":                hash(ctx, tenantControlPlane.GetNamespace(), tenantControlPlane.Status.Certificates.APIServer.SecretName),
+		"component.steward.butlerlabs.dev/api-server-kubelet-client-certificate": hash(ctx, tenantControlPlane.GetNamespace(), tenantControlPlane.Status.Certificates.APIServerKubeletClient.SecretName),
+		"component.steward.butlerlabs.dev/ca":                                    hash(ctx, tenantControlPlane.GetNamespace(), tenantControlPlane.Status.Certificates.CA.SecretName),
+		"component.steward.butlerlabs.dev/controller-manager-kubeconfig":         hash(ctx, tenantControlPlane.GetNamespace(), tenantControlPlane.Status.KubeConfig.ControllerManager.SecretName),
+		"component.steward.butlerlabs.dev/front-proxy-ca-certificate":            hash(ctx, tenantControlPlane.GetNamespace(), tenantControlPlane.Status.Certificates.FrontProxyCA.SecretName),
+		"component.steward.butlerlabs.dev/front-proxy-client-certificate":        hash(ctx, tenantControlPlane.GetNamespace(), tenantControlPlane.Status.Certificates.FrontProxyClient.SecretName),
+		"component.steward.butlerlabs.dev/service-account":                       hash(ctx, tenantControlPlane.GetNamespace(), tenantControlPlane.Status.Certificates.SA.SecretName),
+		"component.steward.butlerlabs.dev/scheduler-kubeconfig":                  hash(ctx, tenantControlPlane.GetNamespace(), tenantControlPlane.Status.KubeConfig.Scheduler.SecretName),
+		"component.steward.butlerlabs.dev/datastore":                             tenantControlPlane.Status.Storage.DataStoreName,
 	}
 
 	return labels
@@ -1078,7 +1078,7 @@ func (d Deployment) setTopologySpreadConstraints(spec *appsv1.DeploymentSpec, to
 
 // resetKubeAPIServerFlags ensures that upon a change of the kube-apiserver extra flags the desired ones are properly
 // applied, also considering that the container could be lately patched by the konnectivity addon resources.
-func (d Deployment) resetKubeAPIServerFlags(resource *appsv1.Deployment, tcp kamajiv1alpha1.TenantControlPlane) {
+func (d Deployment) resetKubeAPIServerFlags(resource *appsv1.Deployment, tcp stewardv1alpha1.TenantControlPlane) {
 	if tcp.Spec.ControlPlane.Deployment.ExtraArgs == nil {
 		return
 	}
@@ -1110,19 +1110,19 @@ func (d Deployment) resetKubeAPIServerFlags(resource *appsv1.Deployment, tcp kam
 	resource.GetAnnotations()[apiServerFlagsAnnotation] = fmt.Sprintf("%d", len(tcp.Spec.ControlPlane.Deployment.ExtraArgs.APIServer))
 }
 
-func (d Deployment) setNodeSelector(spec *corev1.PodSpec, tcp kamajiv1alpha1.TenantControlPlane) {
+func (d Deployment) setNodeSelector(spec *corev1.PodSpec, tcp stewardv1alpha1.TenantControlPlane) {
 	spec.NodeSelector = tcp.Spec.ControlPlane.Deployment.NodeSelector
 }
 
-func (d Deployment) setToleration(spec *corev1.PodSpec, tcp kamajiv1alpha1.TenantControlPlane) {
+func (d Deployment) setToleration(spec *corev1.PodSpec, tcp stewardv1alpha1.TenantControlPlane) {
 	spec.Tolerations = tcp.Spec.ControlPlane.Deployment.Tolerations
 }
 
-func (d Deployment) setAffinity(spec *corev1.PodSpec, tcp kamajiv1alpha1.TenantControlPlane) {
+func (d Deployment) setAffinity(spec *corev1.PodSpec, tcp stewardv1alpha1.TenantControlPlane) {
 	spec.Affinity = tcp.Spec.ControlPlane.Deployment.Affinity
 }
 
-func (d Deployment) setServiceAccount(spec *corev1.PodSpec, tcp kamajiv1alpha1.TenantControlPlane) {
+func (d Deployment) setServiceAccount(spec *corev1.PodSpec, tcp stewardv1alpha1.TenantControlPlane) {
 	if len(tcp.Spec.ControlPlane.Deployment.ServiceAccountName) > 0 {
 		spec.ServiceAccountName = tcp.Spec.ControlPlane.Deployment.ServiceAccountName
 

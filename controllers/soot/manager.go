@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package soot
@@ -26,13 +26,13 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"sigs.k8s.io/controller-runtime/pkg/source"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/controllers/finalizers"
-	"github.com/clastix/kamaji/controllers/soot/controllers"
-	"github.com/clastix/kamaji/controllers/soot/controllers/errors"
-	"github.com/clastix/kamaji/controllers/utils"
-	"github.com/clastix/kamaji/internal/resources"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/controllers/finalizers"
+	"github.com/butlerdotdev/steward/controllers/soot/controllers"
+	"github.com/butlerdotdev/steward/controllers/soot/controllers/errors"
+	"github.com/butlerdotdev/steward/controllers/utils"
+	"github.com/butlerdotdev/steward/internal/resources"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 type sootItem struct {
@@ -44,7 +44,7 @@ type sootItem struct {
 type sootMap map[string]sootItem
 
 const (
-	sootManagerAnnotation       = "kamaji.clastix.io/soot"
+	sootManagerAnnotation       = "steward.butlerlabs.dev/soot"
 	sootManagerFailedAnnotation = "failed"
 )
 
@@ -63,8 +63,8 @@ type Manager struct {
 // retrieveTenantControlPlane is the function used to let an underlying controller of the soot manager
 // to retrieve its parent TenantControlPlane definition, required to understand which actions must be performed.
 func (m *Manager) retrieveTenantControlPlane(ctx context.Context, request reconcile.Request) utils.TenantControlPlaneRetrievalFn {
-	return func() (*kamajiv1alpha1.TenantControlPlane, error) {
-		tcp := &kamajiv1alpha1.TenantControlPlane{}
+	return func() (*stewardv1alpha1.TenantControlPlane, error) {
+		tcp := &stewardv1alpha1.TenantControlPlane{}
 
 		if err := m.AdminClient.Get(ctx, request.NamespacedName, tcp); err != nil {
 			return nil, err
@@ -80,7 +80,7 @@ func (m *Manager) retrieveTenantControlPlane(ctx context.Context, request reconc
 
 // If the TenantControlPlane is deleted we have to free up memory by stopping the soot manager:
 // this is made possible by retrieving the cancel function of the soot manager context to cancel it.
-func (m *Manager) cleanup(ctx context.Context, req reconcile.Request, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (err error) {
+func (m *Manager) cleanup(ctx context.Context, req reconcile.Request, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (err error) {
 	if tenantControlPlane != nil && controllerutil.ContainsFinalizer(tenantControlPlane, finalizers.SootFinalizer) {
 		defer func() {
 			err = retry.RetryOnConflict(retry.DefaultRetry, func() error {
@@ -151,7 +151,7 @@ func (m *Manager) retryTenantControlPlaneAnnotations(ctx context.Context, reques
 func (m *Manager) Reconcile(ctx context.Context, request reconcile.Request) (res reconcile.Result, err error) {
 	// Retrieving the TenantControlPlane:
 	// in case of deletion, we must be sure to properly remove from the memory the soot manager.
-	tcp := &kamajiv1alpha1.TenantControlPlane{}
+	tcp := &stewardv1alpha1.TenantControlPlane{}
 	if err = m.AdminClient.Get(ctx, request.NamespacedName, tcp); err != nil {
 		if apierrors.IsNotFound(err) {
 			return reconcile.Result{}, m.cleanup(ctx, request, nil)
@@ -159,10 +159,10 @@ func (m *Manager) Reconcile(ctx context.Context, request reconcile.Request) (res
 
 		return reconcile.Result{}, err
 	}
-	tcpStatus := ptr.Deref(tcp.Status.Kubernetes.Version.Status, kamajiv1alpha1.VersionProvisioning)
+	tcpStatus := ptr.Deref(tcp.Status.Kubernetes.Version.Status, stewardv1alpha1.VersionProvisioning)
 	// Handling finalizer if the TenantControlPlane is marked for deletion or scaled to zero:
 	// the clean-up function is already taking care to stop the manager, if this exists.
-	if tcp.GetDeletionTimestamp() != nil || tcpStatus == kamajiv1alpha1.VersionSleeping {
+	if tcp.GetDeletionTimestamp() != nil || tcpStatus == stewardv1alpha1.VersionSleeping {
 		if controllerutil.ContainsFinalizer(tcp, finalizers.SootFinalizer) {
 			return reconcile.Result{}, m.cleanup(ctx, request, tcp)
 		}
@@ -180,18 +180,18 @@ func (m *Manager) Reconcile(ctx context.Context, request reconcile.Request) (res
 			return reconcile.Result{}, m.retryTenantControlPlaneAnnotations(ctx, request, func(annotations map[string]string) {
 				delete(annotations, sootManagerAnnotation)
 			})
-		case tcpStatus == kamajiv1alpha1.VersionCARotating:
+		case tcpStatus == stewardv1alpha1.VersionCARotating:
 			// The TenantControlPlane CA has been rotated, it means the running manager
 			// must be restarted to avoid certificate signed by unknown authority errors.
 			return reconcile.Result{}, m.cleanup(ctx, request, tcp)
-		case tcpStatus == kamajiv1alpha1.VersionNotReady:
+		case tcpStatus == stewardv1alpha1.VersionNotReady:
 			// The TenantControlPlane is in non-ready mode, or marked for deletion:
 			// we don't want to pollute with messages due to broken connection.
 			// Once the TCP will be ready again, the event will be intercepted and the manager started back.
 			return reconcile.Result{}, m.cleanup(ctx, request, tcp)
 		default:
 			for _, trigger := range v.triggers {
-				var shrunkTCP kamajiv1alpha1.TenantControlPlane
+				var shrunkTCP stewardv1alpha1.TenantControlPlane
 
 				shrunkTCP.Name = tcp.Name
 				shrunkTCP.Namespace = tcp.Namespace
@@ -204,7 +204,7 @@ func (m *Manager) Reconcile(ctx context.Context, request reconcile.Request) (res
 	}
 	// No need to start a soot manager if the TenantControlPlane is not ready:
 	// enqueuing back is not required since we're going to get that event once ready.
-	if tcpStatus == kamajiv1alpha1.VersionNotReady || tcpStatus == kamajiv1alpha1.VersionCARotating || tcpStatus == kamajiv1alpha1.VersionSleeping {
+	if tcpStatus == stewardv1alpha1.VersionNotReady || tcpStatus == stewardv1alpha1.VersionCARotating || tcpStatus == stewardv1alpha1.VersionSleeping {
 		log.FromContext(ctx).Info("skipping start of the soot manager for a not ready instance")
 
 		return reconcile.Result{}, nil
@@ -383,7 +383,7 @@ func (m *Manager) Reconcile(ctx context.Context, request reconcile.Request) (res
 			// When the manager cannot start we're enqueuing back the request to take advantage of the backoff factor
 			// of the queue: this is a goroutine and cannot return an error since the manager is running on its own,
 			// using the sootManagerErrChan channel we can trigger a reconciliation although the TCP hadn't any change.
-			var shrunkTCP kamajiv1alpha1.TenantControlPlane
+			var shrunkTCP stewardv1alpha1.TenantControlPlane
 
 			shrunkTCP.Name = tcp.Name
 			shrunkTCP.Namespace = tcp.Namespace
@@ -418,14 +418,14 @@ func (m *Manager) SetupWithManager(mgr manager.Manager) error {
 	return controllerruntime.NewControllerManagedBy(mgr).
 		WithOptions(controller.TypedOptions[reconcile.Request]{SkipNameValidation: ptr.To(true)}).
 		WatchesRawSource(source.Channel(m.sootManagerErrChan, &handler.EnqueueRequestForObject{})).
-		For(&kamajiv1alpha1.TenantControlPlane{}, builder.WithPredicates(predicate.NewPredicateFuncs(func(object client.Object) bool {
-			obj := object.(*kamajiv1alpha1.TenantControlPlane) //nolint:forcetypeassert
+		For(&stewardv1alpha1.TenantControlPlane{}, builder.WithPredicates(predicate.NewPredicateFuncs(func(object client.Object) bool {
+			obj := object.(*stewardv1alpha1.TenantControlPlane) //nolint:forcetypeassert
 			// status is required to understand if we have to start or stop the soot manager
 			if obj.Status.Kubernetes.Version.Status == nil {
 				return false
 			}
 
-			if *obj.Status.Kubernetes.Version.Status == kamajiv1alpha1.VersionProvisioning {
+			if *obj.Status.Kubernetes.Version.Status == stewardv1alpha1.VersionProvisioning {
 				return false
 			}
 

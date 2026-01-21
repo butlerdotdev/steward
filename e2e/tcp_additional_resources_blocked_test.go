@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package e2e
@@ -14,19 +14,19 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	pointer "k8s.io/utils/ptr"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
 )
 
 var _ = Describe("Deploy a TenantControlPlane resource with additional resources", func() {
 	// TenantControlPlane object with additional resources
-	tcp := &kamajiv1alpha1.TenantControlPlane{
+	tcp := &stewardv1alpha1.TenantControlPlane{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "validated-additional-resources",
 			Namespace: "default",
 		},
-		Spec: kamajiv1alpha1.TenantControlPlaneSpec{
-			ControlPlane: kamajiv1alpha1.ControlPlane{
-				Deployment: kamajiv1alpha1.DeploymentSpec{
+		Spec: stewardv1alpha1.TenantControlPlaneSpec{
+			ControlPlane: stewardv1alpha1.ControlPlane{
+				Deployment: stewardv1alpha1.DeploymentSpec{
 					Replicas: pointer.To(int32(1)),
 					AdditionalInitContainers: []corev1.Container{{
 						Name:  initContainerName,
@@ -73,7 +73,7 @@ var _ = Describe("Deploy a TenantControlPlane resource with additional resources
 							},
 						},
 					},
-					AdditionalVolumeMounts: &kamajiv1alpha1.AdditionalVolumeMounts{
+					AdditionalVolumeMounts: &stewardv1alpha1.AdditionalVolumeMounts{
 						APIServer: []corev1.VolumeMount{
 							{
 								Name:      apiServerVolumeName,
@@ -94,11 +94,11 @@ var _ = Describe("Deploy a TenantControlPlane resource with additional resources
 						},
 					},
 				},
-				Service: kamajiv1alpha1.ServiceSpec{
+				Service: stewardv1alpha1.ServiceSpec{
 					ServiceType: "ClusterIP",
 				},
 			},
-			Kubernetes: kamajiv1alpha1.KubernetesSpec{
+			Kubernetes: stewardv1alpha1.KubernetesSpec{
 				Version: "v1.23.6",
 			},
 		},
@@ -149,7 +149,7 @@ var _ = Describe("Deploy a TenantControlPlane resource with additional resources
 	})
 	It("should block wrong Deployment configuration", func() {
 		// Should be ready
-		StatusMustEqualTo(tcp, kamajiv1alpha1.VersionReady)
+		StatusMustEqualTo(tcp, stewardv1alpha1.VersionReady)
 
 		By("duplicating mount path", func() {
 			Consistently(func() error {

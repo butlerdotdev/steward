@@ -1,0 +1,6 @@
+dependencies:
+- name: steward-etcd
+  repository: file://../../../butler-charts/charts/steward-etcd
+  version: 0.14.0
+digest: sha256:22e3bf5694e6ff6c3805bac8def3b07bc67b65d47392788c3ebe1089b4146892
+generated: "2026-01-20T15:02:05.551464-06:00"
