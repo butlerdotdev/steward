@@ -8,12 +8,10 @@
   <a href="https://kubernetes.slack.com/archives/C03GLTTMWNN"><img alt="#steward on Kubernetes Slack" src="https://img.shields.io/badge/slack-@kubernetes/steward-blue.svg?logo=slack"/></a>
 </p>
 
-![Logo](assets/logo-black.png#gh-light-mode-only)
-![Logo](assets/logo-white.png#gh-dark-mode-only)
 
 ### 🤔 What is Steward?
 
-**Steward** is the **Kubernetes Control Plane Manager** leveraging on the concept of [**Hosted Control Plane**](https://butlerlabs.io/post/the-raise-of-hosted-control-plane-in-kubernetes/).
+**Steward** is the **Kubernetes Control Plane Manager** leveraging on the concept of [**Hosted Control Plane**]().
 
 Steward's approach is based on running the Kubernetes Control Plane components in Pods instead of dedicated machines.
 This allows operating Kubernetes clusters at scale, with a fraction of the operational burden.
@@ -60,13 +58,6 @@ The state is managed by the `Datastore` API, a cluster-scoped resource which can
 
 ### 🚀 Use cases
 
-- [**Creating a private Managed Kubernetes Service**](https://butlerlabs.io/post/netsons-builds-a-managed-kubernetes-service-with-steward-and-open-stack/)
-- [**Building a Platform as a Service**](https://aenix.io/cozystack/)
-- [**Overcoming public Managed Kubernetes Services**](https://butlerlabs.io/post/overcoming-eks-limitations-with-steward-on-aws/) such as EKS
-- [**Hybrid infrastructures**](https://butlerlabs.io/post/bridging-the-gap-hybrid-kubernetes-clusters-with-remote-control-planes/):
-  host the Control Plane on the Cloud and worker nodes on prem or vice-versa, according to your needs.
-- [**Kubernetes at the edge**](https://butlerlabs.io/post/edgevolution-unleashing-the-power-of-kubernetes-clusters-for-a-revolutionary-edge-computing-experience/):
-  take full advantage of the _Kubernetes API Server as a service_ paradigm.
 - **Kubernetes Control Plane as a Service:** centrally manage multiple Kubernetes clusters from a single management point (_Multi-Cluster management_). 
 - **High-density Control Plane:** place multiple control planes on the same infrastructure, instead of having dedicated machines for each control plane.
 - **Strong Multi-tenancy:** leave users to access the control plane with admin permissions while keeping them isolated at the infrastructure level.
@@ -75,7 +66,7 @@ The state is managed by the `Datastore` API, a cluster-scoped resource which can
 - **Full CNCF compliant:** all clusters are built with upstream Kubernetes binaries, resulting in full CNCF compliant Kubernetes clusters.
 
 > 🤔 You'd like to do the same but don't know how?
-> 💡 [Butler Labs](https://butlerlabs.io/) can help you with your needs!
+> 💡 [Butler Labs](https://butlerlabs.dev/) can help you with your needs!
 
 ### 🧑‍💻‍ Production grade
 
@@ -113,18 +104,6 @@ Since Steward is just focusing on the Control Plane a [Steward's Cluster API Con
 - [ ] Terraform provider
 - [ ] Custom Prometheus metrics
 
-### 🎥 Multimedia
-
-- YouTube ▶️ [Metal³ provisioning with Steward Hosted Control Planes by Huy Mai, Ericsson](https://youtu.be/u9sbURj6jXY?t=10536)
-- YouTube ▶️ [Hands-on introduction to Steward](https://www.youtube.com/watch?v=HhevxwQWQ88)
-- YouTube ▶️ [Scaling Kubernetes up to 1,000 Control Planes](https://www.youtube.com/watch?v=W_HXRXJh96U)
-- YouTube ▶️ [Equinix, Steward, and Cluster API](https://www.youtube.com/watch?v=TLBTqROj_wA)
-- YouTube ▶️ [Rancher & Steward: solving multitenancy challenges in the Kubernetes world](https://www.youtube.com/watch?v=VXHNrMmlF8U)
-- YouTube ▶️ [Enabling Self-Service Kubernetes clusters with Steward and Paralus](https://www.youtube.com/watch?v=JWA2LwZazM0)
-- YouTube ▶️ [Hosted Control Plane on Kubernetes (HPC) with Steward and K0mostron by Hervé Leclerc, ALTER WAY](https://www.youtube.com/watch?v=vmRdE2ngn78)
-- Medium 📖 [Set up Virtual Control Planes with Steward on Minikube, by Ben Soer](https://medium.com/@bensoer/set-up-virtual-control-planes-with-steward-on-minikube-a540be0275aa)
-- Hands-On tutorial 📖 [How to build your own managed Kubernetes service on Hetzner Cloud, by Hans Jörg Wieland](https://wieland.tech/blog/steward-cluster-api-and-etcd)
-
 ### 🏷️ Versioning
 
 Versioning adheres to the [Semantic Versioning](http://semver.org/) principles.
@@ -151,12 +130,3 @@ In case of **✨ Feature Requests** please use the [Discussion's Feature Request
 
 Steward is licensed under Apache 2.0.
 The code is provided as-is with no warranties.
-
-### 🛟 Commercial Support
-
-![Butler Labs](https://avatars.githubusercontent.com/u/39170129?s=50&v=4) [Butler Labs](https://butlerlabs.io/) is the commercial company behind Steward and the Cluster API Control Plane provider.
-
-If you're looking to run Steward in production and would like to learn more, **Butler Labs** can help by offering [Open Source support plans](https://butlerlabs.io/support),
-as well as providing a comprehensive Enterprise Platform named [Butler Labs Enterprise Platform](https://butlerlabs.cloud/), built on top of the Steward and [Capsule](https://capsule.butlerlabs.io/) project (now donated to CNCF as a Sandbox project).
-
-Feel free to get in touch with the provided [Contact form](https://butlerlabs.io/contact).
