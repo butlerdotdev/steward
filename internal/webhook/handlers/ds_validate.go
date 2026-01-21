@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package handlers
@@ -17,7 +17,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
 )
 
 type DataStoreValidation struct {
@@ -26,7 +26,7 @@ type DataStoreValidation struct {
 
 func (d DataStoreValidation) OnCreate(object runtime.Object) AdmissionResponse {
 	return func(ctx context.Context, _ admission.Request) ([]jsonpatch.JsonPatchOperation, error) {
-		ds := object.(*kamajiv1alpha1.DataStore) //nolint:forcetypeassert
+		ds := object.(*stewardv1alpha1.DataStore) //nolint:forcetypeassert
 
 		return nil, d.validate(ctx, *ds)
 	}
@@ -34,10 +34,10 @@ func (d DataStoreValidation) OnCreate(object runtime.Object) AdmissionResponse {
 
 func (d DataStoreValidation) OnDelete(object runtime.Object) AdmissionResponse {
 	return func(ctx context.Context, _ admission.Request) ([]jsonpatch.JsonPatchOperation, error) {
-		ds := object.(*kamajiv1alpha1.DataStore) //nolint:forcetypeassert
+		ds := object.(*stewardv1alpha1.DataStore) //nolint:forcetypeassert
 
-		tcpList := &kamajiv1alpha1.TenantControlPlaneList{}
-		if err := d.Client.List(ctx, tcpList, client.MatchingFieldsSelector{Selector: fields.OneTermEqualSelector(kamajiv1alpha1.TenantControlPlaneUsedDataStoreKey, ds.GetName())}); err != nil {
+		tcpList := &stewardv1alpha1.TenantControlPlaneList{}
+		if err := d.Client.List(ctx, tcpList, client.MatchingFieldsSelector{Selector: fields.OneTermEqualSelector(stewardv1alpha1.TenantControlPlaneUsedDataStoreKey, ds.GetName())}); err != nil {
 			return nil, errors.Wrap(err, "cannot retrieve TenantControlPlane list used by the DataStore")
 		}
 
@@ -51,7 +51,7 @@ func (d DataStoreValidation) OnDelete(object runtime.Object) AdmissionResponse {
 
 func (d DataStoreValidation) OnUpdate(object runtime.Object, oldObj runtime.Object) AdmissionResponse {
 	return func(ctx context.Context, _ admission.Request) ([]jsonpatch.JsonPatchOperation, error) {
-		newDs, oldDs := object.(*kamajiv1alpha1.DataStore), oldObj.(*kamajiv1alpha1.DataStore) //nolint:forcetypeassert
+		newDs, oldDs := object.(*stewardv1alpha1.DataStore), oldObj.(*stewardv1alpha1.DataStore) //nolint:forcetypeassert
 
 		if oldDs.Spec.Driver != newDs.Spec.Driver {
 			return nil, fmt.Errorf("driver of a DataStore cannot be changed")
@@ -61,7 +61,7 @@ func (d DataStoreValidation) OnUpdate(object runtime.Object, oldObj runtime.Obje
 	}
 }
 
-func (d DataStoreValidation) validate(ctx context.Context, ds kamajiv1alpha1.DataStore) error {
+func (d DataStoreValidation) validate(ctx context.Context, ds stewardv1alpha1.DataStore) error {
 	if ds.Spec.BasicAuth != nil {
 		if err := d.validateBasicAuth(ctx, ds); err != nil {
 			return err
@@ -71,7 +71,7 @@ func (d DataStoreValidation) validate(ctx context.Context, ds kamajiv1alpha1.Dat
 	return d.validateTLSConfig(ctx, ds)
 }
 
-func (d DataStoreValidation) validateBasicAuth(ctx context.Context, ds kamajiv1alpha1.DataStore) error {
+func (d DataStoreValidation) validateBasicAuth(ctx context.Context, ds stewardv1alpha1.DataStore) error {
 	if err := d.validateContentReference(ctx, ds.Spec.BasicAuth.Password); err != nil {
 		return fmt.Errorf("basic-auth password is not valid, %w", err)
 	}
@@ -83,8 +83,8 @@ func (d DataStoreValidation) validateBasicAuth(ctx context.Context, ds kamajiv1a
 	return nil
 }
 
-func (d DataStoreValidation) validateTLSConfig(ctx context.Context, ds kamajiv1alpha1.DataStore) error {
-	if ds.Spec.TLSConfig == nil && ds.Spec.Driver != kamajiv1alpha1.EtcdDriver {
+func (d DataStoreValidation) validateTLSConfig(ctx context.Context, ds stewardv1alpha1.DataStore) error {
+	if ds.Spec.TLSConfig == nil && ds.Spec.Driver != stewardv1alpha1.EtcdDriver {
 		return nil
 	}
 
@@ -92,7 +92,7 @@ func (d DataStoreValidation) validateTLSConfig(ctx context.Context, ds kamajiv1a
 		return fmt.Errorf("CA certificate is not valid, %w", err)
 	}
 
-	if ds.Spec.Driver == kamajiv1alpha1.EtcdDriver {
+	if ds.Spec.Driver == stewardv1alpha1.EtcdDriver {
 		if ds.Spec.TLSConfig.CertificateAuthority.PrivateKey == nil {
 			return fmt.Errorf("CA private key is required when using the etcd driver")
 		}
@@ -121,7 +121,7 @@ func (d DataStoreValidation) validateTLSConfig(ctx context.Context, ds kamajiv1a
 	return nil
 }
 
-func (d DataStoreValidation) validateContentReference(ctx context.Context, ref kamajiv1alpha1.ContentRef) error {
+func (d DataStoreValidation) validateContentReference(ctx context.Context, ref stewardv1alpha1.ContentRef) error {
 	switch {
 	case len(ref.Content) > 0:
 		return nil

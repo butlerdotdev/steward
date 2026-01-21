@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package controllers
@@ -20,9 +20,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"sigs.k8s.io/controller-runtime/pkg/source"
 
-	sooterrors "github.com/clastix/kamaji/controllers/soot/controllers/errors"
-	"github.com/clastix/kamaji/controllers/utils"
-	"github.com/clastix/kamaji/internal/resources"
+	sooterrors "github.com/butlerdotdev/steward/controllers/soot/controllers/errors"
+	"github.com/butlerdotdev/steward/controllers/utils"
+	"github.com/butlerdotdev/steward/internal/resources"
 )
 
 type KubeadmPhase struct {

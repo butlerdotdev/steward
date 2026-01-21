@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package datastore
@@ -11,7 +11,7 @@ import (
 	"github.com/nats-io/nats.go"
 	"github.com/pkg/errors"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
 )
 
 // NATSConnection represents a connection to a NATS KV store.
@@ -137,14 +137,14 @@ func (nc *NATSConnection) Check(_ context.Context) error {
 }
 
 func (nc *NATSConnection) Driver() string {
-	return string(kamajiv1alpha1.KineNatsDriver)
+	return string(stewardv1alpha1.KineNatsDriver)
 }
 
 func (nc *NATSConnection) GetConfig() ConnectionConfig {
 	return nc.config
 }
 
-func (nc *NATSConnection) Migrate(ctx context.Context, tcp kamajiv1alpha1.TenantControlPlane, target Connection) error {
+func (nc *NATSConnection) Migrate(ctx context.Context, tcp stewardv1alpha1.TenantControlPlane, target Connection) error {
 	targetClient := target.(*NATSConnection) //nolint:forcetypeassert
 	dbName := tcp.Status.Storage.Setup.Schema
 

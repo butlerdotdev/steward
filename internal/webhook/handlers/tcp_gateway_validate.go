@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package handlers
@@ -13,9 +13,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/utilities"
-	"github.com/clastix/kamaji/internal/webhook/utils"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/utilities"
+	"github.com/butlerdotdev/steward/internal/webhook/utils"
 )
 
 type TenantControlPlaneGatewayValidation struct {
@@ -25,7 +25,7 @@ type TenantControlPlaneGatewayValidation struct {
 
 func (t TenantControlPlaneGatewayValidation) OnCreate(object runtime.Object) AdmissionResponse {
 	return func(ctx context.Context, _ admission.Request) ([]jsonpatch.JsonPatchOperation, error) {
-		tcp, ok := object.(*kamajiv1alpha1.TenantControlPlane)
+		tcp, ok := object.(*stewardv1alpha1.TenantControlPlane)
 		if !ok {
 			return nil, fmt.Errorf("cannot cast object to TenantControlPlane")
 		}
@@ -44,7 +44,7 @@ func (t TenantControlPlaneGatewayValidation) OnCreate(object runtime.Object) Adm
 
 func (t TenantControlPlaneGatewayValidation) OnUpdate(object runtime.Object, _ runtime.Object) AdmissionResponse {
 	return func(ctx context.Context, _ admission.Request) ([]jsonpatch.JsonPatchOperation, error) {
-		tcp, ok := object.(*kamajiv1alpha1.TenantControlPlane)
+		tcp, ok := object.(*stewardv1alpha1.TenantControlPlane)
 		if !ok {
 			return nil, fmt.Errorf("cannot cast object to TenantControlPlane")
 		}

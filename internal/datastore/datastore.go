@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package datastore
@@ -14,7 +14,7 @@ import (
 	"github.com/pkg/errors"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
 )
 
 type ConnectionEndpoint struct {
@@ -35,7 +35,7 @@ type ConnectionConfig struct {
 	Parameters map[string][]string
 }
 
-func NewConnectionConfig(ctx context.Context, client client.Client, ds kamajiv1alpha1.DataStore) (*ConnectionConfig, error) {
+func NewConnectionConfig(ctx context.Context, client client.Client, ds stewardv1alpha1.DataStore) (*ConnectionConfig, error) {
 	var tlsConfig *tls.Config
 
 	if ds.Spec.TLSConfig != nil {

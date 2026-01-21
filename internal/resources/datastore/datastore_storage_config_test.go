@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package datastore_test
@@ -15,38 +15,38 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/resources"
-	"github.com/clastix/kamaji/internal/resources/datastore"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/resources"
+	"github.com/butlerdotdev/steward/internal/resources/datastore"
 )
 
 var _ = Describe("DatastoreStorageConfig", func() {
 	var (
 		ctx context.Context
 		dsc *datastore.Config
-		tcp *kamajiv1alpha1.TenantControlPlane
-		ds  *kamajiv1alpha1.DataStore
+		tcp *stewardv1alpha1.TenantControlPlane
+		ds  *stewardv1alpha1.DataStore
 	)
 
 	BeforeEach(func() {
 		ctx = context.Background()
 
-		tcp = &kamajiv1alpha1.TenantControlPlane{
+		tcp = &stewardv1alpha1.TenantControlPlane{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      "tcp",
 				Namespace: "default",
 			},
-			Spec: kamajiv1alpha1.TenantControlPlaneSpec{},
+			Spec: stewardv1alpha1.TenantControlPlaneSpec{},
 		}
 
-		ds = &kamajiv1alpha1.DataStore{
+		ds = &stewardv1alpha1.DataStore{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      "datastore",
 				Namespace: "default",
 			},
 		}
 
-		Expect(kamajiv1alpha1.AddToScheme(scheme)).To(Succeed())
+		Expect(stewardv1alpha1.AddToScheme(scheme)).To(Succeed())
 		Expect(corev1.AddToScheme(scheme)).To(Succeed())
 	})
 

@@ -1,6 +1,6 @@
-# Cluster Class with Kamaji
+# Cluster Class with Steward
 
-`ClusterClass` is a Cluster API feature that enables template-based cluster creation. When combined with Kamaji's hosted control plane architecture, `ClusterClass` provides a powerful pattern for standardizing Kubernetes cluster deployments across multiple infrastructure providers while maintaining consistent control plane configurations.
+`ClusterClass` is a Cluster API feature that enables template-based cluster creation. When combined with Steward's hosted control plane architecture, `ClusterClass` provides a powerful pattern for standardizing Kubernetes cluster deployments across multiple infrastructure providers while maintaining consistent control plane configurations.
 
 !!! warning "Experimental Feature"
     ClusterClass is still an experimental feature of Cluster API. As with any experimental features it should be used with caution. Read more about ClusterClass in the [Cluster API documentation](https://cluster-api.sigs.k8s.io/tasks/experimental-features/cluster-class/).
@@ -9,36 +9,36 @@
 
 `ClusterClass` reduces configuration boilerplate by defining reusable cluster templates. Instead of creating individual resources for each cluster, you define a `ClusterClass` once and create multiple clusters from it with minimal configuration.
 
-With Kamaji, this pattern becomes even more powerful:
-- **Shared Control Plane Templates**: The same KamajiControlPlaneTemplate works across all infrastructure providers
+With Steward, this pattern becomes even more powerful:
+- **Shared Control Plane Templates**: The same StewardControlPlaneTemplate works across all infrastructure providers
 - **Infrastructure Flexibility**: Deploy worker nodes on vSphere, AWS, Azure, or any supported provider while maintaining consistent control planes
 - **Simplified Management**: Hosted control planes reduce the complexity of `ClusterClass` templates
 
 ## Enabling Cluster Class
 
-To use `ClusterClass` with Kamaji, you need to enable the cluster topology feature gate before initializing the management cluster:
+To use `ClusterClass` with Steward, you need to enable the cluster topology feature gate before initializing the management cluster:
 
 ```bash
 export CLUSTER_TOPOLOGY=true
-clusterctl init --control-plane kamaji --infrastructure vsphere
+clusterctl init --control-plane steward --infrastructure vsphere
 ```
 
 This will install:
 - Cluster API core components with `ClusterClass` support
-- Kamaji Control Plane Provider
+- Steward Control Plane Provider
 - Your chosen infrastructure provider (vSphere in this example)
 
 Verify the installation:
 
 ```bash
-kubectl get deployments -A | grep -E "capi|kamaji"
+kubectl get deployments -A | grep -E "capi|steward"
 ```
 
-## Template Architecture with Kamaji
+## Template Architecture with Steward
 
-A `ClusterClass` with Kamaji consists of four main components:
+A `ClusterClass` with Steward consists of four main components:
 
-1. Control Plane Template (KamajiControlPlaneTemplate): Defines the hosted control plane configuration that remains consistent across infrastructure providers.
+1. Control Plane Template (StewardControlPlaneTemplate): Defines the hosted control plane configuration that remains consistent across infrastructure providers.
 
 2. Infrastructure Template (VSphereClusterTemplate): Provider-specific infrastructure configuration for the cluster.
 
@@ -52,7 +52,7 @@ Here's how these components relate in a `ClusterClass`:
 apiVersion: cluster.x-k8s.io/v1beta1
 kind: ClusterClass
 metadata:
-  name: kamaji-vsphere-class
+  name: steward-vsphere-class
 spec:
   # Infrastructure provider template
   infrastructure:
@@ -61,12 +61,12 @@ spec:
       kind: VSphereClusterTemplate
       name: vsphere-cluster-template
   
-  # Kamaji control plane template - reusable across providers
+  # Steward control plane template - reusable across providers
   controlPlane:
     ref:
       apiVersion: controlplane.cluster.x-k8s.io/v1alpha1
-      kind: KamajiControlPlaneTemplate
-      name: kamaji-control-plane-template
+      kind: StewardControlPlaneTemplate
+      name: steward-control-plane-template
     
   # Worker configuration
   workers:
@@ -85,21 +85,21 @@ spec:
             name: vsphere-worker-template
 ```
 
-The key advantage: the KamajiControlPlaneTemplate and KubeadmConfigTemplate can be shared across different infrastructure providers, while only the infrastructure-specific templates need to change.
+The key advantage: the StewardControlPlaneTemplate and KubeadmConfigTemplate can be shared across different infrastructure providers, while only the infrastructure-specific templates need to change.
 
 ## Creating a Cluster Class
 
-Let's create a `ClusterClass` for vSphere with Kamaji. First, define the shared templates:
+Let's create a `ClusterClass` for vSphere with Steward. First, define the shared templates:
 
-### KamajiControlPlaneTemplate
+### StewardControlPlaneTemplate
 
 This template defines the hosted control plane configuration:
 
 ```yaml
 apiVersion: controlplane.cluster.x-k8s.io/v1alpha1
-kind: KamajiControlPlaneTemplate
+kind: StewardControlPlaneTemplate
 metadata:
-  name: kamaji-controlplane
+  name: steward-controlplane
   namespace: capi-templates-vsphere
 spec:
   template:
@@ -252,7 +252,7 @@ Here's how variables work in practice:
 **Control Plane Variables:**
 ```yaml
 variables:
-- name: kamajiControlPlane
+- name: stewardControlPlane
   required: true
   schema:
     openAPIV3Schema:
@@ -310,18 +310,18 @@ patches:
   definitions:
   - selector:
       apiVersion: controlplane.cluster.x-k8s.io/v1alpha1
-      kind: KamajiControlPlaneTemplate
+      kind: StewardControlPlaneTemplate
       matchResources:
         controlPlane: true
     jsonPatches:
     - op: replace
       path: /spec/template/spec/dataStoreName
       valueFrom:
-        variable: kamajiControlPlane.dataStoreName
+        variable: stewardControlPlane.dataStoreName
     - op: replace
       path: /spec/template/spec/network/serviceType
       valueFrom:
-        variable: kamajiControlPlane.network.serviceType
+        variable: stewardControlPlane.network.serviceType
 ```
 
 **Machine Resource Patching:**
@@ -353,14 +353,14 @@ patches:
   definitions:
   - selector:
       apiVersion: controlplane.cluster.x-k8s.io/v1alpha1
-      kind: KamajiControlPlaneTemplate
+      kind: StewardControlPlaneTemplate
     jsonPatches:
     - op: replace
       path: /spec/template/spec/network/serviceAddress
       valueFrom:
-        variable: kamajiControlPlane.network.serviceAddress
+        variable: stewardControlPlane.network.serviceAddress
       # Only applies if serviceAddress is not empty
-      enabledIf: "{{ ne .kamajiControlPlane.network.serviceAddress \"\" }}"
+      enabledIf: "{{ ne .stewardControlPlane.network.serviceAddress \"\" }}"
 ```
 
 **Infrastructure Patching:**
@@ -387,7 +387,7 @@ patches:
 
 ### Complete Cluster Class with Variables
 
-For a comprehensive example with all variables and patches configured, see the [vsphere-kamaji-clusterclass.yaml](https://raw.githubusercontent.com/clastix/cluster-api-control-plane-provider-kamaji/master/templates/vsphere/capi-kamaji-vsphere-class-template.yaml) template.
+For a comprehensive example with all variables and patches configured, see the [vsphere-steward-clusterclass.yaml](https://raw.githubusercontent.com/butlerlabs/cluster-api-control-plane-provider-steward/master/templates/vsphere/capi-steward-vsphere-class-template.yaml) template.
 
 ## Creating a Cluster from Cluster Class
 
@@ -423,7 +423,7 @@ spec:
         replicas: 3
     
     variables:
-    - name: kamajiControlPlane
+    - name: stewardControlPlane
       value:
         dataStoreName: "etcd"
         network:
@@ -441,7 +441,7 @@ spec:
         vmTemplate: "ubuntu-2404-kube-v1.32.0"
         datacenter: "K8s-TI-dtc"
         datastore: "K8s-N01td-01"
-        resourcePool: "rp-kamaji-dev"
+        resourcePool: "rp-steward-dev"
         folder: "my-cluster-vms"
     
     - name: networking
@@ -461,14 +461,14 @@ Monitor cluster creation:
 
 ```bash
 clusterctl describe cluster my-cluster
-kubectl get cluster,kamajicontrolplane,machinedeployment -n default
+kubectl get cluster,stewardcontrolplane,machinedeployment -n default
 ```
 
-With this approach, the same `KamajiControlPlaneTemplate` and `KubeadmConfigTemplate` can be reused when creating `ClusterClasses` for AWS, Azure, or any other provider. Only the infrastructure-specific templates need to change.
+With this approach, the same `StewardControlPlaneTemplate` and `KubeadmConfigTemplate` can be reused when creating `ClusterClasses` for AWS, Azure, or any other provider. Only the infrastructure-specific templates need to change.
 
 ## Cross-Provider Template Reuse
 
-One of Kamaji's key advantages with `ClusterClass` is template modularity across providers. Here's how to leverage this:
+One of Steward's key advantages with `ClusterClass` is template modularity across providers. Here's how to leverage this:
 
 ### Shared Templates Repository
 
@@ -478,10 +478,10 @@ Create a namespace for shared templates:
 kubectl create namespace cluster-templates
 ```
 
-Deploy shared Kamaji and bootstrap templates once:
+Deploy shared Steward and bootstrap templates once:
 
 ```bash
-kubectl apply -n cluster-templates -f kamaji-controlplane-template.yaml
+kubectl apply -n cluster-templates -f steward-controlplane-template.yaml
 kubectl apply -n cluster-templates -f kubeadm-config-template.yaml
 ```
 
@@ -495,13 +495,13 @@ For each infrastructure provider, create a `ClusterClass` that references the sh
 apiVersion: cluster.x-k8s.io/v1beta1
 kind: ClusterClass
 metadata:
-  name: kamaji-aws-class
+  name: steward-aws-class
 spec:
   controlPlane:
     ref:
       apiVersion: controlplane.cluster.x-k8s.io/v1alpha1
-      kind: KamajiControlPlaneTemplate
-      name: kamaji-controlplane
+      kind: StewardControlPlaneTemplate
+      name: steward-controlplane
       namespace: cluster-templates  # Shared template
   
   infrastructure:
@@ -533,13 +533,13 @@ spec:
 apiVersion: cluster.x-k8s.io/v1beta1
 kind: ClusterClass
 metadata:
-  name: kamaji-azure-class
+  name: steward-azure-class
 spec:
   controlPlane:
     ref:
       apiVersion: controlplane.cluster.x-k8s.io/v1alpha1
-      kind: KamajiControlPlaneTemplate
-      name: kamaji-control-plane-template
+      kind: StewardControlPlaneTemplate
+      name: steward-control-plane-template
       namespace: cluster-templates  # Same shared template
   
   infrastructure:
@@ -638,5 +638,5 @@ This enables gradual migration between `ClusterClass` versions while maintaining
 ## Further Reading
 
   - [Cluster API ClusterClass Documentation](https://cluster-api.sigs.k8s.io/tasks/experimental-features/cluster-class/)
-  - [Kamaji Control Plane Provider Reference](https://doc.crds.dev/github.com/clastix/cluster-api-control-plane-provider-kamaji)
-  - [CAPI Provider Integration](https://github.com/clastix/cluster-api-control-plane-provider-kamaji)
+  - [Steward Control Plane Provider Reference](https://doc.crds.dev/github.com/butlerlabs/cluster-api-control-plane-provider-steward)
+  - [CAPI Provider Integration](https://github.com/butlerlabs/cluster-api-control-plane-provider-steward)

@@ -7,7 +7,7 @@ While [Cluster API](https://github.com/kubernetes-sigs/cluster-api) is a common 
 - Existing Terraform-based infrastructure workflows that need integration
 - Specific compliance or organizational requirements
 
-In these scenarios, an alternative approach is to provision worker nodes using [`yaki`](https://goyaki.clastix.io/), a wrapper around the standard `kubeadm` utility developed and maintained by [Clastix Labs](https://github.com/clastix).
+In these scenarios, an alternative approach is to provision worker nodes using [`yaki`](https://goyaki.butlerlabs.io/), a wrapper around the standard `kubeadm` utility developed and maintained by [Butler Labs Labs](https://github.com/butlerlabs).
 
 ## How It Works
 
@@ -15,11 +15,11 @@ The workflow combines [Terraform](https://developer.hashicorp.com/terraform) for
 
 1. **Terraform** provisions the virtual machines on your chosen infrastructure
 2. **`yaki`** installs all required Kubernetes dependencies on each machine
-3. **Bootstrap tokens** automatically join the machines to your Kamaji tenant control plane
+3. **Bootstrap tokens** automatically join the machines to your Steward tenant control plane
 
 ## Terraform Modules
 
-The [terraform-kamaji-node-pool](https://github.com/clastix/terraform-kamaji-node-pool) repository provides comprehensive Terraform modules for provisioning Kubernetes worker nodes across multiple cloud providers. The repository is structured to support various infrastructure providers with Terraform support, including:
+The [terraform-steward-node-pool](https://github.com/butlerlabs/terraform-steward-node-pool) repository provides comprehensive Terraform modules for provisioning Kubernetes worker nodes across multiple cloud providers. The repository is structured to support various infrastructure providers with Terraform support, including:
 
 - **AWS** - Auto Scaling Groups with automatic scaling
 - **Azure** - Virtual Machine Scale Sets *(planned)*
@@ -37,10 +37,10 @@ The [terraform-kamaji-node-pool](https://github.com/clastix/terraform-kamaji-nod
 
 ### Getting Started
 
-For detailed usage instructions, see the [project documentation](https://github.com/clastix/terraform-kamaji-node-pool#readme).
+For detailed usage instructions, see the [project documentation](https://github.com/butlerlabs/terraform-steward-node-pool#readme).
 
 !!! tip "Production Considerations"
-    The Terraform modules serve as comprehensive examples and starting points for Kamaji integration. While they include production-ready features like security groups, IAM policies, and anti-affinity rules, you should customize them to meet your specific security, compliance, and operational requirements before using them in production environments.
+    The Terraform modules serve as comprehensive examples and starting points for Steward integration. While they include production-ready features like security groups, IAM policies, and anti-affinity rules, you should customize them to meet your specific security, compliance, and operational requirements before using them in production environments.
 
 !!! note "Bootstrap Security"
     The modules automatically generate secure bootstrap tokens with limited lifetime and scope. These tokens are used only for the initial node join process and are cleaned up after successful tenent cluster formation.

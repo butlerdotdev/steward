@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package konnectivity
@@ -19,10 +19,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/constants"
-	"github.com/clastix/kamaji/internal/resources"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/constants"
+	"github.com/butlerdotdev/steward/internal/resources"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 type Agent struct {
@@ -37,7 +37,7 @@ func (r *Agent) GetHistogram() prometheus.Histogram {
 	return agentCollector
 }
 
-func (r *Agent) agentVersion(tcp *kamajiv1alpha1.TenantControlPlane) string {
+func (r *Agent) agentVersion(tcp *stewardv1alpha1.TenantControlPlane) string {
 	if tcp.Spec.Addons.Konnectivity.KonnectivityAgentSpec.Version != "" {
 		return tcp.Spec.Addons.Konnectivity.KonnectivityAgentSpec.Version
 	}
@@ -50,17 +50,17 @@ func (r *Agent) agentVersion(tcp *kamajiv1alpha1.TenantControlPlane) string {
 	return fmt.Sprintf("v0.%d.0", version.Minor)
 }
 
-func (r *Agent) ShouldStatusBeUpdated(_ context.Context, tcp *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *Agent) ShouldStatusBeUpdated(_ context.Context, tcp *stewardv1alpha1.TenantControlPlane) bool {
 	return tcp.Spec.Addons.Konnectivity == nil && (tcp.Status.Addons.Konnectivity.Agent.Namespace != "" || tcp.Status.Addons.Konnectivity.Agent.Name != "") ||
 		tcp.Spec.Addons.Konnectivity != nil && (tcp.Status.Addons.Konnectivity.Agent.Namespace != r.resource.GetNamespace() || tcp.Status.Addons.Konnectivity.Agent.Name != r.resource.GetName()) ||
 		tcp.Spec.Addons.Konnectivity.KonnectivityAgentSpec.Mode != tcp.Status.Addons.Konnectivity.Agent.Mode
 }
 
-func (r *Agent) ShouldCleanup(tenantControlPlane *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *Agent) ShouldCleanup(tenantControlPlane *stewardv1alpha1.TenantControlPlane) bool {
 	return tenantControlPlane.Spec.Addons.Konnectivity == nil && tenantControlPlane.Status.Addons.Konnectivity.Enabled
 }
 
-func (r *Agent) CleanUp(ctx context.Context, _ *kamajiv1alpha1.TenantControlPlane) (bool, error) {
+func (r *Agent) CleanUp(ctx context.Context, _ *stewardv1alpha1.TenantControlPlane) (bool, error) {
 	logger := log.FromContext(ctx, "resource", r.GetName())
 
 	if err := r.tenantClient.Get(ctx, client.ObjectKeyFromObject(r.resource), r.resource); err != nil {
@@ -90,13 +90,13 @@ func (r *Agent) CleanUp(ctx context.Context, _ *kamajiv1alpha1.TenantControlPlan
 	return true, nil
 }
 
-func (r *Agent) Define(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (err error) {
+func (r *Agent) Define(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (err error) {
 	logger := log.FromContext(ctx, "resource", r.GetName())
 
 	switch tenantControlPlane.Spec.Addons.Konnectivity.KonnectivityAgentSpec.Mode {
-	case kamajiv1alpha1.KonnectivityAgentModeDaemonSet:
+	case stewardv1alpha1.KonnectivityAgentModeDaemonSet:
 		r.resource = &appsv1.DaemonSet{}
-	case kamajiv1alpha1.KonnectivityAgentModeDeployment:
+	case stewardv1alpha1.KonnectivityAgentModeDeployment:
 		r.resource = &appsv1.Deployment{}
 	default:
 		logger.Info("TenantControlPlane CRD is not updated, or validation failed, fallback to DaemonSet")
@@ -116,7 +116,7 @@ func (r *Agent) Define(ctx context.Context, tenantControlPlane *kamajiv1alpha1.T
 	return nil
 }
 
-func (r *Agent) CreateOrUpdate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
+func (r *Agent) CreateOrUpdate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
 	if tenantControlPlane.Spec.Addons.Konnectivity != nil {
 		or, err := controllerutil.CreateOrUpdate(ctx, r.tenantClient, r.resource, r.mutate(ctx, tenantControlPlane))
 		if err != nil {
@@ -124,8 +124,8 @@ func (r *Agent) CreateOrUpdate(ctx context.Context, tenantControlPlane *kamajiv1
 		}
 
 		switch {
-		case tenantControlPlane.Spec.Addons.Konnectivity.KonnectivityAgentSpec.Mode == kamajiv1alpha1.KonnectivityAgentModeDaemonSet &&
-			tenantControlPlane.Status.Addons.Konnectivity.Agent.Mode != kamajiv1alpha1.KonnectivityAgentModeDaemonSet:
+		case tenantControlPlane.Spec.Addons.Konnectivity.KonnectivityAgentSpec.Mode == stewardv1alpha1.KonnectivityAgentModeDaemonSet &&
+			tenantControlPlane.Status.Addons.Konnectivity.Agent.Mode != stewardv1alpha1.KonnectivityAgentModeDaemonSet:
 			var obj appsv1.Deployment
 			obj.SetName(r.resource.GetName())
 			obj.SetNamespace(r.resource.GetNamespace())
@@ -133,8 +133,8 @@ func (r *Agent) CreateOrUpdate(ctx context.Context, tenantControlPlane *kamajiv1
 			if cleanupErr := r.tenantClient.Delete(ctx, &obj); cleanupErr != nil && !k8serrors.IsNotFound(cleanupErr) {
 				log.FromContext(ctx, "resource", r.GetName()).Error(cleanupErr, "cannot cleanup older appsv1.Deployment")
 			}
-		case tenantControlPlane.Spec.Addons.Konnectivity.KonnectivityAgentSpec.Mode == kamajiv1alpha1.KonnectivityAgentModeDeployment &&
-			tenantControlPlane.Status.Addons.Konnectivity.Agent.Mode != kamajiv1alpha1.KonnectivityAgentModeDeployment:
+		case tenantControlPlane.Spec.Addons.Konnectivity.KonnectivityAgentSpec.Mode == stewardv1alpha1.KonnectivityAgentModeDeployment &&
+			tenantControlPlane.Status.Addons.Konnectivity.Agent.Mode != stewardv1alpha1.KonnectivityAgentModeDeployment:
 			var obj appsv1.DaemonSet
 			obj.SetName(r.resource.GetName())
 			obj.SetNamespace(r.resource.GetNamespace())
@@ -154,12 +154,12 @@ func (r *Agent) GetName() string {
 	return "konnectivity-agent"
 }
 
-func (r *Agent) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
-	tenantControlPlane.Status.Addons.Konnectivity.Agent = kamajiv1alpha1.KonnectivityAgentStatus{}
+func (r *Agent) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
+	tenantControlPlane.Status.Addons.Konnectivity.Agent = stewardv1alpha1.KonnectivityAgentStatus{}
 
 	if tenantControlPlane.Spec.Addons.Konnectivity != nil {
-		tenantControlPlane.Status.Addons.Konnectivity.Agent = kamajiv1alpha1.KonnectivityAgentStatus{
-			ExternalKubernetesObjectStatus: kamajiv1alpha1.ExternalKubernetesObjectStatus{
+		tenantControlPlane.Status.Addons.Konnectivity.Agent = stewardv1alpha1.KonnectivityAgentStatus{
+			ExternalKubernetesObjectStatus: stewardv1alpha1.ExternalKubernetesObjectStatus{
 				Name:       r.resource.GetName(),
 				Namespace:  r.resource.GetNamespace(),
 				LastUpdate: metav1.Now(),
@@ -171,7 +171,7 @@ func (r *Agent) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlP
 	return nil
 }
 
-func (r *Agent) mutate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) controllerutil.MutateFn {
+func (r *Agent) mutate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) controllerutil.MutateFn {
 	return func() error {
 		logger := log.FromContext(ctx, "resource", r.GetName())
 
@@ -197,7 +197,7 @@ func (r *Agent) mutate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.T
 			}
 		}
 
-		r.resource.SetLabels(utilities.MergeMaps(r.resource.GetLabels(), utilities.KamajiLabels(tenantControlPlane.GetName(), r.GetName())))
+		r.resource.SetLabels(utilities.MergeMaps(r.resource.GetLabels(), utilities.StewardLabels(tenantControlPlane.GetName(), r.GetName())))
 
 		specSelector := &metav1.LabelSelector{
 			MatchLabels: map[string]string{
@@ -291,9 +291,9 @@ func (r *Agent) mutate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.T
 		}
 
 		switch tenantControlPlane.Spec.Addons.Konnectivity.KonnectivityAgentSpec.Mode {
-		case kamajiv1alpha1.KonnectivityAgentModeDaemonSet:
+		case stewardv1alpha1.KonnectivityAgentModeDaemonSet:
 			r.resource.(*appsv1.DaemonSet).Spec.Template = *podTemplateSpec //nolint:forcetypeassert
-		case kamajiv1alpha1.KonnectivityAgentModeDeployment:
+		case stewardv1alpha1.KonnectivityAgentModeDeployment:
 			//nolint:forcetypeassert
 			r.resource.(*appsv1.Deployment).Spec.Template = *podTemplateSpec
 			if tenantControlPlane.Spec.Addons.Konnectivity.KonnectivityAgentSpec.Replicas != nil {

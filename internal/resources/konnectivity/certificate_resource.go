@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package konnectivity
@@ -20,12 +20,12 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/constants"
-	"github.com/clastix/kamaji/internal/crypto"
-	"github.com/clastix/kamaji/internal/kubeadm"
-	"github.com/clastix/kamaji/internal/resources"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/constants"
+	"github.com/butlerdotdev/steward/internal/crypto"
+	"github.com/butlerdotdev/steward/internal/kubeadm"
+	"github.com/butlerdotdev/steward/internal/resources"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 type CertificateResource struct {
@@ -40,15 +40,15 @@ func (r *CertificateResource) GetHistogram() prometheus.Histogram {
 	return certificateCollector
 }
 
-func (r *CertificateResource) ShouldStatusBeUpdated(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *CertificateResource) ShouldStatusBeUpdated(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) bool {
 	return tenantControlPlane.Status.Addons.Konnectivity.Certificate.Checksum != utilities.GetObjectChecksum(r.resource)
 }
 
-func (r *CertificateResource) ShouldCleanup(tenantControlPlane *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *CertificateResource) ShouldCleanup(tenantControlPlane *stewardv1alpha1.TenantControlPlane) bool {
 	return tenantControlPlane.Spec.Addons.Konnectivity == nil && tenantControlPlane.Status.Addons.Konnectivity.Enabled
 }
 
-func (r *CertificateResource) CleanUp(ctx context.Context, _ *kamajiv1alpha1.TenantControlPlane) (bool, error) {
+func (r *CertificateResource) CleanUp(ctx context.Context, _ *stewardv1alpha1.TenantControlPlane) (bool, error) {
 	logger := log.FromContext(ctx, "resource", r.GetName())
 
 	if err := r.Client.Delete(ctx, r.resource); err != nil {
@@ -64,7 +64,7 @@ func (r *CertificateResource) CleanUp(ctx context.Context, _ *kamajiv1alpha1.Ten
 	return true, nil
 }
 
-func (r *CertificateResource) Define(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (r *CertificateResource) Define(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	r.resource = &corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      utilities.AddTenantPrefix(r.GetName(), tenantControlPlane),
@@ -75,7 +75,7 @@ func (r *CertificateResource) Define(_ context.Context, tenantControlPlane *kama
 	return nil
 }
 
-func (r *CertificateResource) CreateOrUpdate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
+func (r *CertificateResource) CreateOrUpdate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
 	if tenantControlPlane.Spec.Addons.Konnectivity == nil {
 		return controllerutil.OperationResultNone, nil
 	}
@@ -87,8 +87,8 @@ func (r *CertificateResource) GetName() string {
 	return "konnectivity-certificate"
 }
 
-func (r *CertificateResource) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
-	tenantControlPlane.Status.Addons.Konnectivity.Certificate = kamajiv1alpha1.CertificatePrivateKeyPairStatus{}
+func (r *CertificateResource) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
+	tenantControlPlane.Status.Addons.Konnectivity.Certificate = stewardv1alpha1.CertificatePrivateKeyPairStatus{}
 
 	if tenantControlPlane.Spec.Addons.Konnectivity != nil {
 		tenantControlPlane.Status.Addons.Konnectivity.Certificate.LastUpdate = metav1.Now()
@@ -99,7 +99,7 @@ func (r *CertificateResource) UpdateTenantControlPlaneStatus(_ context.Context, 
 	return nil
 }
 
-func (r *CertificateResource) mutate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) controllerutil.MutateFn {
+func (r *CertificateResource) mutate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) controllerutil.MutateFn {
 	return func() error {
 		logger := log.FromContext(ctx, "resource", r.GetName())
 
@@ -115,7 +115,7 @@ func (r *CertificateResource) mutate(ctx context.Context, tenantControlPlane *ka
 
 		r.resource.SetLabels(utilities.MergeMaps(
 			r.resource.GetLabels(),
-			utilities.KamajiLabels(tenantControlPlane.GetName(), r.GetName()),
+			utilities.StewardLabels(tenantControlPlane.GetName(), r.GetName()),
 			map[string]string{
 				constants.ControllerLabelResource: utilities.CertificateX509Label,
 			},

@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package kubeconfiggenerator
@@ -23,8 +23,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 
-	"github.com/clastix/kamaji/controllers"
-	"github.com/clastix/kamaji/internal"
+	"github.com/butlerdotdev/steward/controllers"
+	"github.com/butlerdotdev/steward/internal"
 )
 
 func NewCmd(scheme *runtime.Scheme) *cobra.Command {
@@ -60,7 +60,7 @@ func NewCmd(scheme *runtime.Scheme) *cobra.Command {
 
 			setupLog := ctrl.Log.WithName("kubeconfig-generator")
 
-			setupLog.Info(fmt.Sprintf("Kamaji version %s %s%s", internal.GitTag, internal.GitCommit, internal.GitDirty))
+			setupLog.Info(fmt.Sprintf("Steward version %s %s%s", internal.GitTag, internal.GitCommit, internal.GitDirty))
 			setupLog.Info(fmt.Sprintf("Build from: %s", internal.GitRepo))
 			setupLog.Info(fmt.Sprintf("Build date: %s", internal.BuildTime))
 			setupLog.Info(fmt.Sprintf("Go Version: %s", goRuntime.Version()))
@@ -74,7 +74,7 @@ func NewCmd(scheme *runtime.Scheme) *cobra.Command {
 				HealthProbeBindAddress:  healthProbeBindAddress,
 				LeaderElection:          leaderElect,
 				LeaderElectionNamespace: managerNamespace,
-				LeaderElectionID:        "kubeconfiggenerator.kamaji.clastix.io",
+				LeaderElectionID:        "kubeconfiggenerator.steward.butlerlabs.dev",
 				NewCache: func(config *rest.Config, opts cache.Options) (cache.Cache, error) {
 					opts.SyncPeriod = &cacheResyncPeriod
 

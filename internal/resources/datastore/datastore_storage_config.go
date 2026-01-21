@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package datastore
@@ -19,17 +19,17 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/controllers/finalizers"
-	"github.com/clastix/kamaji/internal/resources"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/controllers/finalizers"
+	"github.com/butlerdotdev/steward/internal/resources"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 type Config struct {
 	resource   *corev1.Secret
 	Client     client.Client
 	ConnString string
-	DataStore  kamajiv1alpha1.DataStore
+	DataStore  stewardv1alpha1.DataStore
 	IsOverride bool
 }
 
@@ -39,20 +39,20 @@ func (r *Config) GetHistogram() prometheus.Histogram {
 	return storageCollector
 }
 
-func (r *Config) ShouldStatusBeUpdated(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *Config) ShouldStatusBeUpdated(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) bool {
 	return tenantControlPlane.Status.Storage.Config.Checksum != utilities.GetObjectChecksum(r.resource) ||
 		tenantControlPlane.Status.Storage.DataStoreName != r.DataStore.GetName()
 }
 
-func (r *Config) ShouldCleanup(*kamajiv1alpha1.TenantControlPlane) bool {
+func (r *Config) ShouldCleanup(*stewardv1alpha1.TenantControlPlane) bool {
 	return false
 }
 
-func (r *Config) CleanUp(context.Context, *kamajiv1alpha1.TenantControlPlane) (bool, error) {
+func (r *Config) CleanUp(context.Context, *stewardv1alpha1.TenantControlPlane) (bool, error) {
 	return false, nil
 }
 
-func (r *Config) Define(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (r *Config) Define(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	r.resource = &corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      utilities.AddTenantPrefix(r.GetName(), tenantControlPlane),
@@ -67,13 +67,13 @@ func (r *Config) GetClient() client.Client {
 	return r.Client
 }
 
-func (r *Config) CreateOrUpdate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
+func (r *Config) CreateOrUpdate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
 	return utilities.CreateOrUpdateWithConflict(ctx, r.Client, r.resource, r.mutate(ctx, tenantControlPlane))
 }
 
 // Delete doesn't perform any deletion process: the Secret object has owner relationship
 // with the TenantControlPlane object, which has been previously deleted.
-func (r *Config) Delete(ctx context.Context, _ *kamajiv1alpha1.TenantControlPlane) error {
+func (r *Config) Delete(ctx context.Context, _ *stewardv1alpha1.TenantControlPlane) error {
 	secret := r.resource.DeepCopy()
 
 	return retry.RetryOnConflict(retry.DefaultRetry, func() error {
@@ -103,7 +103,7 @@ func (r *Config) GetName() string {
 	return "datastore-config"
 }
 
-func (r *Config) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (r *Config) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	if !r.IsOverride {
 		tenantControlPlane.Status.Storage.Driver = string(r.DataStore.Spec.Driver)
 		tenantControlPlane.Status.Storage.DataStoreName = r.DataStore.GetName()
@@ -114,7 +114,7 @@ func (r *Config) UpdateTenantControlPlaneStatus(_ context.Context, tenantControl
 	return nil
 }
 
-func (r *Config) mutate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) controllerutil.MutateFn {
+func (r *Config) mutate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) controllerutil.MutateFn {
 	return func() error {
 		var password []byte
 		var username []byte
@@ -134,7 +134,7 @@ func (r *Config) mutate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.
 		// TODO(thecodeassassin): remove this after multi-tenancy is implemented for NATS.
 		// Due to NATS is missing a programmatic approach to create users and password,
 		// we're using the Datastore root password.
-		if r.DataStore.Spec.Driver == kamajiv1alpha1.KineNatsDriver {
+		if r.DataStore.Spec.Driver == stewardv1alpha1.KineNatsDriver {
 			// set username and password to the basicAuth values of the NATS datastore
 			u, err := r.DataStore.Spec.BasicAuth.Username.GetContent(ctx, r.Client)
 			if err != nil {
@@ -153,7 +153,7 @@ func (r *Config) mutate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.
 			// although this is going to be populated by the UpdateTenantControlPlaneStatus handler of the resource datastore-setup:
 			// the default value will be used for fresh new configurations, and preserving a previous one:
 			// this will keep us safe from naming changes cases as occurred with the following commit:
-			// https://github.com/clastix/kamaji/pull/203/commits/09ce38f489cccca72ab728a259bc8fb2cf6e4770
+			// https://github.com/butlerdotdev/steward/pull/203/commits/09ce38f489cccca72ab728a259bc8fb2cf6e4770
 			switch {
 			case len(tenantControlPlane.Status.Storage.Setup.User) > 0:
 				// for existing TCPs, the dataStoreSchema will be adopted from the status,
@@ -193,7 +193,7 @@ func (r *Config) mutate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.
 
 		utilities.SetObjectChecksum(r.resource, r.resource.Data)
 
-		r.resource.SetLabels(utilities.MergeMaps(r.resource.GetLabels(), utilities.KamajiLabels(tenantControlPlane.GetName(), r.GetName())))
+		r.resource.SetLabels(utilities.MergeMaps(r.resource.GetLabels(), utilities.StewardLabels(tenantControlPlane.GetName(), r.GetName())))
 
 		return ctrl.SetControllerReference(tenantControlPlane, r.resource, r.Client.Scheme())
 	}

@@ -2,7 +2,7 @@
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
-  name: kamaji-kind-pool
+  name: steward-kind-pool
   namespace: metallb-system
 spec:
   addresses:

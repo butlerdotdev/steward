@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package controllers
@@ -15,30 +15,30 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/controllers/finalizers"
-	builder "github.com/clastix/kamaji/internal/builders/controlplane"
-	"github.com/clastix/kamaji/internal/datastore"
-	"github.com/clastix/kamaji/internal/resources"
-	ds "github.com/clastix/kamaji/internal/resources/datastore"
-	"github.com/clastix/kamaji/internal/resources/konnectivity"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/controllers/finalizers"
+	builder "github.com/butlerdotdev/steward/internal/builders/controlplane"
+	"github.com/butlerdotdev/steward/internal/datastore"
+	"github.com/butlerdotdev/steward/internal/resources"
+	ds "github.com/butlerdotdev/steward/internal/resources/datastore"
+	"github.com/butlerdotdev/steward/internal/resources/konnectivity"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 type GroupResourceBuilderConfiguration struct {
 	client                        client.Client
 	log                           logr.Logger
 	tcpReconcilerConfig           TenantControlPlaneReconcilerConfig
-	tenantControlPlane            kamajiv1alpha1.TenantControlPlane
+	tenantControlPlane            stewardv1alpha1.TenantControlPlane
 	ExpirationThreshold           time.Duration
 	Connection                    datastore.Connection
-	DataStore                     kamajiv1alpha1.DataStore
+	DataStore                     stewardv1alpha1.DataStore
 	DataStoreOverrides            []builder.DataStoreOverrides
 	DataStoreOverriedsConnections map[string]datastore.Connection
-	KamajiNamespace               string
-	KamajiServiceAccount          string
-	KamajiService                 string
-	KamajiMigrateImage            string
+	StewardNamespace               string
+	StewardServiceAccount          string
+	StewardService                 string
+	StewardMigrateImage            string
 	DiscoveryClient               discovery.DiscoveryInterface
 }
 
@@ -46,9 +46,9 @@ type GroupDeletableResourceBuilderConfiguration struct {
 	client              client.Client
 	log                 logr.Logger
 	tcpReconcilerConfig TenantControlPlaneReconcilerConfig
-	tenantControlPlane  kamajiv1alpha1.TenantControlPlane
+	tenantControlPlane  stewardv1alpha1.TenantControlPlane
 	connection          datastore.Connection
-	dataStore           kamajiv1alpha1.DataStore
+	dataStore           stewardv1alpha1.DataStore
 }
 
 // GetResources returns a list of resources that will be used to provide tenant control planes
@@ -57,7 +57,7 @@ type GroupDeletableResourceBuilderConfiguration struct {
 func GetResources(ctx context.Context, config GroupResourceBuilderConfiguration) []resources.Resource {
 	resources := []resources.Resource{}
 
-	resources = append(resources, getDataStoreMigratingResources(config.client, config.KamajiNamespace, config.KamajiMigrateImage, config.KamajiServiceAccount, config.KamajiService)...)
+	resources = append(resources, getDataStoreMigratingResources(config.client, config.StewardNamespace, config.StewardMigrateImage, config.StewardServiceAccount, config.StewardService)...)
 	resources = append(resources, getUpgradeResources(config.client)...)
 	resources = append(resources, getKubernetesServiceResources(config.client)...)
 	resources = append(resources, getKubeadmConfigResources(config.client, getTmpDirectory(config.tcpReconcilerConfig.TmpBaseDirectory, config.tenantControlPlane), config.DataStore)...)
@@ -68,7 +68,7 @@ func GetResources(ctx context.Context, config GroupResourceBuilderConfiguration)
 	resources = append(resources, getKonnectivityServerRequirementsResources(config.client, config.ExpirationThreshold)...)
 	resources = append(resources, getKubernetesDeploymentResources(config.client, config.tcpReconcilerConfig, config.DataStore, config.DataStoreOverrides)...)
 	resources = append(resources, getKonnectivityServerPatchResources(config.client)...)
-	resources = append(resources, getDataStoreMigratingCleanup(config.client, config.KamajiNamespace)...)
+	resources = append(resources, getDataStoreMigratingCleanup(config.client, config.StewardNamespace)...)
 	resources = append(resources, getKubernetesIngressResources(config.client)...)
 
 	// Conditionally add Gateway resources
@@ -83,7 +83,7 @@ func GetResources(ctx context.Context, config GroupResourceBuilderConfiguration)
 // GetDeletableResources returns a list of resources that have to be deleted when tenant control planes are deleted
 // Currently there is only a default approach
 // TODO: the idea of this function is to become a factory to return the group of deletable resources according to the given configuration.
-func GetDeletableResources(tcp *kamajiv1alpha1.TenantControlPlane, config GroupDeletableResourceBuilderConfiguration) []resources.DeletableResource {
+func GetDeletableResources(tcp *stewardv1alpha1.TenantControlPlane, config GroupDeletableResourceBuilderConfiguration) []resources.DeletableResource {
 	var res []resources.DeletableResource
 
 	if controllerutil.ContainsFinalizer(tcp, finalizers.DatastoreFinalizer) {
@@ -101,24 +101,24 @@ func GetDeletableResources(tcp *kamajiv1alpha1.TenantControlPlane, config GroupD
 	return res
 }
 
-func getDataStoreMigratingCleanup(c client.Client, kamajiNamespace string) []resources.Resource {
+func getDataStoreMigratingCleanup(c client.Client, stewardNamespace string) []resources.Resource {
 	return []resources.Resource{
 		&ds.Migrate{
 			Client:          c,
-			KamajiNamespace: kamajiNamespace,
+			StewardNamespace: stewardNamespace,
 			ShouldCleanUp:   true,
 		},
 	}
 }
 
-func getDataStoreMigratingResources(c client.Client, kamajiNamespace, migrateImage string, kamajiServiceAccount, kamajiService string) []resources.Resource {
+func getDataStoreMigratingResources(c client.Client, stewardNamespace, migrateImage string, stewardServiceAccount, stewardService string) []resources.Resource {
 	return []resources.Resource{
 		&ds.Migrate{
 			Client:               c,
 			MigrateImage:         migrateImage,
-			KamajiNamespace:      kamajiNamespace,
-			KamajiServiceAccount: kamajiServiceAccount,
-			KamajiServiceName:    kamajiService,
+			StewardNamespace:      stewardNamespace,
+			StewardServiceAccount: stewardServiceAccount,
+			StewardServiceName:    stewardService,
 		},
 	}
 }
@@ -155,11 +155,11 @@ func getKonnectivityGatewayResources(c client.Client) []resources.Resource {
 	}
 }
 
-func getKubeadmConfigResources(c client.Client, tmpDirectory string, dataStore kamajiv1alpha1.DataStore) []resources.Resource {
+func getKubeadmConfigResources(c client.Client, tmpDirectory string, dataStore stewardv1alpha1.DataStore) []resources.Resource {
 	var endpoints []string
 
 	switch dataStore.Spec.Driver {
-	case kamajiv1alpha1.EtcdDriver:
+	case stewardv1alpha1.EtcdDriver:
 		endpoints = dataStore.Spec.Endpoints
 	default:
 		endpoints = []string{"127.0.0.1:2379"}
@@ -174,7 +174,7 @@ func getKubeadmConfigResources(c client.Client, tmpDirectory string, dataStore k
 	}
 }
 
-func getKubernetesCertificatesResources(c client.Client, tcpReconcilerConfig TenantControlPlaneReconcilerConfig, tenantControlPlane kamajiv1alpha1.TenantControlPlane) []resources.Resource {
+func getKubernetesCertificatesResources(c client.Client, tcpReconcilerConfig TenantControlPlaneReconcilerConfig, tenantControlPlane stewardv1alpha1.TenantControlPlane) []resources.Resource {
 	return []resources.Resource{
 		&resources.CACertificate{
 			Client:                  c,
@@ -208,7 +208,7 @@ func getKubernetesCertificatesResources(c client.Client, tcpReconcilerConfig Ten
 	}
 }
 
-func getKubeconfigResources(c client.Client, tcpReconcilerConfig TenantControlPlaneReconcilerConfig, tenantControlPlane kamajiv1alpha1.TenantControlPlane) []resources.Resource {
+func getKubeconfigResources(c client.Client, tcpReconcilerConfig TenantControlPlaneReconcilerConfig, tenantControlPlane stewardv1alpha1.TenantControlPlane) []resources.Resource {
 	return []resources.Resource{
 		&resources.KubeconfigResource{
 			Client:                  c,
@@ -241,7 +241,7 @@ func getKubeconfigResources(c client.Client, tcpReconcilerConfig TenantControlPl
 	}
 }
 
-func getKubernetesStorageResources(c client.Client, dbConnection datastore.Connection, datastore kamajiv1alpha1.DataStore, threshold time.Duration) []resources.Resource {
+func getKubernetesStorageResources(c client.Client, dbConnection datastore.Connection, datastore stewardv1alpha1.DataStore, threshold time.Duration) []resources.Resource {
 	return []resources.Resource{
 		&ds.MultiTenancy{
 			DataStore: datastore,
@@ -293,7 +293,7 @@ func getKubernetesAdditionalStorageResources(c client.Client, dbConnections map[
 	return res
 }
 
-func getKubernetesDeploymentResources(c client.Client, tcpReconcilerConfig TenantControlPlaneReconcilerConfig, dataStore kamajiv1alpha1.DataStore, dataStoreOverrides []builder.DataStoreOverrides) []resources.Resource {
+func getKubernetesDeploymentResources(c client.Client, tcpReconcilerConfig TenantControlPlaneReconcilerConfig, dataStore stewardv1alpha1.DataStore, dataStoreOverrides []builder.DataStoreOverrides) []resources.Resource {
 	return []resources.Resource{
 		&resources.KubernetesDeploymentResource{
 			Client:             c,
@@ -339,6 +339,6 @@ func getNamespacedName(namespace string, name string) k8stypes.NamespacedName {
 	return k8stypes.NamespacedName{Namespace: namespace, Name: name}
 }
 
-func getTmpDirectory(base string, tenantControlPlane kamajiv1alpha1.TenantControlPlane) string {
+func getTmpDirectory(base string, tenantControlPlane stewardv1alpha1.TenantControlPlane) string {
 	return fmt.Sprintf("%s/%s/%s", base, tenantControlPlane.GetName(), uuid.New())
 }

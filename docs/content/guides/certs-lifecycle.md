@@ -1,6 +1,6 @@
 # Certificates Lifecycle
 
-Kamaji is responsible for creating the required certificates, such as:
+Steward is responsible for creating the required certificates, such as:
 
 - the Kubernetes API Server certificate
 - the Kubernetes API Server kubelet client certificate
@@ -8,7 +8,7 @@ Kamaji is responsible for creating the required certificates, such as:
 - the front proxy client certificate
 - the konnectivity certificate (if enabled)
 
-Also, the following `kubeconfig` resources contain client certificates, which are created by Kamaji, such as:
+Also, the following `kubeconfig` resources contain client certificates, which are created by Steward, such as:
 
 - `admin`
 - `controller-manager`
@@ -20,7 +20,7 @@ All the certificates are created with the `kubeadm` defaults, thus their validit
 ## How to rotate certificates
 
 All certificates can be rotated at the same time, or one by one: this is possible by annotating resources using
-the well-known annotation `certs.kamaji.clastix.io/rotate`.
+the well-known annotation `certs.steward.butlerlabs.io/rotate`.
 
 ```
 $: kubectl get secret
@@ -40,18 +40,18 @@ k8s-133-sa-certificate                          Opaque              2      3h45m
 k8s-133-scheduler-kubeconfig                    Opaque              1      3h45m
 ```
 
-Once this operation is performed, Kamaji will trigger a certificate renewal,
-reporting the rotation date time as the annotation `certs.kamaji.clastix.io/rotate` value in the [RFC3339](https://pkg.go.dev/time#RFC3339) format.
+Once this operation is performed, Steward will trigger a certificate renewal,
+reporting the rotation date time as the annotation `certs.steward.butlerlabs.io/rotate` value in the [RFC3339](https://pkg.go.dev/time#RFC3339) format.
 
 ```
-$: kubectl annotate secret -l kamaji.clastix.io/certificate_lifecycle_controller=x509 certs.kamaji.clastix.io/rotate=""
+$: kubectl annotate secret -l steward.butlerlabs.io/certificate_lifecycle_controller=x509 certs.steward.butlerlabs.io/rotate=""
 secret/k8s-133-api-server-certificate annotated
 secret/k8s-133-api-server-kubelet-client-certificate annotated
 secret/k8s-133-datastore-certificate annotated
 secret/k8s-133-front-proxy-client-certificate annotated
 secret/k8s-133-konnectivity-certificate annotated
 
-$: kubectl get secrets -l kamaji.clastix.io/certificate_lifecycle_controller=x509 -ojson | jq -r '.items[] | "\(.metadata.name) rotated at \(.metadata.annotations["certs.kamaji.clastix.io/rotate"])"'
+$: kubectl get secrets -l steward.butlerlabs.io/certificate_lifecycle_controller=x509 -ojson | jq -r '.items[] | "\(.metadata.name) rotated at \(.metadata.annotations["certs.steward.butlerlabs.io/rotate"])"'
 k8s-133-api-server-certificate rotated at 2025-07-15T15:15:08Z02:00
 k8s-133-api-server-kubelet-client-certificate rotated at 2025-07-15T15:15:10Z0200
 k8s-133-datastore-certificate rotated at 2025-07-15T15:15:15Z0200
@@ -71,13 +71,13 @@ k8s-133-67bf496c8c-x4t76   4/4     Running   0          4m52s
 The same occurs with the `kubeconfig` ones.
 
 ```
-$: kubectl annotate secret -l kamaji.clastix.io/certificate_lifecycle_controller=kubeconfig certs.kamaji.clastix.io/rotate=""
+$: kubectl annotate secret -l steward.butlerlabs.io/certificate_lifecycle_controller=kubeconfig certs.steward.butlerlabs.io/rotate=""
 secret/k8s-133-admin-kubeconfig annotated
 secret/k8s-133-controller-manager-kubeconfig annotated
 secret/k8s-133-konnectivity-kubeconfig annotated
 secret/k8s-133-scheduler-kubeconfig annotated
 
-$: kubectl get secrets -l kamaji.clastix.io/certificate_lifecycle_controller=kubeconfig -ojson | jq -r '.items[] | "\(.metadata.name) rotated at \(.metadata.annotations["certs.kamaji.clastix.io/rotate"])"'
+$: kubectl get secrets -l steward.butlerlabs.io/certificate_lifecycle_controller=kubeconfig -ojson | jq -r '.items[] | "\(.metadata.name) rotated at \(.metadata.annotations["certs.steward.butlerlabs.io/rotate"])"'
 k8s-133-admin-kubeconfig rotated at 2025-07-15 15:20:41.688181782 +0200 CEST m=+658.630990441
 k8s-133-controller-manager-kubeconfig rotated at 2025-07-15 15:20:42.712211056 +0200 CEST m=+659.655019677
 k8s-133-konnectivity-kubeconfig rotated at 2025-07-15 15:20:46.405567865 +0200 CEST m=+663.348376504
@@ -86,27 +86,27 @@ k8s-133-scheduler-kubeconfig rotated at 2025-07-15 15:20:46.333718563 +0200 CEST
 
 ## Automatic certificates rotation
 
-The Kamaji operator will run a controller which processes all the Secrets to determine their expiration, both for the `kubeconfig`, as well as for the certificates.
+The Steward operator will run a controller which processes all the Secrets to determine their expiration, both for the `kubeconfig`, as well as for the certificates.
 
 The controller, named `CertificateLifecycle`, will extract the certificates from the _Secret_ objects notifying the `TenantControlPlaneReconciler` controller which will start a new certificate rotation.
 By default, the rotation will occur the day before their expiration.
 
-This rotation deadline can be dynamically configured using the Kamaji CLI flag `--certificate-expiration-deadline` using the Go _Duration_ syntax:
+This rotation deadline can be dynamically configured using the Steward CLI flag `--certificate-expiration-deadline` using the Go _Duration_ syntax:
 e.g.: set the value `7d` to trigger the renewal a week before the effective expiration date.
 
 !!! info "Other Datastore Drivers"
-    Kamaji is responsible for creating the `etcd` client certificate, and the generation of a new one will occur.
+    Steward is responsible for creating the `etcd` client certificate, and the generation of a new one will occur.
     
     For other Datastore drivers, such as MySQL, PostgreSQL, or NATS, the referenced Secret will always be deleted by the Controller to trigger the rotation: the PKI management, since it's offloaded externally, must provide the renewed certificates.
 
 ## Certificate Authority rotation
 
-Kamaji is also taking care of your Tenant Clusters Certificate Authority.
+Steward is also taking care of your Tenant Clusters Certificate Authority.
 
-This can be rotated manually like other certificates by using the annotation `certs.kamaji.clastix.io/rotate`
+This can be rotated manually like other certificates by using the annotation `certs.steward.butlerlabs.io/rotate`
 
 ```
-$: kubectl annotate secret k8s-133-ca certs.kamaji.clastix.io/rotate="" 
+$: kubectl annotate secret k8s-133-ca certs.steward.butlerlabs.io/rotate="" 
 secret/k8s-133-ca annotated
 ```
 

@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package konnectivity
@@ -19,10 +19,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/constants"
-	"github.com/clastix/kamaji/internal/resources"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/constants"
+	"github.com/butlerdotdev/steward/internal/resources"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 type KubeconfigResource struct {
@@ -36,15 +36,15 @@ func (r *KubeconfigResource) GetHistogram() prometheus.Histogram {
 	return kubeconfigCollector
 }
 
-func (r *KubeconfigResource) ShouldStatusBeUpdated(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *KubeconfigResource) ShouldStatusBeUpdated(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) bool {
 	return tenantControlPlane.Status.Addons.Konnectivity.Kubeconfig.Checksum != utilities.GetObjectChecksum(r.resource)
 }
 
-func (r *KubeconfigResource) ShouldCleanup(tenantControlPlane *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *KubeconfigResource) ShouldCleanup(tenantControlPlane *stewardv1alpha1.TenantControlPlane) bool {
 	return tenantControlPlane.Spec.Addons.Konnectivity == nil && tenantControlPlane.Status.Addons.Konnectivity.Enabled
 }
 
-func (r *KubeconfigResource) CleanUp(ctx context.Context, _ *kamajiv1alpha1.TenantControlPlane) (bool, error) {
+func (r *KubeconfigResource) CleanUp(ctx context.Context, _ *stewardv1alpha1.TenantControlPlane) (bool, error) {
 	logger := log.FromContext(ctx, "resource", r.GetName())
 
 	if err := r.Client.Delete(ctx, r.resource); err != nil {
@@ -60,7 +60,7 @@ func (r *KubeconfigResource) CleanUp(ctx context.Context, _ *kamajiv1alpha1.Tena
 	return true, nil
 }
 
-func (r *KubeconfigResource) Define(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (r *KubeconfigResource) Define(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	r.resource = &corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      utilities.AddTenantPrefix(r.GetName(), tenantControlPlane),
@@ -71,7 +71,7 @@ func (r *KubeconfigResource) Define(_ context.Context, tenantControlPlane *kamaj
 	return nil
 }
 
-func (r *KubeconfigResource) CreateOrUpdate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
+func (r *KubeconfigResource) CreateOrUpdate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
 	if tenantControlPlane.Spec.Addons.Konnectivity == nil {
 		return controllerutil.OperationResultNone, nil
 	}
@@ -83,8 +83,8 @@ func (r *KubeconfigResource) GetName() string {
 	return "konnectivity-kubeconfig"
 }
 
-func (r *KubeconfigResource) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
-	tenantControlPlane.Status.Addons.Konnectivity.Kubeconfig = kamajiv1alpha1.KubeconfigStatus{}
+func (r *KubeconfigResource) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
+	tenantControlPlane.Status.Addons.Konnectivity.Kubeconfig = stewardv1alpha1.KubeconfigStatus{}
 
 	if tenantControlPlane.Spec.Addons.Konnectivity != nil {
 		tenantControlPlane.Status.Addons.Konnectivity.Kubeconfig.LastUpdate = metav1.Now()
@@ -95,13 +95,13 @@ func (r *KubeconfigResource) UpdateTenantControlPlaneStatus(_ context.Context, t
 	return nil
 }
 
-func (r *KubeconfigResource) mutate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) controllerutil.MutateFn {
+func (r *KubeconfigResource) mutate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) controllerutil.MutateFn {
 	return func() error {
 		logger := log.FromContext(ctx, "resource", r.GetName())
 
 		r.resource.SetLabels(utilities.MergeMaps(
 			r.resource.GetLabels(),
-			utilities.KamajiLabels(tenantControlPlane.GetName(), r.GetName()),
+			utilities.StewardLabels(tenantControlPlane.GetName(), r.GetName()),
 			map[string]string{
 				constants.ControllerLabelResource: utilities.CertificateKubeconfigLabel,
 			},

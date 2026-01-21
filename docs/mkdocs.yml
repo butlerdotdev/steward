@@ -1,15 +1,15 @@
-repo_name: clastix/kamaji
+repo_name: butlerdotdev/steward
 repo_url: https://github.com/clastix/kamaji
 
-site_name: Kamaji
-site_url: https://kamaji.clastix.io/
+site_name: Steward
+site_url: https://steward.butlerlabs.dev/
 docs_dir: content
 site_dir: site
-site_author: bsctl
+site_author: Butler Labs
 site_description: >-
-  Kamaji is the Control Plane Manager for Kubernetes
+  Steward is the Hosted Control Plane Manager for Kubernetes
 
-copyright: Copyright &copy; 2020 - 2025 Clastix Labs
+copyright: Copyright &copy; 2025-2026 Butler Labs
 
 theme:
   name: material
@@ -47,13 +47,13 @@ markdown_extensions:
 
 # Generate navigation bar
 nav:
-- 'Kamaji': index.md
+- 'Steward': index.md
 - 'Getting started':
   - getting-started/index.md
-  - getting-started/kamaji-kind.md
-  - getting-started/kamaji-generic.md
-  - getting-started/kamaji-aws.md
-  - getting-started/kamaji-azure.md
+  - getting-started/steward-kind.md
+  - getting-started/steward-generic.md
+  - getting-started/steward-aws.md
+  - getting-started/steward-azure.md
 - 'Concepts':
   - concepts/index.md
   - concepts/tenant-control-plane.md

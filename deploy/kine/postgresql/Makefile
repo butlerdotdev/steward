@@ -1,6 +1,6 @@
 ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 NAME:=default
-NAMESPACE:=kamaji-system
+NAMESPACE:=steward-system
 
 postgresql: cnpg-setup cnpg-deploy postgresql-secret
 

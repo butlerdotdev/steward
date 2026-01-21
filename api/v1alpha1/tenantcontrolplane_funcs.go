@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package v1alpha1
@@ -15,7 +15,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	kamajierrors "github.com/clastix/kamaji/internal/errors"
+	stewarderrors "github.com/butlerdotdev/steward/internal/errors"
 )
 
 // AssignedControlPlaneAddress returns the announced address and port of a Tenant Control Plane.
@@ -59,13 +59,13 @@ func (in *TenantControlPlane) DeclaredControlPlaneAddress(ctx context.Context, c
 	case svc.Spec.Type == corev1.ServiceTypeLoadBalancer:
 		loadBalancerStatus = svc.Status.LoadBalancer
 		if len(loadBalancerStatus.Ingress) == 0 {
-			return "", kamajierrors.NonExposedLoadBalancerError{}
+			return "", stewarderrors.NonExposedLoadBalancerError{}
 		}
 
 		return getLoadBalancerAddress(loadBalancerStatus.Ingress)
 	}
 
-	return "", kamajierrors.MissingValidIPError{}
+	return "", stewarderrors.MissingValidIPError{}
 }
 
 // getLoadBalancerAddress extracts the IP address from LoadBalancer ingress.
@@ -94,12 +94,12 @@ func getLoadBalancerAddress(ingress []corev1.LoadBalancerIngress) (string, error
 		}
 	}
 
-	return "", kamajierrors.MissingValidIPError{}
+	return "", stewarderrors.MissingValidIPError{}
 }
 
 func (in *TenantControlPlane) normalizeNamespaceName() string {
 	// The dash character (-) must be replaced with an underscore, PostgreSQL is complaining about it:
-	// https://github.com/clastix/kamaji/issues/328
+	// https://github.com/butlerdotdev/steward/issues/328
 	return strings.ReplaceAll(fmt.Sprintf("%s_%s", in.GetNamespace(), in.GetName()), "-", "_")
 }
 

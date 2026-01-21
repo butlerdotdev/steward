@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package resources
@@ -16,8 +16,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 type KubernetesIngressResource struct {
@@ -31,7 +31,7 @@ func (r *KubernetesIngressResource) GetHistogram() prometheus.Histogram {
 	return ingressCollector
 }
 
-func (r *KubernetesIngressResource) ShouldStatusBeUpdated(_ context.Context, tcp *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *KubernetesIngressResource) ShouldStatusBeUpdated(_ context.Context, tcp *stewardv1alpha1.TenantControlPlane) bool {
 	switch {
 	case tcp.Spec.ControlPlane.Ingress == nil && tcp.Status.Kubernetes.Ingress == nil:
 		// No update in case of no ingress in spec, neither in status.
@@ -82,11 +82,11 @@ func (r *KubernetesIngressResource) ShouldStatusBeUpdated(_ context.Context, tcp
 	}
 }
 
-func (r *KubernetesIngressResource) ShouldCleanup(tcp *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *KubernetesIngressResource) ShouldCleanup(tcp *stewardv1alpha1.TenantControlPlane) bool {
 	return tcp.Spec.ControlPlane.Ingress == nil
 }
 
-func (r *KubernetesIngressResource) CleanUp(ctx context.Context, tcp *kamajiv1alpha1.TenantControlPlane) (bool, error) {
+func (r *KubernetesIngressResource) CleanUp(ctx context.Context, tcp *stewardv1alpha1.TenantControlPlane) (bool, error) {
 	logger := log.FromContext(ctx, "resource", r.GetName())
 
 	var ingress networkingv1.Ingress
@@ -104,7 +104,7 @@ func (r *KubernetesIngressResource) CleanUp(ctx context.Context, tcp *kamajiv1al
 	}
 
 	if !metav1.IsControlledBy(&ingress, tcp) {
-		logger.Info("skipping cleanup: ingress is not managed by Kamaji", "name", ingress.Name, "namespace", ingress.Namespace)
+		logger.Info("skipping cleanup: ingress is not managed by Steward", "name", ingress.Name, "namespace", ingress.Namespace)
 
 		return false, nil
 	}
@@ -122,9 +122,9 @@ func (r *KubernetesIngressResource) CleanUp(ctx context.Context, tcp *kamajiv1al
 	return true, nil
 }
 
-func (r *KubernetesIngressResource) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (r *KubernetesIngressResource) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	if tenantControlPlane.Spec.ControlPlane.Ingress != nil {
-		tenantControlPlane.Status.Kubernetes.Ingress = &kamajiv1alpha1.KubernetesIngressStatus{
+		tenantControlPlane.Status.Kubernetes.Ingress = &stewardv1alpha1.KubernetesIngressStatus{
 			IngressStatus: r.resource.Status,
 			Name:          r.resource.GetName(),
 			Namespace:     r.resource.GetNamespace(),
@@ -138,7 +138,7 @@ func (r *KubernetesIngressResource) UpdateTenantControlPlaneStatus(_ context.Con
 	return nil
 }
 
-func (r *KubernetesIngressResource) Define(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (r *KubernetesIngressResource) Define(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	r.resource = &networkingv1.Ingress{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      tenantControlPlane.GetName(),
@@ -149,9 +149,9 @@ func (r *KubernetesIngressResource) Define(_ context.Context, tenantControlPlane
 	return nil
 }
 
-func (r *KubernetesIngressResource) mutate(tenantControlPlane *kamajiv1alpha1.TenantControlPlane) controllerutil.MutateFn {
+func (r *KubernetesIngressResource) mutate(tenantControlPlane *stewardv1alpha1.TenantControlPlane) controllerutil.MutateFn {
 	return func() error {
-		labels := utilities.MergeMaps(r.resource.GetLabels(), utilities.KamajiLabels(tenantControlPlane.GetName(), r.GetName()), tenantControlPlane.Spec.ControlPlane.Ingress.AdditionalMetadata.Labels)
+		labels := utilities.MergeMaps(r.resource.GetLabels(), utilities.StewardLabels(tenantControlPlane.GetName(), r.GetName()), tenantControlPlane.Spec.ControlPlane.Ingress.AdditionalMetadata.Labels)
 		r.resource.SetLabels(labels)
 
 		annotations := utilities.MergeMaps(r.resource.GetAnnotations(), tenantControlPlane.Spec.ControlPlane.Ingress.AdditionalMetadata.Annotations)
@@ -210,7 +210,7 @@ func (r *KubernetesIngressResource) mutate(tenantControlPlane *kamajiv1alpha1.Te
 	}
 }
 
-func (r *KubernetesIngressResource) CreateOrUpdate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
+func (r *KubernetesIngressResource) CreateOrUpdate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
 	return utilities.CreateOrUpdateWithConflict(ctx, r.Client, r.resource, r.mutate(tenantControlPlane))
 }
 

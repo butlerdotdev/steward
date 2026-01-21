@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package utilities
@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	RotateCertificateRequestAnnotation = "certs.kamaji.clastix.io/rotate"
+	RotateCertificateRequestAnnotation = "certs.steward.butlerlabs.dev/rotate"
 
 	CertificateX509Label       = "x509"
 	CertificateKubeconfigLabel = "kubeconfig"

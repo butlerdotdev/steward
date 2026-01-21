@@ -1,10 +1,10 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package utils
 
 import (
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
 )
 
-type TenantControlPlaneRetrievalFn func() (*kamajiv1alpha1.TenantControlPlane, error)
+type TenantControlPlaneRetrievalFn func() (*stewardv1alpha1.TenantControlPlane, error)

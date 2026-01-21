@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package kubeadm
@@ -13,7 +13,7 @@ import (
 	kubeadmconstants "k8s.io/kubernetes/cmd/kubeadm/app/constants"
 	"k8s.io/kubernetes/cmd/kubeadm/app/phases/certs"
 
-	cryptoKamaji "github.com/clastix/kamaji/internal/crypto"
+	cryptoSteward "github.com/butlerdotdev/steward/internal/crypto"
 )
 
 func GenerateCACertificatePrivateKeyPair(baseName string, config *Configuration) (*CertificatePrivateKeyPair, error) {
@@ -44,12 +44,12 @@ func GenerateCACertificatePrivateKeyPair(baseName string, config *Configuration)
 func GenerateCertificatePrivateKeyPair(baseName string, config *Configuration, ca CertificatePrivateKeyPair) (*CertificatePrivateKeyPair, error) {
 	defer deleteCertificateDirectory(config.InitConfiguration.CertificatesDir)
 
-	certificate, err := cryptoKamaji.ParseCertificateBytes(ca.Certificate)
+	certificate, err := cryptoSteward.ParseCertificateBytes(ca.Certificate)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse CA certificate: %w", err)
 	}
 
-	signer, err := cryptoKamaji.ParsePrivateKeyBytes(ca.PrivateKey)
+	signer, err := cryptoSteward.ParsePrivateKeyBytes(ca.PrivateKey)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse CA private key: %w", err)
 	}

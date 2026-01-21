@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package resources
@@ -19,10 +19,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/constants"
-	"github.com/clastix/kamaji/internal/kubeadm"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/constants"
+	"github.com/butlerdotdev/steward/internal/kubeadm"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 const (
@@ -48,7 +48,7 @@ func (r *KubeconfigResource) GetHistogram() prometheus.Histogram {
 	return kubeconfigCollector
 }
 
-func (r *KubeconfigResource) ShouldStatusBeUpdated(_ context.Context, tcp *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *KubeconfigResource) ShouldStatusBeUpdated(_ context.Context, tcp *stewardv1alpha1.TenantControlPlane) bool {
 	// an update is required only in case of missing status checksum, or name:
 	// this data is required by the following resource handlers.
 	status, err := r.getKubeconfigStatus(tcp)
@@ -59,15 +59,15 @@ func (r *KubeconfigResource) ShouldStatusBeUpdated(_ context.Context, tcp *kamaj
 	return len(status.Checksum) == 0 || len(status.SecretName) == 0
 }
 
-func (r *KubeconfigResource) ShouldCleanup(*kamajiv1alpha1.TenantControlPlane) bool {
+func (r *KubeconfigResource) ShouldCleanup(*stewardv1alpha1.TenantControlPlane) bool {
 	return false
 }
 
-func (r *KubeconfigResource) CleanUp(context.Context, *kamajiv1alpha1.TenantControlPlane) (bool, error) {
+func (r *KubeconfigResource) CleanUp(context.Context, *stewardv1alpha1.TenantControlPlane) (bool, error) {
 	return false, nil
 }
 
-func (r *KubeconfigResource) Define(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (r *KubeconfigResource) Define(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	r.resource = &corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      r.getPrefixedName(tenantControlPlane),
@@ -78,7 +78,7 @@ func (r *KubeconfigResource) Define(_ context.Context, tenantControlPlane *kamaj
 	return nil
 }
 
-func (r *KubeconfigResource) getPrefixedName(tenantControlPlane *kamajiv1alpha1.TenantControlPlane) string {
+func (r *KubeconfigResource) getPrefixedName(tenantControlPlane *stewardv1alpha1.TenantControlPlane) string {
 	return utilities.AddTenantPrefix(r.GetName(), tenantControlPlane)
 }
 
@@ -94,7 +94,7 @@ func (r *KubeconfigResource) GetName() string {
 	return r.Name
 }
 
-func (r *KubeconfigResource) UpdateTenantControlPlaneStatus(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (r *KubeconfigResource) UpdateTenantControlPlaneStatus(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	logger := log.FromContext(ctx, "resource", r.GetName())
 
 	status, err := r.getKubeconfigStatus(tenantControlPlane)
@@ -111,7 +111,7 @@ func (r *KubeconfigResource) UpdateTenantControlPlaneStatus(ctx context.Context,
 	return nil
 }
 
-func (r *KubeconfigResource) getKubeconfigStatus(tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (*kamajiv1alpha1.KubeconfigStatus, error) {
+func (r *KubeconfigResource) getKubeconfigStatus(tenantControlPlane *stewardv1alpha1.TenantControlPlane) (*stewardv1alpha1.KubeconfigStatus, error) {
 	switch r.KubeConfigFileName {
 	case kubeadmconstants.AdminKubeConfigFileName, kubeadmconstants.SuperAdminKubeConfigFileName:
 		return &tenantControlPlane.Status.KubeConfig.Admin, nil
@@ -124,7 +124,7 @@ func (r *KubeconfigResource) getKubeconfigStatus(tenantControlPlane *kamajiv1alp
 	}
 }
 
-func (r *KubeconfigResource) CreateOrUpdate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
+func (r *KubeconfigResource) CreateOrUpdate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
 	return utilities.CreateOrUpdateWithConflict(ctx, r.Client, r.resource, r.mutate(ctx, tenantControlPlane))
 }
 
@@ -137,7 +137,7 @@ func (r *KubeconfigResource) checksum(caCertificatesSecret *corev1.Secret, kubea
 }
 
 //nolint:gocognit
-func (r *KubeconfigResource) mutate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) controllerutil.MutateFn {
+func (r *KubeconfigResource) mutate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) controllerutil.MutateFn {
 	return func() error {
 		logger := log.FromContext(ctx, "resource", r.GetName())
 
@@ -173,7 +173,7 @@ func (r *KubeconfigResource) mutate(ctx context.Context, tenantControlPlane *kam
 
 		r.resource.SetLabels(utilities.MergeMaps(
 			r.resource.GetLabels(),
-			utilities.KamajiLabels(tenantControlPlane.GetName(), r.GetName()),
+			utilities.StewardLabels(tenantControlPlane.GetName(), r.GetName()),
 			map[string]string{
 				constants.ControllerLabelResource: utilities.CertificateKubeconfigLabel,
 			},

@@ -1,13 +1,13 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package constants
 
 const (
-	ProjectNameLabelKey   = "kamaji.clastix.io/project"
-	ProjectNameLabelValue = "kamaji"
+	ProjectNameLabelKey   = "steward.butlerlabs.dev/project"
+	ProjectNameLabelValue = "steward"
 
-	ControlPlaneLabelKey      = "kamaji.clastix.io/name"
-	ControlPlaneLabelResource = "kamaji.clastix.io/component"
-	ControllerLabelResource   = "kamaji.clastix.io/certificate_lifecycle_controller"
+	ControlPlaneLabelKey      = "steward.butlerlabs.dev/name"
+	ControlPlaneLabelResource = "steward.butlerlabs.dev/component"
+	ControllerLabelResource   = "steward.butlerlabs.dev/certificate_lifecycle_controller"
 )

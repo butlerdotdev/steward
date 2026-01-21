@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 //nolint:ginkgolinter
@@ -18,8 +18,8 @@ import (
 	"k8s.io/apimachinery/pkg/util/sets"
 	pointer "k8s.io/utils/ptr"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 const (
@@ -36,14 +36,14 @@ const (
 
 var _ = Describe("Deploy a TenantControlPlane resource with additional options", func() {
 	// TenantControlPlane object with additional resources
-	tcp := &kamajiv1alpha1.TenantControlPlane{
+	tcp := &stewardv1alpha1.TenantControlPlane{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      tcpName,
 			Namespace: namespace,
 		},
-		Spec: kamajiv1alpha1.TenantControlPlaneSpec{
-			ControlPlane: kamajiv1alpha1.ControlPlane{
-				Deployment: kamajiv1alpha1.DeploymentSpec{
+		Spec: stewardv1alpha1.TenantControlPlaneSpec{
+			ControlPlane: stewardv1alpha1.ControlPlane{
+				Deployment: stewardv1alpha1.DeploymentSpec{
 					Replicas: pointer.To(int32(1)),
 					AdditionalInitContainers: []corev1.Container{{
 						Name:  initContainerName,
@@ -90,7 +90,7 @@ var _ = Describe("Deploy a TenantControlPlane resource with additional options",
 							},
 						},
 					},
-					AdditionalVolumeMounts: &kamajiv1alpha1.AdditionalVolumeMounts{
+					AdditionalVolumeMounts: &stewardv1alpha1.AdditionalVolumeMounts{
 						APIServer: []corev1.VolumeMount{
 							{
 								Name:      apiServerVolumeName,
@@ -111,24 +111,24 @@ var _ = Describe("Deploy a TenantControlPlane resource with additional options",
 						},
 					},
 				},
-				Service: kamajiv1alpha1.ServiceSpec{
+				Service: stewardv1alpha1.ServiceSpec{
 					ServiceType: "ClusterIP",
 				},
 			},
-			NetworkProfile: kamajiv1alpha1.NetworkProfileSpec{
+			NetworkProfile: stewardv1alpha1.NetworkProfileSpec{
 				Address: "172.18.0.2",
 			},
-			Kubernetes: kamajiv1alpha1.KubernetesSpec{
+			Kubernetes: stewardv1alpha1.KubernetesSpec{
 				Version: "v1.23.6",
-				Kubelet: kamajiv1alpha1.KubeletSpec{
+				Kubelet: stewardv1alpha1.KubeletSpec{
 					CGroupFS: "cgroupfs",
 				},
-				AdmissionControllers: kamajiv1alpha1.AdmissionControllers{
+				AdmissionControllers: stewardv1alpha1.AdmissionControllers{
 					"LimitRanger",
 					"ResourceQuota",
 				},
 			},
-			Addons: kamajiv1alpha1.AddonsSpec{},
+			Addons: stewardv1alpha1.AddonsSpec{},
 		},
 	}
 	apiServerConfigMap := &corev1.ConfigMap{
@@ -177,7 +177,7 @@ var _ = Describe("Deploy a TenantControlPlane resource with additional options",
 
 	It("should have the additional resources", func() {
 		// Should be ready
-		StatusMustEqualTo(tcp, kamajiv1alpha1.VersionReady)
+		StatusMustEqualTo(tcp, stewardv1alpha1.VersionReady)
 		// Should have a TCP deployment
 		deploy := appsv1.Deployment{}
 		Expect(k8sClient.Get(context.Background(), types.NamespacedName{

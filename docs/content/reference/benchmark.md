@@ -1,16 +1,16 @@
 # Benchmark
 
-Kamaji has been designed to operate a large scale of Kubernetes Tenant Control Plane resources.
+Steward has been designed to operate a large scale of Kubernetes Tenant Control Plane resources.
 
 In the Operator jargon, a manager is created to start several controllers, each one with their own responsibility.
 When a manager is started, all the underlying controllers are started, along with other "runnable" resources, like the webhook server.
 
-Kamaji operates several reconciliation operations, both in the admin and Tenant Clusters.
+Steward operates several reconciliation operations, both in the admin and Tenant Clusters.
 With that said, a main manager is responsible to reconcile the admin resources (Deployment, Secret, ConfigMap, etc.), for each Tenant Control Plane a new manager will be spin-up as a main manager controller.
 These Tenant Control Plane managers, named in the code base as soot managers, in turn, start and run controllers to ensure the desired state of the underlying add-ons, and required resources such as kubeadm ones.
 
-With that said, monitoring the Kamaji stack is essential to understand any anomaly in memory consumption, or CPU usage.
-The provided Helm Chart is offering a [`ServiceMonitor`](https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/user-guides/getting-started.md) that can be used to extract all the required metrics of the Kamaji operator.
+With that said, monitoring the Steward stack is essential to understand any anomaly in memory consumption, or CPU usage.
+The provided Helm Chart is offering a [`ServiceMonitor`](https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/user-guides/getting-started.md) that can be used to extract all the required metrics of the Steward operator.
 
 # Running 100 Tenant Control Planes using a single DataStore
 
@@ -20,7 +20,7 @@ The provided Helm Chart is offering a [`ServiceMonitor`](https://github.com/prom
 - _DataStore driver_: `etcd`
 - _Reconciliation time requested:_ ~7m30s
 
-The following benchmark wants to shed a light on the Kamaji resource consumption such as CPU and memory to orchestrate 100 TCPs using a single shared datastore.
+The following benchmark wants to shed a light on the Steward resource consumption such as CPU and memory to orchestrate 100 TCPs using a single shared datastore.
 Your mileage may vary and just want to share with the community how it has been elaborated.
 
 ## Infrastructure
@@ -29,7 +29,7 @@ The benchmark has been issued on a Kubernetes cluster backed by Elastic Kubernet
 
 Two node pools have been created to avoid the noisy neighbour effect, and to increase the performances:
 
-- `infra`: hosting Kamaji, the monitoring stack, and the `DataStore` resources, made of 2 `t3.medium` instances.
+- `infra`: hosting Steward, the monitoring stack, and the `DataStore` resources, made of 2 `t3.medium` instances.
 - `workload`: hosting the deployed Tenant Control Plane resources, made of 25 `r3.xlarge` instances.
 
 ### Monitoring stack
@@ -147,10 +147,10 @@ helm upgrade --install cert-manager bitnami/cert-manager --namespace certmanager
     --set "installCRDs=true"
 ```
 
-### Install Kamaji
+### Install Steward
 
 ```
-helm upgrade --install kamaji clastix/kamaji --namespace kamaji-system --create-namespace \
+helm upgrade --install steward butlerlabs/steward --namespace steward-system --create-namespace \
     --set nodeSelector."eks\.amazonaws\.com/nodegroup"=infra \
     --set "tolerations[0].key=pool" \
     --set "tolerations[0].operator=Equal" \
@@ -163,12 +163,12 @@ helm upgrade --install kamaji clastix/kamaji --namespace kamaji-system --create-
     --set "resources=null"
 ```
 
-> For the benchmark, Kamaji is running without any resource constraint to benefit of all the available resources.
+> For the benchmark, Steward is running without any resource constraint to benefit of all the available resources.
 
 ### Install etcd as a DataStore
 
 ```
-helm upgrade --install etcd-01 clastix/kamaji-etcd --namespace kamaji-etcd --create-namespace --set "serviceMonitor.enabled=true" --set "datastore.enabled=true"
+helm upgrade --install etcd-01 butlerlabs/steward-etcd --namespace steward-etcd --create-namespace --set "serviceMonitor.enabled=true" --set "datastore.enabled=true"
 ```
 
 ## Creating 100 Tenant Control Planes
@@ -179,20 +179,20 @@ Once all the required components have been deployed, a simple bash for loop can 
 kubectl create ns benchmark01
 
 for I in {001..100}; do
-    DS=etcd-01 NS=benchmark01 I=$I envsubst < kamaji_v1alpha1_tenantcontrolplane.yaml | kubectl apply -f -
+    DS=etcd-01 NS=benchmark01 I=$I envsubst < steward_v1alpha1_tenantcontrolplane.yaml | kubectl apply -f -
 done
 ```
 
 Content of the benchmark file:
 
 ```yaml
-apiVersion: kamaji.clastix.io/v1alpha1
+apiVersion: steward.butlerlabs.io/v1alpha1
 kind: TenantControlPlane
 metadata:
   name: benchmark$I
   namespace: $NS
   labels:
-    tenant.clastix.io: benchmark$I
+    tenant.butlerlabs.io: benchmark$I
 spec:
   dataStore: $DS
   controlPlane:
@@ -227,15 +227,15 @@ spec:
 Our latest benchmark showed the ability to fully reconcile 100 Tenant Control Plane resources in ~7m30s.
 All the Tenant Control Planes were in `Ready` state and able to handle any request.
 
-The CPU consumption of Kamaji was fluctuating between 100 and 1200 mCPU during the peaks due to certificate generations.
+The CPU consumption of Steward was fluctuating between 100 and 1200 mCPU during the peaks due to certificate generations.
 
-The memory consumption of Kamaji hit ~600 MiB, although this data is not entirely representative since we didn't put any memory limit.
+The memory consumption of Steward hit ~600 MiB, although this data is not entirely representative since we didn't put any memory limit.
 
-In conclusion, Kamaji was able to reconcile a Tenant Control Plane every 4.5 seconds, requiring 12 mCPU, and 6 MiB of memory.
+In conclusion, Steward was able to reconcile a Tenant Control Plane every 4.5 seconds, requiring 12 mCPU, and 6 MiB of memory.
 
 The following values may vary according to the nodes, resource limits, and other constraints.
 If you're encountering different results, please, engage with the community to share them. 
 
 # Running a thousand of Tenant Control Planes using multiple DataStores
 
-The next benchmark must address the use case where a Kamaji Management Cluster manages up to a thousand Tenant Control Plane instances.
+The next benchmark must address the use case where a Steward Management Cluster manages up to a thousand Tenant Control Plane instances.

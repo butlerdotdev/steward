@@ -4,56 +4,56 @@ This guide describe a declarative way to deploy Kubernetes add-ons across multip
 
 This way the tenant resources can be ensured from a single pane of glass, from the *Management Cluster*.
 
-## Installing Kamaji with GitOps
+## Installing Steward with GitOps
 
-For GitOps workflows using tools like FluxCD or ArgoCD, the kamaji-crds chart enables separate CRD management:
+For GitOps workflows using tools like FluxCD or ArgoCD, the steward-crds chart enables separate CRD management:
 
 ```yaml
 # Step 1: HelmRelease for CRDs
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: kamaji-crds
-  namespace: kamaji-system
+  name: steward-crds
+  namespace: steward-system
 spec:
   interval: 10m
   chart:
     spec:
-      chart: kamaji-crds
+      chart: steward-crds
       version: 0.0.0+latest
       sourceRef:
         kind: HelmRepository
-        name: clastix
+        name: butlerlabs
         namespace: flux-system
 ---
 # Step 2: HelmRelease for operator
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: kamaji
-  namespace: kamaji-system
+  name: steward
+  namespace: steward-system
 spec:
   interval: 10m
   dependsOn:
-    - name: kamaji-crds
+    - name: steward-crds
   chart:
     spec:
-      chart: kamaji
+      chart: steward
       version: 0.0.0+latest
       sourceRef:
         kind: HelmRepository
-        name: clastix
+        name: butlerlabs
         namespace: flux-system
 ```
 
 !!! note "CRD Management Options"
-    The kamaji chart includes CRDs in its `crds/` directory. Using the separate kamaji-crds chart is optional and beneficial for:
+    The steward chart includes CRDs in its `crds/` directory. Using the separate steward-crds chart is optional and beneficial for:
 
     - GitOps workflows requiring separate CRD lifecycle management
     - Organizations with policies requiring separate CRD approval
     - Scenarios where CRD updates must precede operator updates
 
-    For standard installations, using the kamaji chart alone is sufficient.
+    For standard installations, using the steward chart alone is sufficient.
 
 ## Flux as the GitOps operator
 
@@ -61,19 +61,19 @@ As GitOps ensures a constant reconciliation to a Git-versioned desired state, [F
 
 In this scenario the Flux toolkit would run in the *Management Cluster*, with reconcile controllers reconciling resources into *Tenant Clusters*.
 
-![Architecture](../images/kamaji-flux.png)
+![Architecture](../images/steward-flux.png)
 
 This is something possible as the Flux reconciliation Custom Resources specifications provide ability to specify `Secret` which contain a `kubeconfig` - here you can find the related documentation for both [`Kustomization`](https://fluxcd.io/flux/components/kustomize/kustomization/#remote-clusters--cluster-api) and [`HelmRelease`](https://fluxcd.io/flux/components/helm/helmreleases/#remote-clusters--cluster-api) CRs.
 
 ## Quickstart
 
-Once a `TenantControlPlane` is [deployed](https://kamaji.clastix.io/getting-started/#deploy-tenant-control-plane), the kubeconfig for the admin user can be found in a `Secret` named as *<tenant name>-admin-kubeconfig*, in the same `Namespace` where the resource has been created.
+Once a `TenantControlPlane` is [deployed](https://steward.butlerlabs.io/getting-started/#deploy-tenant-control-plane), the kubeconfig for the admin user can be found in a `Secret` named as *<tenant name>-admin-kubeconfig*, in the same `Namespace` where the resource has been created.
 
 Let's suppose a `TenantControlPlane` named *tenant1* has been deployed in the *tenants* `Namespace`, a `Secret` named *tenant1-admin-kubeconfig* is created in the *tenants* `Namespace`.
 
 
 ```shell
-$ kubectl get tenantcontrolplanes.kamaji.clastix.io -n tenants
+$ kubectl get tenantcontrolplanes.steward.butlerlabs.io -n tenants
 NAME      VERSION   STATUS   CONTROL-PLANE-ENDPOINT   KUBECONFIG                 AGE
 tenant1   v1.25.1   Ready    172.18.0.2:31443         tenant1-admin-kubeconfig   108s
 ```

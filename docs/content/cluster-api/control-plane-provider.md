@@ -1,11 +1,11 @@
-# Kamaji Control Plane Provider
+# Steward Control Plane Provider
 
-Kamaji can act as a Cluster API Control Plane provider using the `KamajiControlPlane` custom resource, which defines the control plane of a Tenant Cluster.
+Steward can act as a Cluster API Control Plane provider using the `StewardControlPlane` custom resource, which defines the control plane of a Tenant Cluster.
 
-Here is an example of a `KamajiControlPlane`:
+Here is an example of a `StewardControlPlane`:
 
 ```yaml
-kind: KamajiControlPlane
+kind: StewardControlPlane
 apiVersion: controlplane.cluster.x-k8s.io/v1alpha1
 metadata:
   name: '${CLUSTER_NAME}'
@@ -44,7 +44,7 @@ metadata:
 spec:
   controlPlaneRef:
     apiVersion: controlplane.cluster.x-k8s.io/v1beta1
-    kind: KamajiControlPlane
+    kind: StewardControlPlane
     name: '${CLUSTER_NAME}'
   clusterNetwork:
     pods:
@@ -60,11 +60,11 @@ spec:
 ```
 
 !!! info "Full Reference"
-    For a full reference of the `KamajiControlPlane` custom resource, please see the [Reference APIs](https://doc.crds.dev/github.com/clastix/cluster-api-control-plane-provider-kamaji/controlplane.cluster.x-k8s.io/KamajiControlPlane/v1alpha1).
+    For a full reference of the `StewardControlPlane` custom resource, please see the [Reference APIs](https://doc.crds.dev/github.com/butlerlabs/cluster-api-control-plane-provider-steward/controlplane.cluster.x-k8s.io/StewardControlPlane/v1alpha1).
 
-## Getting started with the Kamaji Control Plane Provider
+## Getting started with the Steward Control Plane Provider
 
-Cluster API Provider Kamaji is compliant with the `clusterctl` contract, which means you can use it with the `clusterctl` CLI to create and manage your Kamaji based clusters.
+Cluster API Provider Steward is compliant with the `clusterctl` contract, which means you can use it with the `clusterctl` CLI to create and manage your Steward based clusters.
 
 !!! info "Options for install Cluster API"
     There are two ways to getting started with Cluster API:
@@ -76,23 +76,23 @@ Cluster API Provider Kamaji is compliant with the `clusterctl` contract, which m
 
 * [`clusterctl`](https://cluster-api.sigs.k8s.io/user/quick-start#install-clusterctl) installed in your workstation to handle the lifecycle of your clusters.
 * [`kubectl`](https://kubernetes.io/docs/tasks/tools/) installed in your workstation to interact with your clusters.
-* [Kamaji](../getting-started/index.md) installed in your Management Cluster.
+* [Steward](../getting-started/index.md) installed in your Management Cluster.
 
 ### Initialize the Management Cluster
 
 Use `clusterctl` to initialize the Management Cluster. When executed for the first time, `clusterctl init` will fetch and install the Cluster API components in the Management Cluster
 
 ```bash
-clusterctl init --control-plane kamaji
+clusterctl init --control-plane steward
 ```
 
 As result, the following Cluster API components will be installed:
 
 * Cluster API Provider in `capi-system` namespace
 * Bootstrap Provider in `capi-kubeadm-bootstrap-system` namespace
-* Kamaji Control Plane Provider in `kamaji-system` namespace
+* Steward Control Plane Provider in `steward-system` namespace
 
-In the next step, we will create a fully functional Kubernetes cluster using the Kamaji Control Plane Provider and the Infrastructure provider of choice.
+In the next step, we will create a fully functional Kubernetes cluster using the Steward Control Plane Provider and the Infrastructure provider of choice.
 
 For a complete list of supported infrastructure providers, please refer to the [other providers](other-providers.md) page.
 

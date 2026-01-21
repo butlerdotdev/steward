@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package e2e
@@ -20,7 +20,7 @@ import (
 	gatewayv1 "sigs.k8s.io/gateway-api/apis/v1"
 	gatewayv1alpha2 "sigs.k8s.io/gateway-api/apis/v1alpha2"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
 )
 
 // These tests use Ginkgo (BDD-style Go testing framework). Refer to
@@ -40,7 +40,7 @@ func TestAPIs(t *testing.T) {
 
 var _ = AfterEach(func() {
 	PrintTenantControlPlaneInfo()
-	PrintKamajiLogs()
+	PrintStewardLogs()
 })
 
 var _ = BeforeSuite(func() {
@@ -57,7 +57,7 @@ var _ = BeforeSuite(func() {
 	Expect(err).NotTo(HaveOccurred())
 	Expect(cfg).NotTo(BeNil())
 
-	err = kamajiv1alpha1.AddToScheme(scheme.Scheme)
+	err = stewardv1alpha1.AddToScheme(scheme.Scheme)
 	Expect(err).NotTo(HaveOccurred())
 
 	err = gatewayv1.Install(scheme.Scheme)

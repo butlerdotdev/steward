@@ -1,6 +1,6 @@
 # Contribute
 
-Thank you for your interest in contributing to Kamaji. Whether it's a bug report, new feature, correction, or additional documentation, we greatly value feedback and contributions from our community.
+Thank you for your interest in contributing to Steward. Whether it's a bug report, new feature, correction, or additional documentation, we greatly value feedback and contributions from our community.
 
 Please read through this document before submitting any issues or pull requests to ensure we have all the necessary information to effectively respond to your bug report or contribution.
 
@@ -40,7 +40,7 @@ Please, split changes into several and documented small commits: this will help 
 
 ## Code convention
 
-Kamaji is written in Golang. The changes must follow the Pull Request method where a _GitHub Action_ will
+Steward is written in Golang. The changes must follow the Pull Request method where a _GitHub Action_ will
 check the `golangci-lint`, so ensure your changes respect the coding standard. You can easily check them issuing the _Make_ recipe `golint`.
 
 ```
@@ -48,7 +48,7 @@ check the `golangci-lint`, so ensure your changes respect the coding standard. Y
 golangci-lint run -c .golangci.yml
 ```
 
-> Enabled linters and related options are defined in the [.golanci.yml file](https://github.com/clastix/Kamaji/blob/master/.golangci.yml)
+> Enabled linters and related options are defined in the [.golanci.yml file](https://github.com/butlerlabs/Steward/blob/master/.golangci.yml)
 
 Please, add a new single line at end of any file as the current coding style.
 
@@ -72,14 +72,14 @@ When filing an issue, please check existing open, or recently closed, issues to 
 
 ## Governance
 
-This document lays out the guidelines under which the Kamaji project will be governed.
+This document lays out the guidelines under which the Steward project will be governed.
 The goal is to make sure that the roles and responsibilities are well defined and clarify how decisions are made.
 
 ### Roles
 
-In the context of Kamaji project, we consider the following roles:
+In the context of Steward project, we consider the following roles:
 
-* __Users__: everyone using Kamaji, typically willing to provide feedback by proposing features and/or filing issues.
+* __Users__: everyone using Steward, typically willing to provide feedback by proposing features and/or filing issues.
 
 * __Contributors__: everyone contributing code, documentation, examples, tests, and participating in feature proposals as well as design discussions.
 
@@ -91,10 +91,10 @@ The release process will be governed by Maintainers.
 
 ### Roadmap Planning
 
-Maintainers will share roadmap and release versions as milestones in GitHub [project's page](https://github.com/clastix/kamaji). 
+Maintainers will share roadmap and release versions as milestones in GitHub [project's page](https://github.com/butlerlabs/steward). 
 
 
 ## Licensing
 
-See the [LICENSE](https://github.com/clastix/Kamaji/blob/master/LICENSE) file for our project's licensing. We can ask you to confirm the licensing of your contribution.
+See the [LICENSE](https://github.com/butlerlabs/Steward/blob/master/LICENSE) file for our project's licensing. We can ask you to confirm the licensing of your contribution.
 

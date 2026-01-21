@@ -1,7 +1,7 @@
 {
-    "name": "kamaji-core",
+    "name": "steward-core",
     "config": {
-      "image": "docker.io/clastix/kamaji",
+      "image": "docker.io/butlerlabs/steward",
       "live_reload_deps": [
         "main.go",
         "go.mod",

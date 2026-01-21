@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package v1alpha1
@@ -31,7 +31,7 @@ const (
 	ServiceTypeLoadBalancer       = (ServiceType)(corev1.ServiceTypeLoadBalancer)
 	ServiceTypeClusterIP          = (ServiceType)(corev1.ServiceTypeClusterIP)
 	ServiceTypeNodePort           = (ServiceType)(corev1.ServiceTypeNodePort)
-	KubeconfigSecretKeyAnnotation = "kamaji.clastix.io/kubeconfig-secret-key"
+	KubeconfigSecretKeyAnnotation = "steward.butlerlabs.dev/kubeconfig-secret-key"
 )
 
 // +kubebuilder:validation:Enum=ClusterIP;NodePort;LoadBalancer

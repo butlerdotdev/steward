@@ -14,7 +14,7 @@ You should patch this field with a new compatible value according to the [Kubern
 
 ### Default Upgrade Strategy (Blue/Green)
 
-By default, when you upgrade a `TenantControlPlane`, Kamaji applies a **Blue/Green deployment** strategy.
+By default, when you upgrade a `TenantControlPlane`, Steward applies a **Blue/Green deployment** strategy.
 
 - `maxSurge: 100%`: all new control plane Pods are created at once.
 - `maxUnavailable: 0`: existing Pods remain running until the new Pods are ready.
@@ -38,12 +38,12 @@ gradually rolling out the new version without stressing the infrastructure.
 Example configuration:
 
 ```yaml
-apiVersion: kamaji.clastix.io/v1alpha1
+apiVersion: steward.butlerlabs.io/v1alpha1
 kind: TenantControlPlane
 metadata:
   name: tenant-00
   labels:
-    tenant.clastix.io: tenant-00
+    tenant.butlerlabs.io: tenant-00
 spec:
   controlPlane:
     deployment:
@@ -57,8 +57,8 @@ spec:
 
 ## Upgrade of Tenant Worker Nodes
 
-As currently Kamaji is not providing any helpers for Tenant Worker Nodes, you should make sure to upgrade them manually, for example, with the help of `kubeadm`.
+As currently Steward is not providing any helpers for Tenant Worker Nodes, you should make sure to upgrade them manually, for example, with the help of `kubeadm`.
 Refer to the official [documentation](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/#upgrade-worker-nodes).
 
-Kamaji is offering a [Cluster API Control Plane provider](https://github.com/clastix/cluster-api-control-plane-provider-kamaji), thus integrating with the Kubernetes clusters declarative management approach.
+Steward is offering a [Cluster API Control Plane provider](https://github.com/butlerlabs/cluster-api-control-plane-provider-steward), thus integrating with the Kubernetes clusters declarative management approach.
 You can refer to the official [Cluster API documentation](https://cluster-api.sigs.k8s.io/).

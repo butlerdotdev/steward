@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package migrate
@@ -15,8 +15,8 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	ctrlclient "sigs.k8s.io/controller-runtime/pkg/client"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/datastore"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/datastore"
 )
 
 func NewCmd(scheme *runtime.Scheme) *cobra.Command {
@@ -54,21 +54,21 @@ func NewCmd(scheme *runtime.Scheme) *cobra.Command {
 
 			log.Info("retrieving the TenantControlPlane")
 
-			tcp := &kamajiv1alpha1.TenantControlPlane{}
+			tcp := &stewardv1alpha1.TenantControlPlane{}
 			if err = client.Get(ctx, types.NamespacedName{Namespace: parts[0], Name: parts[1]}, tcp); err != nil {
 				return err
 			}
 
 			log.Info("retrieving the TenantControlPlane used DataStore")
 
-			originDs := &kamajiv1alpha1.DataStore{}
+			originDs := &stewardv1alpha1.DataStore{}
 			if err = client.Get(ctx, types.NamespacedName{Name: tcp.Status.Storage.DataStoreName}, originDs); err != nil {
 				return err
 			}
 
 			log.Info("retrieving the target DataStore")
 
-			targetDs := &kamajiv1alpha1.DataStore{}
+			targetDs := &stewardv1alpha1.DataStore{}
 			if err = client.Get(ctx, types.NamespacedName{Name: targetDataStore}, targetDs); err != nil {
 				return err
 			}

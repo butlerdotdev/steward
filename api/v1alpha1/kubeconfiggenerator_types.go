@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package v1alpha1
@@ -8,15 +8,15 @@ import (
 )
 
 var (
-	ManagedByLabel  = "kamaji.clastix.io/managed-by"
-	ManagedForLabel = "kamaji.clastix.io/managed-for"
+	ManagedByLabel  = "steward.butlerlabs.dev/managed-by"
+	ManagedForLabel = "steward.butlerlabs.dev/managed-for"
 )
 
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 //+kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp",description="Age"
-//+kubebuilder:metadata:annotations={"cert-manager.io/inject-ca-from=kamaji-system/kamaji-serving-cert"}
-//+kubebuilder:resource:scope=Cluster,shortName=kc,categories=kamaji
+//+kubebuilder:metadata:annotations={"cert-manager.io/inject-ca-from=steward-system/steward-serving-cert"}
+//+kubebuilder:resource:scope=Cluster,shortName=kc,categories=steward
 
 // KubeconfigGenerator is the Schema for the kubeconfiggenerators API.
 type KubeconfigGenerator struct {

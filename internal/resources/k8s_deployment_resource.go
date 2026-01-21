@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package resources
@@ -13,15 +13,15 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	builder "github.com/clastix/kamaji/internal/builders/controlplane"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	builder "github.com/butlerdotdev/steward/internal/builders/controlplane"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 type KubernetesDeploymentResource struct {
 	resource           *appsv1.Deployment
 	Client             client.Client
-	DataStore          kamajiv1alpha1.DataStore
+	DataStore          stewardv1alpha1.DataStore
 	DataStoreOverrides []builder.DataStoreOverrides
 	KineContainerImage string
 }
@@ -32,25 +32,25 @@ func (r *KubernetesDeploymentResource) GetHistogram() prometheus.Histogram {
 	return deploymentCollector
 }
 
-func (r *KubernetesDeploymentResource) isStatusEqual(tenantControlPlane *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *KubernetesDeploymentResource) isStatusEqual(tenantControlPlane *stewardv1alpha1.TenantControlPlane) bool {
 	return r.resource.Status.String() == tenantControlPlane.Status.Kubernetes.Deployment.DeploymentStatus.String()
 }
 
-func (r *KubernetesDeploymentResource) ShouldStatusBeUpdated(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *KubernetesDeploymentResource) ShouldStatusBeUpdated(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) bool {
 	return !r.isStatusEqual(tenantControlPlane) ||
 		tenantControlPlane.Spec.Kubernetes.Version != tenantControlPlane.Status.Kubernetes.Version.Version ||
-		*r.computeStatus(tenantControlPlane) != ptr.Deref(tenantControlPlane.Status.Kubernetes.Version.Status, kamajiv1alpha1.VersionUnknown)
+		*r.computeStatus(tenantControlPlane) != ptr.Deref(tenantControlPlane.Status.Kubernetes.Version.Status, stewardv1alpha1.VersionUnknown)
 }
 
-func (r *KubernetesDeploymentResource) ShouldCleanup(*kamajiv1alpha1.TenantControlPlane) bool {
+func (r *KubernetesDeploymentResource) ShouldCleanup(*stewardv1alpha1.TenantControlPlane) bool {
 	return false
 }
 
-func (r *KubernetesDeploymentResource) CleanUp(context.Context, *kamajiv1alpha1.TenantControlPlane) (bool, error) {
+func (r *KubernetesDeploymentResource) CleanUp(context.Context, *stewardv1alpha1.TenantControlPlane) (bool, error) {
 	return false, nil
 }
 
-func (r *KubernetesDeploymentResource) Define(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (r *KubernetesDeploymentResource) Define(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	r.resource = &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      tenantControlPlane.GetName(),
@@ -61,7 +61,7 @@ func (r *KubernetesDeploymentResource) Define(_ context.Context, tenantControlPl
 	return nil
 }
 
-func (r *KubernetesDeploymentResource) mutate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) controllerutil.MutateFn {
+func (r *KubernetesDeploymentResource) mutate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) controllerutil.MutateFn {
 	return func() error {
 		(builder.Deployment{
 			Client:             r.Client,
@@ -74,7 +74,7 @@ func (r *KubernetesDeploymentResource) mutate(ctx context.Context, tenantControl
 	}
 }
 
-func (r *KubernetesDeploymentResource) CreateOrUpdate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
+func (r *KubernetesDeploymentResource) CreateOrUpdate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
 	return utilities.CreateOrUpdateWithConflict(ctx, r.Client, r.resource, r.mutate(ctx, tenantControlPlane))
 }
 
@@ -82,33 +82,33 @@ func (r *KubernetesDeploymentResource) GetName() string {
 	return "deployment"
 }
 
-func (r *KubernetesDeploymentResource) computeStatus(tenantControlPlane *kamajiv1alpha1.TenantControlPlane) *kamajiv1alpha1.KubernetesVersionStatus {
+func (r *KubernetesDeploymentResource) computeStatus(tenantControlPlane *stewardv1alpha1.TenantControlPlane) *stewardv1alpha1.KubernetesVersionStatus {
 	switch {
 	case ptr.Deref(tenantControlPlane.Spec.ControlPlane.Deployment.Replicas, 2) == 0:
-		return &kamajiv1alpha1.VersionSleeping
+		return &stewardv1alpha1.VersionSleeping
 	case r.isNotReady():
-		return &kamajiv1alpha1.VersionNotReady
+		return &stewardv1alpha1.VersionNotReady
 	case tenantControlPlane.Spec.WritePermissions.HasAnyLimitation():
-		return &kamajiv1alpha1.VersionWriteLimited
+		return &stewardv1alpha1.VersionWriteLimited
 	case !r.isProgressingUpgrade():
-		return &kamajiv1alpha1.VersionReady
+		return &stewardv1alpha1.VersionReady
 	case r.isUpgrading(tenantControlPlane):
-		return &kamajiv1alpha1.VersionUpgrading
+		return &stewardv1alpha1.VersionUpgrading
 	case r.isProvisioning(tenantControlPlane):
-		return &kamajiv1alpha1.VersionProvisioning
+		return &stewardv1alpha1.VersionProvisioning
 	default:
-		return &kamajiv1alpha1.VersionUnknown
+		return &stewardv1alpha1.VersionUnknown
 	}
 }
 
-func (r *KubernetesDeploymentResource) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (r *KubernetesDeploymentResource) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	tenantControlPlane.Status.Kubernetes.Version.Status = r.computeStatus(tenantControlPlane)
-	if *tenantControlPlane.Status.Kubernetes.Version.Status == kamajiv1alpha1.VersionReady ||
-		*tenantControlPlane.Status.Kubernetes.Version.Status == kamajiv1alpha1.VersionSleeping {
+	if *tenantControlPlane.Status.Kubernetes.Version.Status == stewardv1alpha1.VersionReady ||
+		*tenantControlPlane.Status.Kubernetes.Version.Status == stewardv1alpha1.VersionSleeping {
 		tenantControlPlane.Status.Kubernetes.Version.Version = tenantControlPlane.Spec.Kubernetes.Version
 	}
 
-	tenantControlPlane.Status.Kubernetes.Deployment = kamajiv1alpha1.KubernetesDeploymentStatus{
+	tenantControlPlane.Status.Kubernetes.Deployment = stewardv1alpha1.KubernetesDeploymentStatus{
 		DeploymentStatus: r.resource.Status,
 		Selector:         metav1.FormatLabelSelector(r.resource.Spec.Selector),
 		Name:             r.resource.GetName(),
@@ -145,13 +145,13 @@ func (r *KubernetesDeploymentResource) isProgressingUpgrade() bool {
 	return false
 }
 
-func (r *KubernetesDeploymentResource) isUpgrading(tenantControlPlane *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *KubernetesDeploymentResource) isUpgrading(tenantControlPlane *stewardv1alpha1.TenantControlPlane) bool {
 	return len(tenantControlPlane.Status.Kubernetes.Version.Version) > 0 &&
 		tenantControlPlane.Spec.Kubernetes.Version != tenantControlPlane.Status.Kubernetes.Version.Version &&
 		r.isProgressingUpgrade()
 }
 
-func (r *KubernetesDeploymentResource) isProvisioning(tenantControlPlane *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *KubernetesDeploymentResource) isProvisioning(tenantControlPlane *stewardv1alpha1.TenantControlPlane) bool {
 	return len(tenantControlPlane.Status.Kubernetes.Version.Version) == 0
 }
 

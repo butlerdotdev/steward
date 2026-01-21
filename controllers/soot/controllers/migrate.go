@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package controllers
@@ -25,10 +25,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"sigs.k8s.io/controller-runtime/pkg/source"
 
-	"github.com/clastix/kamaji/api/v1alpha1"
-	sooterrors "github.com/clastix/kamaji/controllers/soot/controllers/errors"
-	"github.com/clastix/kamaji/controllers/utils"
-	"github.com/clastix/kamaji/internal/utilities"
+	"github.com/butlerdotdev/steward/api/v1alpha1"
+	sooterrors "github.com/butlerdotdev/steward/controllers/soot/controllers/errors"
+	"github.com/butlerdotdev/steward/controllers/utils"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 type Migrate struct {
@@ -92,7 +92,7 @@ func (m *Migrate) createOrUpdate(ctx context.Context) error {
 	_, err := utilities.CreateOrUpdateWithConflict(ctx, m.Client, obj, func() error {
 		obj.Webhooks = []admissionregistrationv1.ValidatingWebhook{
 			{
-				Name: "leases.migrate.kamaji.clastix.io",
+				Name: "leases.migrate.steward.butlerlabs.dev",
 				ClientConfig: admissionregistrationv1.WebhookClientConfig{
 					URL:      pointer.To(fmt.Sprintf("https://%s.%s.svc:443/migrate", m.WebhookServiceName, m.WebhookNamespace)),
 					CABundle: m.WebhookCABundle,
@@ -136,7 +136,7 @@ func (m *Migrate) createOrUpdate(ctx context.Context) error {
 				AdmissionReviewVersions: []string{"v1"},
 			},
 			{
-				Name: "catchall.migrate.kamaji.clastix.io",
+				Name: "catchall.migrate.steward.butlerlabs.dev",
 				ClientConfig: admissionregistrationv1.WebhookClientConfig{
 					URL:      pointer.To(fmt.Sprintf("https://%s.%s.svc:443/migrate", m.WebhookServiceName, m.WebhookNamespace)),
 					CABundle: m.WebhookCABundle,
@@ -204,7 +204,7 @@ func (m *Migrate) SetupWithManager(mgr manager.Manager) error {
 func (m *Migrate) object() *admissionregistrationv1.ValidatingWebhookConfiguration {
 	return &admissionregistrationv1.ValidatingWebhookConfiguration{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: "kamaji-freeze",
+			Name: "steward-freeze",
 		},
 	}
 }

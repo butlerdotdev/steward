@@ -1,6 +1,6 @@
 # Other Infra Providers
 
-Kamaji offers seamless integration with the most popular [Cluster API Infrastructure Providers](https://cluster-api.sigs.k8s.io/reference/providers#infrastructure):
+Steward offers seamless integration with the most popular [Cluster API Infrastructure Providers](https://cluster-api.sigs.k8s.io/reference/providers#infrastructure):
 
 - AWS
 - Azure
@@ -16,6 +16,6 @@ Kamaji offers seamless integration with the most popular [Cluster API Infrastruc
 - IONOS Cloud
 - Proxmox by IONOS Cloud
 
-For the most up-to-date information and technical considerations, please always check the related [repository](https://github.com/clastix/cluster-api-control-plane-provider-kamaji).
+For the most up-to-date information and technical considerations, please always check the related [repository](https://github.com/butlerlabs/cluster-api-control-plane-provider-steward).
 
 

@@ -20,7 +20,7 @@ ENVTEST_K8S_VERSION = 1.31.0
 ENVTEST_VERSION ?= release-0.19
 
 # Image URL to use all building/pushing image targets
-CONTAINER_REPOSITORY ?= docker.io/clastix/kamaji
+CONTAINER_REPOSITORY ?= ghcr.io/butlerdotdev/steward
 
 # Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
 ifeq (,$(shell go env GOBIN))
@@ -118,29 +118,29 @@ $(ENVTEST): $(LOCALBIN)
 ##@ Development
 
 rbac: controller-gen yq
-	$(CONTROLLER_GEN) rbac:roleName=manager-role paths="./..." output:stdout | $(YQ) '.rules' > ./charts/kamaji/controller-gen/clusterrole.yaml
+	$(CONTROLLER_GEN) rbac:roleName=manager-role paths="./..." output:stdout | $(YQ) '.rules' > ./charts/steward/controller-gen/clusterrole.yaml
 
 webhook: controller-gen yq
-	$(CONTROLLER_GEN) webhook paths="./..." output:stdout | $(YQ) 'select(documentIndex == 0) | .webhooks' > ./charts/kamaji/controller-gen/mutating-webhook.yaml
-	$(CONTROLLER_GEN) webhook paths="./..." output:stdout | $(YQ) 'select(documentIndex == 1) | .webhooks' > ./charts/kamaji/controller-gen/validating-webhook.yaml
-	$(YQ) -i 'map(.clientConfig.service.name |= "{{ include \"kamaji.webhookServiceName\" . }}")' ./charts/kamaji/controller-gen/mutating-webhook.yaml
-	$(YQ) -i 'map(.clientConfig.service.namespace |= "{{ .Release.Namespace }}")' ./charts/kamaji/controller-gen/mutating-webhook.yaml
-	$(YQ) -i 'map(.clientConfig.service.name |= "{{ include \"kamaji.webhookServiceName\" . }}")' ./charts/kamaji/controller-gen/validating-webhook.yaml
-	$(YQ) -i 'map(.clientConfig.service.namespace |= "{{ .Release.Namespace }}")' ./charts/kamaji/controller-gen/validating-webhook.yaml
+	$(CONTROLLER_GEN) webhook paths="./..." output:stdout | $(YQ) 'select(documentIndex == 0) | .webhooks' > ./charts/steward/controller-gen/mutating-webhook.yaml
+	$(CONTROLLER_GEN) webhook paths="./..." output:stdout | $(YQ) 'select(documentIndex == 1) | .webhooks' > ./charts/steward/controller-gen/validating-webhook.yaml
+	$(YQ) -i 'map(.clientConfig.service.name |= "{{ include \"steward.webhookServiceName\" . }}")' ./charts/steward/controller-gen/mutating-webhook.yaml
+	$(YQ) -i 'map(.clientConfig.service.namespace |= "{{ .Release.Namespace }}")' ./charts/steward/controller-gen/mutating-webhook.yaml
+	$(YQ) -i 'map(.clientConfig.service.name |= "{{ include \"steward.webhookServiceName\" . }}")' ./charts/steward/controller-gen/validating-webhook.yaml
+	$(YQ) -i 'map(.clientConfig.service.namespace |= "{{ .Release.Namespace }}")' ./charts/steward/controller-gen/validating-webhook.yaml
 
 crds: controller-gen yq
-	# kamaji chart
-	$(CONTROLLER_GEN) crd webhook paths="./..." output:stdout | $(YQ) 'select(documentIndex == 0)' > ./charts/kamaji/crds/kamaji.clastix.io_datastores.yaml
-	$(CONTROLLER_GEN) crd webhook paths="./..." output:stdout | $(YQ) 'select(documentIndex == 1)' > ./charts/kamaji/crds/kamaji.clastix.io_kubeconfiggenerators.yaml
-	$(CONTROLLER_GEN) crd webhook paths="./..." output:stdout | $(YQ) 'select(documentIndex == 2)' > ./charts/kamaji/crds/kamaji.clastix.io_tenantcontrolplanes.yaml
-	$(YQ) -i '. *n load("./charts/kamaji/controller-gen/crd-conversion.yaml")' ./charts/kamaji/crds/kamaji.clastix.io_tenantcontrolplanes.yaml
-	# kamaji-crds chart
-	cp ./charts/kamaji/controller-gen/crd-conversion.yaml ./charts/kamaji-crds/hack/crd-conversion.yaml
-	$(YQ) '.spec' ./charts/kamaji/crds/kamaji.clastix.io_datastores.yaml > ./charts/kamaji-crds/hack/kamaji.clastix.io_datastores_spec.yaml
-	$(YQ) '.spec' ./charts/kamaji/crds/kamaji.clastix.io_tenantcontrolplanes.yaml > ./charts/kamaji-crds/hack/kamaji.clastix.io_tenantcontrolplanes_spec.yaml
-	$(YQ) '.spec' ./charts/kamaji/crds/kamaji.clastix.io_kubeconfiggenerators.yaml > ./charts/kamaji-crds/hack/kamaji.clastix.io_kubeconfiggenerators_spec.yaml
-	$(YQ) -i '.conversion.webhook.clientConfig.service.name = "{{ .Values.kamajiService }}"' ./charts/kamaji-crds/hack/kamaji.clastix.io_tenantcontrolplanes_spec.yaml
-	$(YQ) -i '.conversion.webhook.clientConfig.service.namespace = "{{ .Values.kamajiNamespace }}"' ./charts/kamaji-crds/hack/kamaji.clastix.io_tenantcontrolplanes_spec.yaml
+	# steward chart
+	$(CONTROLLER_GEN) crd webhook paths="./..." output:stdout | $(YQ) 'select(documentIndex == 0)' > ./charts/steward/crds/steward.butlerlabs.dev_datastores.yaml
+	$(CONTROLLER_GEN) crd webhook paths="./..." output:stdout | $(YQ) 'select(documentIndex == 1)' > ./charts/steward/crds/steward.butlerlabs.dev_kubeconfiggenerators.yaml
+	$(CONTROLLER_GEN) crd webhook paths="./..." output:stdout | $(YQ) 'select(documentIndex == 2)' > ./charts/steward/crds/steward.butlerlabs.dev_tenantcontrolplanes.yaml
+	$(YQ) -i '. *n load("./charts/steward/controller-gen/crd-conversion.yaml")' ./charts/steward/crds/steward.butlerlabs.dev_tenantcontrolplanes.yaml
+	# steward-crds chart
+	cp ./charts/steward/controller-gen/crd-conversion.yaml ./charts/steward-crds/hack/crd-conversion.yaml
+	$(YQ) '.spec' ./charts/steward/crds/steward.butlerlabs.dev_datastores.yaml > ./charts/steward-crds/hack/steward.butlerlabs.dev_datastores_spec.yaml
+	$(YQ) '.spec' ./charts/steward/crds/steward.butlerlabs.dev_tenantcontrolplanes.yaml > ./charts/steward-crds/hack/steward.butlerlabs.dev_tenantcontrolplanes_spec.yaml
+	$(YQ) '.spec' ./charts/steward/crds/steward.butlerlabs.dev_kubeconfiggenerators.yaml > ./charts/steward-crds/hack/steward.butlerlabs.dev_kubeconfiggenerators_spec.yaml
+	$(YQ) -i '.conversion.webhook.clientConfig.service.name = "{{ .Values.stewardService }}"' ./charts/steward-crds/hack/steward.butlerlabs.dev_tenantcontrolplanes_spec.yaml
+	$(YQ) -i '.conversion.webhook.clientConfig.service.namespace = "{{ .Values.stewardNamespace }}"' ./charts/steward-crds/hack/steward.butlerlabs.dev_tenantcontrolplanes_spec.yaml
 
 manifests: rbac webhook crds ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
 
@@ -160,7 +160,7 @@ test: envtest ginkgo
 
 _datastore-mysql:
 	$(MAKE) NAME=$(NAME) -C deploy/kine/mysql mariadb
-	kubectl apply -f $(shell pwd)/config/samples/kamaji_v1alpha1_datastore_mysql_$(NAME).yaml
+	kubectl apply -f $(shell pwd)/config/samples/steward_v1alpha1_datastore_mysql_$(NAME).yaml
 
 datastore-mysql:
 	$(MAKE) NAME=bronze _datastore-mysql
@@ -169,7 +169,7 @@ datastore-mysql:
 
 _datastore-postgres:
 	$(MAKE) NAME=$(NAME) NAMESPACE=postgres-system -C deploy/kine/postgresql postgresql
-	kubectl apply -f $(shell pwd)/config/samples/kamaji_v1alpha1_datastore_postgresql_$(NAME).yaml
+	kubectl apply -f $(shell pwd)/config/samples/steward_v1alpha1_datastore_postgresql_$(NAME).yaml
 
 datastore-postgres:
 	$(MAKE) NAME=bronze _datastore-postgres
@@ -177,20 +177,20 @@ datastore-postgres:
 	$(MAKE) NAME=gold _datastore-postgres
 
 _datastore-etcd:
-	$(HELM) upgrade --install etcd-$(NAME) clastix/kamaji-etcd --create-namespace -n $(NAMESPACE) --set datastore.enabled=true --set fullnameOverride=etcd-$(NAME) $(EXTRA_ARGS)
+	$(HELM) upgrade --install etcd-$(NAME) butlerlabs/steward-etcd --create-namespace -n $(NAMESPACE) --set datastore.enabled=true --set fullnameOverride=etcd-$(NAME) $(EXTRA_ARGS)
 
 _datastore-nats:
 	$(MAKE) NAME=$(NAME) NAMESPACE=nats-system -C deploy/kine/nats nats
-	kubectl apply -f $(shell pwd)/config/samples/kamaji_v1alpha1_datastore_nats_$(NAME).yaml
+	kubectl apply -f $(shell pwd)/config/samples/steward_v1alpha1_datastore_nats_$(NAME).yaml
 
 datastore-etcd: helm
-	$(HELM) repo add clastix https://clastix.github.io/charts
+	$(HELM) repo add butlerlabs https://butlerdotdev.github.io/charts
 	$(HELM) repo update
 	$(MAKE) NAME=bronze NAMESPACE=etcd-system _datastore-etcd
 	$(MAKE) NAME=silver NAMESPACE=etcd-system _datastore-etcd
 	$(MAKE) NAME=gold NAMESPACE=etcd-system _datastore-etcd
-	$(MAKE) NAME=primary NAMESPACE=kamaji-system EXTRA_ARGS='--set certManager.enabled=true --set certManager.issuerRef.kind=Issuer --set certManager.issuerRef.name=kamaji-selfsigned-issuer --set selfSignedCertificates.enabled=false' _datastore-etcd
-	$(MAKE) NAME=secondary NAMESPACE=kamaji-system EXTRA_ARGS='--set certManager.enabled=true --set certManager.ca.create=false --set certManager.ca.nameOverride=etcd-primary-ca --set certManager.issuerRef.kind=Issuer --set certManager.issuerRef.name=kamaji-selfsigned-issuer --set selfSignedCertificates.enabled=false' _datastore-etcd
+	$(MAKE) NAME=primary NAMESPACE=steward-system EXTRA_ARGS='--set certManager.enabled=true --set certManager.issuerRef.kind=Issuer --set certManager.issuerRef.name=steward-selfsigned-issuer --set selfSignedCertificates.enabled=false' _datastore-etcd
+	$(MAKE) NAME=secondary NAMESPACE=steward-system EXTRA_ARGS='--set certManager.enabled=true --set certManager.ca.create=false --set certManager.ca.nameOverride=etcd-primary-ca --set certManager.issuerRef.kind=Issuer --set certManager.issuerRef.name=steward-selfsigned-issuer --set selfSignedCertificates.enabled=false' _datastore-etcd
 
 datastore-nats: helm
 	$(HELM) repo add nats https://nats-io.github.io/k8s/helm/charts/
@@ -200,7 +200,7 @@ datastore-nats: helm
 	$(MAKE) NAME=gold _datastore-nats
 	$(MAKE) NAME=notls _datastore-nats
 
-datastores: datastore-mysql datastore-etcd datastore-postgres datastore-nats ## Install all Kamaji DataStores with multiple drivers, and different tiers.
+datastores: datastore-mysql datastore-etcd datastore-postgres datastore-nats ## Install all Steward DataStores with multiple drivers, and different tiers.
 
 ##@ Build
 
@@ -213,11 +213,11 @@ GIT_MODIFIED    ?= $$(echo "$(GIT_MODIFIED_1)$(GIT_MODIFIED_2)")
 GIT_REPO        ?= $$(git config --get remote.origin.url)
 BUILD_DATE      ?= $$(git log -1 --format="%at" | xargs -I{} date -d @{} +%Y-%m-%dT%H:%M:%S)
 
-LD_FLAGS ?= "-X github.com/clastix/kamaji/internal.GitCommit=$(GIT_HEAD_COMMIT) \
-             -X github.com/clastix/kamaji/internal.GitTag=$(VERSION) \
-             -X github.com/clastix/kamaji/internal.GitDirty=$(GIT_MODIFIED) \
-             -X github.com/clastix/kamaji/internal.BuildTime=$(BUILD_DATE) \
-             -X github.com/clastix/kamaji/internal.GitRepo=$(GIT_REPO)"
+LD_FLAGS ?= "-X github.com/butlerdotdev/steward/internal.GitCommit=$(GIT_HEAD_COMMIT) \
+             -X github.com/butlerdotdev/steward/internal.GitTag=$(VERSION) \
+             -X github.com/butlerdotdev/steward/internal.GitDirty=$(GIT_MODIFIED) \
+             -X github.com/butlerdotdev/steward/internal.BuildTime=$(BUILD_DATE) \
+             -X github.com/butlerdotdev/steward/internal.GitRepo=$(GIT_REPO)"
 
 KO_PUSH ?= false
 KO_LOCAL ?= true
@@ -253,35 +253,35 @@ envoy-gateway: gateway-api helm ## Install Envoy Gateway for Gateway API tests.
 	kubectl wait --timeout=5m -n envoy-gateway-system deployment/envoy-gateway --for=condition=Available
 
 load: kind
-	$(KIND) load docker-image --name kamaji ${CONTAINER_REPOSITORY}:${VERSION}
+	$(KIND) load docker-image --name steward ${CONTAINER_REPOSITORY}:${VERSION}
 
 ##@ e2e
 
 .PHONY: env
 env: kind
-	$(KIND) create cluster --name kamaji
+	$(KIND) create cluster --name steward
 
 cleanup: kind
-	$(KIND) delete cluster --name kamaji
+	$(KIND) delete cluster --name steward
 
 .PHONY: e2e
-e2e: env build load helm ginkgo cert-manager gateway-api envoy-gateway ## Create a KinD cluster, install Kamaji on it and run the test suite.
-	$(HELM) upgrade --debug --install kamaji-crds ./charts/kamaji-crds --create-namespace --namespace kamaji-system
-	$(HELM) repo add clastix https://clastix.github.io/charts
-	$(HELM) dependency build ./charts/kamaji
-	$(HELM) upgrade --debug --install kamaji ./charts/kamaji --create-namespace --namespace kamaji-system --set "image.tag=$(VERSION)" --set "image.pullPolicy=Never" --set "telemetry.disabled=true"
+e2e: env build load helm ginkgo cert-manager gateway-api envoy-gateway ## Create a KinD cluster, install Steward on it and run the test suite.
+	$(HELM) upgrade --debug --install steward-crds ./charts/steward-crds --create-namespace --namespace steward-system
+	$(HELM) repo add butlerlabs https://butlerdotdev.github.io/charts
+	$(HELM) dependency build ./charts/steward
+	$(HELM) upgrade --debug --install steward ./charts/steward --create-namespace --namespace steward-system --set "image.tag=$(VERSION)" --set "image.pullPolicy=Never"
 	$(MAKE) datastores
 	$(GINKGO) -v ./e2e
 
 ##@ Document
 
-CAPI_URL = https://github.com/clastix/cluster-api-control-plane-provider-kamaji.git
+CAPI_URL = https://github.com/butlerdotdev/steward-capi-provider.git
 CAPI_DIR := $(shell mktemp -d)
 CRDS_DIR := $(shell mktemp -d)
 
 .PHONY: apidoc
 apidoc: apidocs-gen
-	@cp charts/kamaji/crds/*.yaml $(CRDS_DIR)
+	@cp charts/steward/crds/*.yaml $(CRDS_DIR)
 	@git clone $(CAPI_URL) $(CAPI_DIR)
 	@cp $(CAPI_DIR)/config/crd/bases/*.yaml $(CRDS_DIR)
 	@rm -rf $(CAPI_DIR)

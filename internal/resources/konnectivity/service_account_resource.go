@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package konnectivity
@@ -14,10 +14,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/constants"
-	"github.com/clastix/kamaji/internal/resources"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/constants"
+	"github.com/butlerdotdev/steward/internal/resources"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 type ServiceAccountResource struct {
@@ -33,16 +33,16 @@ func (r *ServiceAccountResource) GetHistogram() prometheus.Histogram {
 	return serviceaccountCollector
 }
 
-func (r *ServiceAccountResource) ShouldStatusBeUpdated(_ context.Context, tcp *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *ServiceAccountResource) ShouldStatusBeUpdated(_ context.Context, tcp *stewardv1alpha1.TenantControlPlane) bool {
 	return tcp.Spec.Addons.Konnectivity == nil && len(tcp.Status.Addons.Konnectivity.ServiceAccount.Name) > 0 && len(tcp.Status.Addons.Konnectivity.ServiceAccount.Namespace) > 0 ||
 		tcp.Spec.Addons.Konnectivity != nil && tcp.Status.Addons.Konnectivity.ServiceAccount.Name == "" && tcp.Status.Addons.Konnectivity.ServiceAccount.Namespace == ""
 }
 
-func (r *ServiceAccountResource) ShouldCleanup(tenantControlPlane *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *ServiceAccountResource) ShouldCleanup(tenantControlPlane *stewardv1alpha1.TenantControlPlane) bool {
 	return tenantControlPlane.Spec.Addons.Konnectivity == nil && tenantControlPlane.Status.Addons.Konnectivity.Enabled
 }
 
-func (r *ServiceAccountResource) CleanUp(ctx context.Context, _ *kamajiv1alpha1.TenantControlPlane) (bool, error) {
+func (r *ServiceAccountResource) CleanUp(ctx context.Context, _ *stewardv1alpha1.TenantControlPlane) (bool, error) {
 	logger := log.FromContext(ctx, "resource", r.GetName())
 
 	if err := r.tenantClient.Get(ctx, client.ObjectKeyFromObject(r.resource), r.resource); err != nil {
@@ -72,7 +72,7 @@ func (r *ServiceAccountResource) CleanUp(ctx context.Context, _ *kamajiv1alpha1.
 	return true, nil
 }
 
-func (r *ServiceAccountResource) Define(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (err error) {
+func (r *ServiceAccountResource) Define(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (err error) {
 	logger := log.FromContext(ctx, "resource", r.GetName())
 
 	r.resource = &corev1.ServiceAccount{
@@ -91,7 +91,7 @@ func (r *ServiceAccountResource) Define(ctx context.Context, tenantControlPlane 
 	return nil
 }
 
-func (r *ServiceAccountResource) CreateOrUpdate(ctx context.Context, tcp *kamajiv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
+func (r *ServiceAccountResource) CreateOrUpdate(ctx context.Context, tcp *stewardv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
 	if tcp.Spec.Addons.Konnectivity == nil {
 		return controllerutil.OperationResultNone, nil
 	}
@@ -103,11 +103,11 @@ func (r *ServiceAccountResource) GetName() string {
 	return "konnectivity-sa"
 }
 
-func (r *ServiceAccountResource) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
-	tenantControlPlane.Status.Addons.Konnectivity.ServiceAccount = kamajiv1alpha1.ExternalKubernetesObjectStatus{}
+func (r *ServiceAccountResource) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
+	tenantControlPlane.Status.Addons.Konnectivity.ServiceAccount = stewardv1alpha1.ExternalKubernetesObjectStatus{}
 
 	if tenantControlPlane.Spec.Addons.Konnectivity != nil {
-		tenantControlPlane.Status.Addons.Konnectivity.ServiceAccount = kamajiv1alpha1.ExternalKubernetesObjectStatus{
+		tenantControlPlane.Status.Addons.Konnectivity.ServiceAccount = stewardv1alpha1.ExternalKubernetesObjectStatus{
 			Name:      r.resource.GetName(),
 			Namespace: r.resource.GetNamespace(),
 		}
@@ -116,9 +116,9 @@ func (r *ServiceAccountResource) UpdateTenantControlPlaneStatus(_ context.Contex
 	return nil
 }
 
-func (r *ServiceAccountResource) mutate(tenantControlPlane *kamajiv1alpha1.TenantControlPlane) controllerutil.MutateFn {
+func (r *ServiceAccountResource) mutate(tenantControlPlane *stewardv1alpha1.TenantControlPlane) controllerutil.MutateFn {
 	return func() error {
-		r.resource.SetLabels(utilities.MergeMaps(r.resource.GetLabels(), utilities.KamajiLabels(tenantControlPlane.GetName(), r.GetName())))
+		r.resource.SetLabels(utilities.MergeMaps(r.resource.GetLabels(), utilities.StewardLabels(tenantControlPlane.GetName(), r.GetName())))
 
 		return nil
 	}

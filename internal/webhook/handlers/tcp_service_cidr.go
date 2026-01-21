@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package handlers
@@ -12,13 +12,13 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/webhook/utils"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/webhook/utils"
 )
 
 type TenantControlPlaneServiceCIDR struct{}
 
-func (t TenantControlPlaneServiceCIDR) handle(tcp *kamajiv1alpha1.TenantControlPlane) error {
+func (t TenantControlPlaneServiceCIDR) handle(tcp *stewardv1alpha1.TenantControlPlane) error {
 	if tcp.Spec.Addons.CoreDNS == nil {
 		return nil
 	}
@@ -44,7 +44,7 @@ func (t TenantControlPlaneServiceCIDR) handle(tcp *kamajiv1alpha1.TenantControlP
 
 func (t TenantControlPlaneServiceCIDR) OnCreate(object runtime.Object) AdmissionResponse {
 	return func(context.Context, admission.Request) ([]jsonpatch.JsonPatchOperation, error) {
-		tcp := object.(*kamajiv1alpha1.TenantControlPlane) //nolint:forcetypeassert
+		tcp := object.(*stewardv1alpha1.TenantControlPlane) //nolint:forcetypeassert
 
 		if err := t.handle(tcp); err != nil {
 			return nil, err
@@ -60,7 +60,7 @@ func (t TenantControlPlaneServiceCIDR) OnDelete(runtime.Object) AdmissionRespons
 
 func (t TenantControlPlaneServiceCIDR) OnUpdate(object runtime.Object, _ runtime.Object) AdmissionResponse {
 	return func(context.Context, admission.Request) ([]jsonpatch.JsonPatchOperation, error) {
-		tcp := object.(*kamajiv1alpha1.TenantControlPlane) //nolint:forcetypeassert
+		tcp := object.(*stewardv1alpha1.TenantControlPlane) //nolint:forcetypeassert
 
 		if err := t.handle(tcp); err != nil {
 			return nil, err

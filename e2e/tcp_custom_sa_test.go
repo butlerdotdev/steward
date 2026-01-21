@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package e2e
@@ -12,7 +12,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	pointer "k8s.io/utils/ptr"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
 )
 
 var _ = Describe("Deploy a TenantControlPlane with resource with custom service account", func() {
@@ -24,35 +24,35 @@ var _ = Describe("Deploy a TenantControlPlane with resource with custom service 
 		},
 	}
 	// Fill TenantControlPlane object
-	tcp := &kamajiv1alpha1.TenantControlPlane{
+	tcp := &stewardv1alpha1.TenantControlPlane{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "tcp-clusterip-customsa",
 			Namespace: "default",
 		},
-		Spec: kamajiv1alpha1.TenantControlPlaneSpec{
-			ControlPlane: kamajiv1alpha1.ControlPlane{
-				Deployment: kamajiv1alpha1.DeploymentSpec{
+		Spec: stewardv1alpha1.TenantControlPlaneSpec{
+			ControlPlane: stewardv1alpha1.ControlPlane{
+				Deployment: stewardv1alpha1.DeploymentSpec{
 					Replicas:           pointer.To(int32(1)),
 					ServiceAccountName: sa.GetName(),
 				},
-				Service: kamajiv1alpha1.ServiceSpec{
+				Service: stewardv1alpha1.ServiceSpec{
 					ServiceType: "ClusterIP",
 				},
 			},
-			NetworkProfile: kamajiv1alpha1.NetworkProfileSpec{
+			NetworkProfile: stewardv1alpha1.NetworkProfileSpec{
 				Address: "172.18.0.2",
 			},
-			Kubernetes: kamajiv1alpha1.KubernetesSpec{
+			Kubernetes: stewardv1alpha1.KubernetesSpec{
 				Version: "v1.23.6",
-				Kubelet: kamajiv1alpha1.KubeletSpec{
+				Kubelet: stewardv1alpha1.KubeletSpec{
 					CGroupFS: "cgroupfs",
 				},
-				AdmissionControllers: kamajiv1alpha1.AdmissionControllers{
+				AdmissionControllers: stewardv1alpha1.AdmissionControllers{
 					"LimitRanger",
 					"ResourceQuota",
 				},
 			},
-			Addons: kamajiv1alpha1.AddonsSpec{},
+			Addons: stewardv1alpha1.AddonsSpec{},
 		},
 	}
 
@@ -69,7 +69,7 @@ var _ = Describe("Deploy a TenantControlPlane with resource with custom service 
 	})
 	// Check if TenantControlPlane resource has been created and if its pods have the right service account
 	It("Should be Ready and have correct sa", func() {
-		StatusMustEqualTo(tcp, kamajiv1alpha1.VersionReady)
+		StatusMustEqualTo(tcp, stewardv1alpha1.VersionReady)
 		PodsServiceAccountMustEqualTo(tcp, sa)
 	})
 })

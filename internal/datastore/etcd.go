@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package datastore
@@ -12,8 +12,8 @@ import (
 	"go.etcd.io/etcd/api/v3/v3rpc/rpctypes"
 	etcdclient "go.etcd.io/etcd/client/v3"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/datastore/errors"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/datastore/errors"
 )
 
 func NewETCDConnection(config ConnectionConfig) (Connection, error) {
@@ -161,7 +161,7 @@ func (e *EtcdClient) Check(ctx context.Context) error {
 }
 
 func (e *EtcdClient) Driver() string {
-	return string(kamajiv1alpha1.EtcdDriver)
+	return string(stewardv1alpha1.EtcdDriver)
 }
 
 // buildKey adds slashes to the beginning and end of the key. This ensures that the range
@@ -175,7 +175,7 @@ func (e *EtcdClient) buildKey(key string) string {
 	return fmt.Sprintf("/%s/", key)
 }
 
-func (e *EtcdClient) Migrate(ctx context.Context, tcp kamajiv1alpha1.TenantControlPlane, target Connection) error {
+func (e *EtcdClient) Migrate(ctx context.Context, tcp stewardv1alpha1.TenantControlPlane, target Connection) error {
 	targetClient := target.(*EtcdClient) //nolint:forcetypeassert
 
 	if err := target.Check(ctx); err != nil {

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    {{- $data := . | mustMergeOverwrite (dict "component" "metrics") -}}
+    {{- include "steward.labels" $data | nindent 4 }}
+  name: {{ include "steward.metricsServiceName" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  ports:
+    - port: 8080
+      name: metrics
+      protocol: TCP
+      targetPort: metrics
+  selector:
+    {{- include "steward.selectorLabels" . | nindent 4 }}

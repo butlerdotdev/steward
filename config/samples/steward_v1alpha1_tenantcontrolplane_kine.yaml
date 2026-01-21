@@ -1,0 +1,20 @@
+apiVersion: steward.butlerlabs.dev/v1alpha1
+kind: TenantControlPlane
+metadata:
+  name: kine
+  labels:
+    tenant.butlerlabs.io: kine
+spec:
+  addons:
+    coreDNS: {}
+    kubeProxy: {}
+  controlPlane:
+    deployment:
+      replicas: 1
+    service:
+      serviceType: LoadBalancer
+  dataStore: postgresql-bronze
+  kubernetes:
+    kubelet:
+      cgroupfs: systemd
+    version: v1.26.0

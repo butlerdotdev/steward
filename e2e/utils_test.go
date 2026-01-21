@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package e2e
@@ -23,7 +23,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	gatewayv1 "sigs.k8s.io/gateway-api/apis/v1"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
 )
 
 func GetKindIPAddress() string {
@@ -34,7 +34,7 @@ func GetKindIPAddress() string {
 }
 
 func PrintTenantControlPlaneInfo() {
-	tcpList := &kamajiv1alpha1.TenantControlPlaneList{}
+	tcpList := &stewardv1alpha1.TenantControlPlaneList{}
 	Expect(k8sClient.List(context.Background(), tcpList)).ToNot(HaveOccurred())
 
 	if len(tcpList.Items) == 0 {
@@ -85,18 +85,18 @@ func PrintTenantControlPlaneInfo() {
 	}
 }
 
-func PrintKamajiLogs() {
+func PrintStewardLogs() {
 	if CurrentSpecReport().Failed() {
 		clientset, err := kubernetes.NewForConfig(cfg)
 		Expect(err).ToNot(HaveOccurred())
 
-		list, err := clientset.CoreV1().Pods("kamaji-system").List(context.Background(), metav1.ListOptions{
+		list, err := clientset.CoreV1().Pods("steward-system").List(context.Background(), metav1.ListOptions{
 			LabelSelector: "app.kubernetes.io/component=controller-manager",
 		})
 		Expect(err).ToNot(HaveOccurred())
 		Expect(list.Items).To(HaveLen(1))
 
-		request := clientset.CoreV1().Pods("kamaji-system").GetLogs(list.Items[0].GetName(), &corev1.PodLogOptions{
+		request := clientset.CoreV1().Pods("steward-system").GetLogs(list.Items[0].GetName(), &corev1.PodLogOptions{
 			Container: "manager",
 			SinceSeconds: func() *int64 {
 				seconds := int64(CurrentSpecReport().RunTime)
@@ -114,19 +114,19 @@ func PrintKamajiLogs() {
 		podBytes, err := io.ReadAll(podLogs)
 		Expect(err).ToNot(HaveOccurred())
 
-		_, _ = fmt.Fprintln(GinkgoWriter, "DEBUG: retrieving Kamaji Pod logs")
+		_, _ = fmt.Fprintln(GinkgoWriter, "DEBUG: retrieving Steward Pod logs")
 
 		for _, line := range bytes.Split(podBytes, []byte("\n")) {
 			_, _ = fmt.Fprintln(GinkgoWriter, ">>> ", string(line))
 		}
 
-		_, _ = fmt.Fprintln(GinkgoWriter, "DEBUG: end of Kamaji Pod logs")
+		_, _ = fmt.Fprintln(GinkgoWriter, "DEBUG: end of Steward Pod logs")
 	}
 }
 
-func StatusMustEqualTo(tcp *kamajiv1alpha1.TenantControlPlane, status kamajiv1alpha1.KubernetesVersionStatus) {
+func StatusMustEqualTo(tcp *stewardv1alpha1.TenantControlPlane, status stewardv1alpha1.KubernetesVersionStatus) {
 	GinkgoHelper()
-	Eventually(func() kamajiv1alpha1.KubernetesVersionStatus {
+	Eventually(func() stewardv1alpha1.KubernetesVersionStatus {
 		err := k8sClient.Get(context.Background(), client.ObjectKeyFromObject(tcp), tcp)
 		if err != nil {
 			return ""
@@ -140,12 +140,12 @@ func StatusMustEqualTo(tcp *kamajiv1alpha1.TenantControlPlane, status kamajiv1al
 	}, 5*time.Minute, time.Second).Should(Equal(status))
 }
 
-func AllPodsLabelMustEqualTo(tcp *kamajiv1alpha1.TenantControlPlane, label string, value string) {
+func AllPodsLabelMustEqualTo(tcp *stewardv1alpha1.TenantControlPlane, label string, value string) {
 	GinkgoHelper()
 	Eventually(func() bool {
 		tcpPods := &corev1.PodList{}
 		err := k8sClient.List(context.Background(), tcpPods, client.MatchingLabels{
-			"kamaji.clastix.io/name": tcp.GetName(),
+			"steward.butlerlabs.dev/name": tcp.GetName(),
 		})
 		if err != nil {
 			return false
@@ -160,12 +160,12 @@ func AllPodsLabelMustEqualTo(tcp *kamajiv1alpha1.TenantControlPlane, label strin
 	}, 5*time.Minute, time.Second).Should(BeTrue())
 }
 
-func AllPodsAnnotationMustEqualTo(tcp *kamajiv1alpha1.TenantControlPlane, annotation string, value string) {
+func AllPodsAnnotationMustEqualTo(tcp *stewardv1alpha1.TenantControlPlane, annotation string, value string) {
 	GinkgoHelper()
 	Eventually(func() bool {
 		tcpPods := &corev1.PodList{}
 		err := k8sClient.List(context.Background(), tcpPods, client.MatchingLabels{
-			"kamaji.clastix.io/name": tcp.GetName(),
+			"steward.butlerlabs.dev/name": tcp.GetName(),
 		})
 		if err != nil {
 			return false
@@ -180,13 +180,13 @@ func AllPodsAnnotationMustEqualTo(tcp *kamajiv1alpha1.TenantControlPlane, annota
 	}, 5*time.Minute, time.Second).Should(BeTrue())
 }
 
-func PodsServiceAccountMustEqualTo(tcp *kamajiv1alpha1.TenantControlPlane, sa *corev1.ServiceAccount) {
+func PodsServiceAccountMustEqualTo(tcp *stewardv1alpha1.TenantControlPlane, sa *corev1.ServiceAccount) {
 	GinkgoHelper()
 	saName := sa.GetName()
 	Eventually(func() bool {
 		tcpPods := &corev1.PodList{}
 		err := k8sClient.List(context.Background(), tcpPods, client.MatchingLabels{
-			"kamaji.clastix.io/name": tcp.GetName(),
+			"steward.butlerlabs.dev/name": tcp.GetName(),
 		})
 		if err != nil {
 			return false
@@ -201,7 +201,7 @@ func PodsServiceAccountMustEqualTo(tcp *kamajiv1alpha1.TenantControlPlane, sa *c
 	}, 5*time.Minute, time.Second).Should(BeTrue())
 }
 
-func ScaleTenantControlPlane(tcp *kamajiv1alpha1.TenantControlPlane, replicas int32) {
+func ScaleTenantControlPlane(tcp *stewardv1alpha1.TenantControlPlane, replicas int32) {
 	GinkgoHelper()
 	err := retry.RetryOnConflict(retry.DefaultRetry, func() error {
 		Expect(k8sClient.Get(context.Background(), client.ObjectKeyFromObject(tcp), tcp)).To(Succeed())

@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package konnectivity
@@ -15,9 +15,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/resources"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/resources"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 type ServiceResource struct {
@@ -31,7 +31,7 @@ func (r *ServiceResource) GetHistogram() prometheus.Histogram {
 	return serviceCollector
 }
 
-func (r *ServiceResource) ShouldStatusBeUpdated(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *ServiceResource) ShouldStatusBeUpdated(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) bool {
 	if tenantControlPlane.Spec.Addons.Konnectivity == nil &&
 		tenantControlPlane.Status.Addons.Konnectivity.Service.Port == 0 &&
 		tenantControlPlane.Status.Addons.Konnectivity.Service.Name == "" &&
@@ -74,11 +74,11 @@ func (r *ServiceResource) ShouldStatusBeUpdated(_ context.Context, tenantControl
 	return false
 }
 
-func (r *ServiceResource) ShouldCleanup(tenantControlPlane *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *ServiceResource) ShouldCleanup(tenantControlPlane *stewardv1alpha1.TenantControlPlane) bool {
 	return tenantControlPlane.Spec.Addons.Konnectivity == nil && tenantControlPlane.Status.Addons.Konnectivity.Enabled
 }
 
-func (r *ServiceResource) CleanUp(ctx context.Context, _ *kamajiv1alpha1.TenantControlPlane) (bool, error) {
+func (r *ServiceResource) CleanUp(ctx context.Context, _ *stewardv1alpha1.TenantControlPlane) (bool, error) {
 	logger := log.FromContext(ctx, "resource", r.GetName())
 
 	res, err := utilities.CreateOrUpdateWithConflict(ctx, r.Client, r.resource, func() error {
@@ -106,8 +106,8 @@ func (r *ServiceResource) CleanUp(ctx context.Context, _ *kamajiv1alpha1.TenantC
 	return res == controllerutil.OperationResultUpdated, nil
 }
 
-func (r *ServiceResource) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
-	tenantControlPlane.Status.Addons.Konnectivity.Service = kamajiv1alpha1.KubernetesServiceStatus{}
+func (r *ServiceResource) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
+	tenantControlPlane.Status.Addons.Konnectivity.Service = stewardv1alpha1.KubernetesServiceStatus{}
 
 	if tenantControlPlane.Spec.Addons.Konnectivity != nil {
 		tenantControlPlane.Status.Addons.Konnectivity.Service.Name = r.resource.GetName()
@@ -119,7 +119,7 @@ func (r *ServiceResource) UpdateTenantControlPlaneStatus(_ context.Context, tena
 	return nil
 }
 
-func (r *ServiceResource) Define(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (r *ServiceResource) Define(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	r.resource = &corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      tenantControlPlane.GetName(),
@@ -130,7 +130,7 @@ func (r *ServiceResource) Define(_ context.Context, tenantControlPlane *kamajiv1
 	return nil
 }
 
-func (r *ServiceResource) CreateOrUpdate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
+func (r *ServiceResource) CreateOrUpdate(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
 	if tenantControlPlane.Spec.Addons.Konnectivity == nil {
 		return controllerutil.OperationResultNone, nil
 	}
@@ -138,7 +138,7 @@ func (r *ServiceResource) CreateOrUpdate(ctx context.Context, tenantControlPlane
 	return controllerutil.CreateOrUpdate(ctx, r.Client, r.resource, r.mutate(ctx, tenantControlPlane))
 }
 
-func (r *ServiceResource) mutate(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) func() error {
+func (r *ServiceResource) mutate(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) func() error {
 	return func() error {
 		switch len(r.resource.Spec.Ports) {
 		case 0:
@@ -151,7 +151,7 @@ func (r *ServiceResource) mutate(_ context.Context, tenantControlPlane *kamajiv1
 		r.resource.Spec.Ports[1].Protocol = corev1.ProtocolTCP
 		r.resource.Spec.Ports[1].Port = tenantControlPlane.Spec.Addons.Konnectivity.KonnectivityServerSpec.Port
 		r.resource.Spec.Ports[1].TargetPort = intstr.FromInt32(tenantControlPlane.Spec.Addons.Konnectivity.KonnectivityServerSpec.Port)
-		if tenantControlPlane.Spec.ControlPlane.Service.ServiceType == kamajiv1alpha1.ServiceTypeNodePort {
+		if tenantControlPlane.Spec.ControlPlane.Service.ServiceType == stewardv1alpha1.ServiceTypeNodePort {
 			r.resource.Spec.Ports[1].NodePort = tenantControlPlane.Spec.Addons.Konnectivity.KonnectivityServerSpec.Port
 		}
 

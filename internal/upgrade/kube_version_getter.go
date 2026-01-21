@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package upgrade
@@ -13,21 +13,21 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/kubernetes/cmd/kubeadm/app/phases/upgrade"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
 )
 
-type kamajiKubeVersionGetter struct {
+type stewardKubeVersionGetter struct {
 	upgrade.VersionGetter
 
 	k8sVersion     string
 	coreDNSVersion string
-	status         *kamajiv1alpha1.KubernetesVersionStatus
+	status         *stewardv1alpha1.KubernetesVersionStatus
 }
 
-func NewKamajiKubeVersionGetter(restClient kubernetes.Interface, version, coreDNSVersion string, status *kamajiv1alpha1.KubernetesVersionStatus) upgrade.VersionGetter {
+func NewStewardKubeVersionGetter(restClient kubernetes.Interface, version, coreDNSVersion string, status *stewardv1alpha1.KubernetesVersionStatus) upgrade.VersionGetter {
 	kubeVersionGetter := upgrade.NewOfflineVersionGetter(upgrade.NewKubeVersionGetter(restClient), KubeadmVersion)
 
-	return &kamajiKubeVersionGetter{
+	return &stewardKubeVersionGetter{
 		VersionGetter:  kubeVersionGetter,
 		k8sVersion:     version,
 		coreDNSVersion: coreDNSVersion,
@@ -35,8 +35,8 @@ func NewKamajiKubeVersionGetter(restClient kubernetes.Interface, version, coreDN
 	}
 }
 
-func (k kamajiKubeVersionGetter) ClusterVersion() (string, *versionutil.Version, error) {
-	if k.status != nil && *k.status == kamajiv1alpha1.VersionSleeping {
+func (k stewardKubeVersionGetter) ClusterVersion() (string, *versionutil.Version, error) {
+	if k.status != nil && *k.status == stewardv1alpha1.VersionSleeping {
 		parsedVersion, parsedErr := versionutil.ParseGeneric(k.k8sVersion)
 
 		return k.k8sVersion, parsedVersion, parsedErr
@@ -45,15 +45,15 @@ func (k kamajiKubeVersionGetter) ClusterVersion() (string, *versionutil.Version,
 	return k.VersionGetter.ClusterVersion()
 }
 
-func (k kamajiKubeVersionGetter) DNSAddonVersion() (string, error) {
-	if k.status != nil && *k.status == kamajiv1alpha1.VersionSleeping {
+func (k stewardKubeVersionGetter) DNSAddonVersion() (string, error) {
+	if k.status != nil && *k.status == stewardv1alpha1.VersionSleeping {
 		return k.coreDNSVersion, nil
 	}
 
 	return k.VersionGetter.DNSAddonVersion()
 }
 
-func (k kamajiKubeVersionGetter) KubeadmVersion() (string, *versionutil.Version, error) {
+func (k stewardKubeVersionGetter) KubeadmVersion() (string, *versionutil.Version, error) {
 	kubeadmVersionInfo := apimachineryversion.Info{
 		GitVersion: KubeadmVersion,
 		GoVersion:  runtime.Version(),
@@ -69,20 +69,20 @@ func (k kamajiKubeVersionGetter) KubeadmVersion() (string, *versionutil.Version,
 	return kubeadmVersionInfo.String(), kubeadmVersion, nil
 }
 
-func (k kamajiKubeVersionGetter) VersionFromCILabel(ciVersionLabel, description string) (string, *versionutil.Version, error) {
+func (k stewardKubeVersionGetter) VersionFromCILabel(ciVersionLabel, description string) (string, *versionutil.Version, error) {
 	return k.VersionGetter.VersionFromCILabel(ciVersionLabel, description)
 }
 
-func (k kamajiKubeVersionGetter) KubeletVersions() (map[string][]string, error) {
-	if k.status != nil && *k.status == kamajiv1alpha1.VersionSleeping {
+func (k stewardKubeVersionGetter) KubeletVersions() (map[string][]string, error) {
+	if k.status != nil && *k.status == stewardv1alpha1.VersionSleeping {
 		return map[string][]string{}, nil
 	}
 
 	return k.VersionGetter.KubeletVersions()
 }
 
-func (k kamajiKubeVersionGetter) ComponentVersions(string) (map[string][]string, error) {
+func (k stewardKubeVersionGetter) ComponentVersions(string) (map[string][]string, error) {
 	return map[string][]string{
-		k.k8sVersion: {"kamaji"},
+		k.k8sVersion: {"steward"},
 	}, nil
 }

@@ -6,9 +6,9 @@ executing commands in pods, retrieving logs, or managing port forwards.
 However, in many real-world environments, especially those spanning multiple networks or cloud providers,
 direct communication isn't always possible or desirable. This is where Konnectivity comes in.
 
-## Understanding Konnectivity in Kamaji
+## Understanding Konnectivity in Steward
 
-Kamaji integrates [Konnectivity](https://kubernetes.io/docs/concepts/architecture/control-plane-node-communication/) as a core component of its architecture.
+Steward integrates [Konnectivity](https://kubernetes.io/docs/concepts/architecture/control-plane-node-communication/) as a core component of its architecture.
 Each Tenant Control Plane pod includes a `konnectivity-server` running as a sidecar container,
 which establishes and maintains secure tunnels with agents running on the worker nodes.
 
@@ -39,7 +39,7 @@ All traffic from the control plane to worker nodes flows through these establish
 
 ## Configuration and Management
 
-Konnectivity is enabled by default in Kamaji, as it's considered a best practice for modern Kubernetes deployments.
+Konnectivity is enabled by default in Steward, as it's considered a best practice for modern Kubernetes deployments.
 However, it can be disabled if your environment has different requirements, or if you need to use alternative networking solutions.
 
 The service is automatically configured when worker nodes join a cluster, without requiring any operational overhead.
@@ -52,7 +52,7 @@ You can customise the Konnectivity Agent delivery mode via the Tenant Control Pl
 using the field `tenantcontrolplane.spec.addons.konnectivity.agent.mode`.
 
 ```yaml
-apiVersion: kamaji.clastix.io/v1alpha1
+apiVersion: steward.butlerlabs.io/v1alpha1
 kind: TenantControlPlane
 metadata:
   name: konnectivity-example
@@ -85,7 +85,7 @@ Available strategies are the following:
 
 ---
 
-By integrating Konnectivity as a core feature, Kamaji ensures that your Tenant Clusters can operate reliably and securely across any network topology,
+By integrating Konnectivity as a core feature, Steward ensures that your Tenant Clusters can operate reliably and securely across any network topology,
 making it easier to build and manage distributed Kubernetes environments at scale.
 
 ## Version compatibility between API Server and Konnectivity
@@ -96,7 +96,7 @@ This means that for example:
 - Kubernetes v1.34.0 pairs with Konnectivity v0.34.0
 - Kubernetes v1.33.0 pairs with Konnectivity v0.33.0
 
-Within Kamaji, this version matching happens automatically.
+Within Steward, this version matching happens automatically.
 
 The field `TenantControlPlane.spec.addons.konnectivity` determines the proper Konnectivity version for both the server and the agent,
 ensuring compatibility with the tenant control plane's API Server version.
@@ -108,7 +108,7 @@ ensuring compatibility with the tenant control plane's API Server version.
 You can still have a version skew between the Kubernetes API Server for the given Tenant Control Plane, and the Konnectivity components.
 
 ```yaml
-apiVersion: kamaji.clastix.io/v1alpha1
+apiVersion: steward.butlerlabs.io/v1alpha1
 kind: TenantControlPlane
 metadata:
   name: konnectivity
@@ -135,7 +135,7 @@ spec:
       replicas: 2
     service:
       serviceType: LoadBalancer
-  dataStore: etcd-kamaji-etcd
+  dataStore: etcd-steward-etcd
   kubernetes:
     kubelet:
       cgroupfs: systemd

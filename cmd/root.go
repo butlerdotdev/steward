@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package cmd
@@ -13,16 +13,16 @@ import (
 	gatewayv1 "sigs.k8s.io/gateway-api/apis/v1"
 	gatewayv1alpha2 "sigs.k8s.io/gateway-api/apis/v1alpha2"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
 )
 
 func NewCmd(scheme *runtime.Scheme) *cobra.Command {
 	return &cobra.Command{
-		Use:   "kamaji",
+		Use:   "steward",
 		Short: "Build and operate Kubernetes at scale with a fraction of operational burden.",
 		PersistentPreRun: func(*cobra.Command, []string) {
 			utilruntime.Must(clientgoscheme.AddToScheme(scheme))
-			utilruntime.Must(kamajiv1alpha1.AddToScheme(scheme))
+			utilruntime.Must(stewardv1alpha1.AddToScheme(scheme))
 			utilruntime.Must(appsv1.RegisterDefaults(scheme))
 			// NOTE: This will succeed even if Gateway API is not installed in the cluster.
 			// Only registers the go types.

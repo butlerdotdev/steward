@@ -1,0 +1,20 @@
+- admissionReviewVersions:
+    - v1
+  clientConfig:
+    service:
+      name: '{{ include "steward.webhookServiceName" . }}'
+      namespace: '{{ .Release.Namespace }}'
+      path: /mutate-steward-butlerlabs-dev-v1alpha1-tenantcontrolplane
+  failurePolicy: Fail
+  name: mtenantcontrolplane.kb.io
+  rules:
+    - apiGroups:
+        - steward.butlerlabs.dev
+      apiVersions:
+        - v1alpha1
+      operations:
+        - CREATE
+        - UPDATE
+      resources:
+        - tenantcontrolplanes
+  sideEffects: None

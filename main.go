@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package main
@@ -8,10 +8,10 @@ import (
 
 	"k8s.io/apimachinery/pkg/runtime"
 
-	"github.com/clastix/kamaji/cmd"
-	kubeconfig_generator "github.com/clastix/kamaji/cmd/kubeconfig-generator"
-	"github.com/clastix/kamaji/cmd/manager"
-	"github.com/clastix/kamaji/cmd/migrate"
+	"github.com/butlerdotdev/steward/cmd"
+	kubeconfig_generator "github.com/butlerdotdev/steward/cmd/kubeconfig-generator"
+	"github.com/butlerdotdev/steward/cmd/manager"
+	"github.com/butlerdotdev/steward/cmd/migrate"
 )
 
 func main() {

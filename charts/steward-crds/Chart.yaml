@@ -1,0 +1,37 @@
+apiVersion: v2
+appVersion: latest
+description: Steward is the Hosted Control Plane Manager for Kubernetes.
+home: https://github.com/butlerdotdev/steward
+icon: https://github.com/butlerdotdev/steward/raw/main/assets/logo.png
+maintainers:
+  - email: andrew@butlerlabs.dev
+    name: Andrew Bagan
+    url: https://butlerlabs.dev
+name: steward-crds
+sources:
+  - https://github.com/butlerdotdev/steward
+type: application
+version: 0.0.0+latest
+annotations:
+  artifacthub.io/crds: |
+    - kind: TenantControlPlane
+      version: v1alpha1
+      name: tenantcontrolplanes.steward.butlerlabs.dev
+      displayName: TenantControlPlane
+      description: TenantControlPlane defines the desired state for a Control Plane backed by Steward.
+    - kind: DataStore
+      version: v1alpha1
+      name: datastores.steward.butlerlabs.dev
+      displayName: DataStore
+      description: DataStore holds connection details for backend storage (etcd, MySQL, PostgreSQL, NATS).
+    - kind: KubeconfigGenerator
+      version: v1alpha1
+      name: kubeconfiggenerators.steward.butlerlabs.dev
+      displayName: KubeconfigGenerator
+      description: KubeconfigGenerator generates kubeconfig files for TenantControlPlane access.
+  artifacthub.io/links: |
+    - name: Butler Labs
+      url: https://butlerlabs.dev
+    - name: Documentation
+      url: https://github.com/butlerdotdev/steward/tree/main/docs
+  artifacthub.io/license: Apache-2.0

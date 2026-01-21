@@ -1,6 +1,6 @@
 # Kubeconfig Generator
 
-The **Kubeconfig Generator** is a Kamaji extension that simplifies the distribution of Kubeconfig files for tenant clusters managed through Kamaji.
+The **Kubeconfig Generator** is a Steward extension that simplifies the distribution of Kubeconfig files for tenant clusters managed through Steward.
 
 Instead of manually exporting and editing credentials, the generator automates the creation of kubeconfigs aligned with your organizational policies.
 
@@ -61,7 +61,7 @@ A SaaS provider runs multiple Tenant Control Planes, each corresponding to a dif
 Instead of manually managing kubeconfigs for every customer environment, the operator defines a single `KubeconfigGenerator`:
 
 ```yaml
-apiVersion: kamaji.clastix.io/v1alpha1
+apiVersion: steward.butlerlabs.io/v1alpha1
 kind: KubeconfigGenerator
 metadata:
   name: tenant
@@ -90,7 +90,7 @@ spec:
 As new tenants are created, their kubeconfigs are generated automatically and kept up to date.
 
 ```
-$: kubectl get secret --all-namespaces -l kamaji.clastix.io/managed-by=tenant
+$: kubectl get secret --all-namespaces -l steward.butlerlabs.io/managed-by=tenant
 NAMESPACE       NAME             TYPE     DATA   AGE
 alpha-tnt       env-133-tenant   Opaque   1      12h
 alpha-tnt       env-130-tenant   Opaque   1      2d

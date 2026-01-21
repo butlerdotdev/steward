@@ -1,17 +1,17 @@
 # Gateway API Support
 
-Kamaji provides built-in support for the [Gateway API](https://gateway-api.sigs.k8s.io/), allowing you to expose Tenant Control Planes using TLSRoute resources with SNI-based routing. This enables hostname-based routing to multiple Tenant Control Planes through a single Gateway resource, reducing the need for dedicated LoadBalancer services.
+Steward provides built-in support for the [Gateway API](https://gateway-api.sigs.k8s.io/), allowing you to expose Tenant Control Planes using TLSRoute resources with SNI-based routing. This enables hostname-based routing to multiple Tenant Control Planes through a single Gateway resource, reducing the need for dedicated LoadBalancer services.
 
 ## Overview
 
-Gateway API support in Kamaji automatically creates and manages TLSRoute resources for your Tenant Control Planes. When you configure a Gateway for a Tenant Control Plane, Kamaji automatically creates TLSRoutes for the Control Plane API Server. If konnectivity is enabled, a separate TLSRoute is created for it. Both TLSRoutes use the same hostname and Gateway resource, but route to different ports(listeners) using port-based routing and semantic `sectionName` values.
+Gateway API support in Steward automatically creates and manages TLSRoute resources for your Tenant Control Planes. When you configure a Gateway for a Tenant Control Plane, Steward automatically creates TLSRoutes for the Control Plane API Server. If konnectivity is enabled, a separate TLSRoute is created for it. Both TLSRoutes use the same hostname and Gateway resource, but route to different ports(listeners) using port-based routing and semantic `sectionName` values.
 
 Therefore, the target `Gateway` resource must have right listener configurations (see the Gateway [example section](#gateway-resource-setup) below).
 
 
 ## How It Works
 
-When you configure `spec.controlPlane.gateway` in a TenantControlPlane resource, Kamaji automatically:
+When you configure `spec.controlPlane.gateway` in a TenantControlPlane resource, Steward automatically:
 
 1. **Creates a TLSRoute for the control plane** that routes for port 6443 (or `spec.networkProfile.port`) with sectionName `"kube-apiserver"`
 2. **Creates a TLSRoute for Konnectivity** (if konnectivity addon is enabled) that routes for port 8132 (or `spec.addons.konnectivity.server.port`) with sectionName `"konnectivity-server"`
@@ -20,7 +20,7 @@ Both TLSRoutes:
 
 - Use the same hostname from `spec.controlPlane.gateway.hostname`
 - Reference the same parent Gateway resource via `parentRefs`
-- The `port` and `sectionName` fields are set automatically by Kamaji
+- The `port` and `sectionName` fields are set automatically by Steward
 - Route to the appropriate Tenant Control Plane service
 
 The Gateway resource must have listeners configured for both ports (6443 and 8132) to support both routes.
@@ -47,7 +47,7 @@ Before using Gateway API support, ensure:
 Enable Gateway API mode by setting the `spec.controlPlane.gateway` field in your TenantControlPlane resource:
 
 ```yaml
-apiVersion: kamaji.clastix.io/v1alpha1
+apiVersion: steward.butlerlabs.io/v1alpha1
 kind: TenantControlPlane
 metadata:
   name: tcp-1
@@ -96,7 +96,7 @@ spec:
 - `additionalMetadata.annotations`: Custom annotations to add to TLSRoute resources
 
 !!! warning "Port and sectionName are set automatically"
-    Do not specify `port` or `sectionName` in `parentRefs`. Kamaji automatically sets these fields in TLSRoutes.
+    Do not specify `port` or `sectionName` in `parentRefs`. Steward automatically sets these fields in TLSRoutes.
 
 ### Gateway Resource Setup
 
@@ -166,7 +166,7 @@ spec:
     # ...
 ---
 # Tenant Control Plane 1
-apiVersion: kamaji.clastix.io/v1alpha1
+apiVersion: steward.butlerlabs.io/v1alpha1
 kind: TenantControlPlane
 metadata:
   name: tcp-1
@@ -180,7 +180,7 @@ spec:
   # ...
 ---
 # Tenant Control Plane 2
-apiVersion: kamaji.clastix.io/v1alpha1
+apiVersion: steward.butlerlabs.io/v1alpha1
 kind: TenantControlPlane
 metadata:
   name: tcp-2

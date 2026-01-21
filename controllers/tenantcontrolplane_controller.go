@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package controllers
@@ -34,14 +34,14 @@ import (
 	gatewayv1 "sigs.k8s.io/gateway-api/apis/v1"
 	gatewayv1alpha2 "sigs.k8s.io/gateway-api/apis/v1alpha2"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/controllers/finalizers"
-	"github.com/clastix/kamaji/controllers/utils"
-	controlplanebuilder "github.com/clastix/kamaji/internal/builders/controlplane"
-	"github.com/clastix/kamaji/internal/datastore"
-	kamajierrors "github.com/clastix/kamaji/internal/errors"
-	"github.com/clastix/kamaji/internal/resources"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/controllers/finalizers"
+	"github.com/butlerdotdev/steward/controllers/utils"
+	controlplanebuilder "github.com/butlerdotdev/steward/internal/builders/controlplane"
+	"github.com/butlerdotdev/steward/internal/datastore"
+	stewarderrors "github.com/butlerdotdev/steward/internal/errors"
+	"github.com/butlerdotdev/steward/internal/resources"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 // TenantControlPlaneReconciler reconciles a TenantControlPlane object.
@@ -50,10 +50,10 @@ type TenantControlPlaneReconciler struct {
 	APIReader               client.Reader
 	Config                  TenantControlPlaneReconcilerConfig
 	TriggerChan             chan event.GenericEvent
-	KamajiNamespace         string
-	KamajiServiceAccount    string
-	KamajiService           string
-	KamajiMigrateImage      string
+	StewardNamespace         string
+	StewardServiceAccount    string
+	StewardService           string
+	StewardMigrateImage      string
 	MaxConcurrentReconciles int
 	ReconcileTimeout        time.Duration
 	DiscoveryClient         discovery.DiscoveryInterface
@@ -73,9 +73,9 @@ type TenantControlPlaneReconcilerConfig struct {
 	CertExpirationThreshold time.Duration
 }
 
-//+kubebuilder:rbac:groups=kamaji.clastix.io,resources=tenantcontrolplanes,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=kamaji.clastix.io,resources=tenantcontrolplanes/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=kamaji.clastix.io,resources=tenantcontrolplanes/finalizers,verbs=update
+//+kubebuilder:rbac:groups=steward.butlerlabs.dev,resources=tenantcontrolplanes,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=steward.butlerlabs.dev,resources=tenantcontrolplanes/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=steward.butlerlabs.dev,resources=tenantcontrolplanes/finalizers,verbs=update
 //+kubebuilder:rbac:groups=core,resources=secrets,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=core,resources=configmaps,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=core,resources=services,verbs=get;list;watch;create;update;patch;delete
@@ -211,10 +211,10 @@ func (r *TenantControlPlaneReconciler) Reconcile(ctx context.Context, req ctrl.R
 		DataStore:                     *ds,
 		DataStoreOverrides:            dso,
 		DataStoreOverriedsConnections: dsoConnections,
-		KamajiNamespace:               r.KamajiNamespace,
-		KamajiServiceAccount:          r.KamajiServiceAccount,
-		KamajiService:                 r.KamajiService,
-		KamajiMigrateImage:            r.KamajiMigrateImage,
+		StewardNamespace:               r.StewardNamespace,
+		StewardServiceAccount:          r.StewardServiceAccount,
+		StewardService:                 r.StewardService,
+		StewardMigrateImage:            r.StewardMigrateImage,
 		DiscoveryClient:               r.DiscoveryClient,
 	}
 	registeredResources := GetResources(ctx, groupResourceBuilderConfiguration)
@@ -222,7 +222,7 @@ func (r *TenantControlPlaneReconciler) Reconcile(ctx context.Context, req ctrl.R
 	for _, resource := range registeredResources {
 		result, err := resources.Handle(ctx, resource, tenantControlPlane)
 		if err != nil {
-			if kamajierrors.ShouldReconcileErrorBeIgnored(err) {
+			if stewarderrors.ShouldReconcileErrorBeIgnored(err) {
 				log.V(1).Info("sentinel error, enqueuing back request", "error", err.Error())
 
 				return ctrl.Result{RequeueAfter: time.Second}, nil
@@ -238,7 +238,7 @@ func (r *TenantControlPlaneReconciler) Reconcile(ctx context.Context, req ctrl.R
 		}
 
 		if err = utils.UpdateStatus(ctx, r.Client, tenantControlPlane, resource); err != nil {
-			if kamajierrors.ShouldReconcileErrorBeIgnored(err) {
+			if stewarderrors.ShouldReconcileErrorBeIgnored(err) {
 				log.V(1).Info("sentinel error, enqueuing back request", "error", err.Error())
 
 				return ctrl.Result{RequeueAfter: time.Second}, nil
@@ -265,7 +265,7 @@ func (r *TenantControlPlaneReconciler) Reconcile(ctx context.Context, req ctrl.R
 
 func (r *TenantControlPlaneReconciler) mutexSpec(obj client.Object) mutex.Spec {
 	return mutex.Spec{
-		Name:    strings.ReplaceAll(fmt.Sprintf("kamaji%s", obj.GetUID()), "-", ""),
+		Name:    strings.ReplaceAll(fmt.Sprintf("steward%s", obj.GetUID()), "-", ""),
 		Clock:   r.clock,
 		Delay:   10 * time.Millisecond,
 		Timeout: time.Second,
@@ -294,7 +294,7 @@ func (r *TenantControlPlaneReconciler) SetupWithManager(ctx context.Context, mgr
 				},
 			})
 		}})).
-		For(&kamajiv1alpha1.TenantControlPlane{}).
+		For(&stewardv1alpha1.TenantControlPlane{}).
 		Owns(&corev1.Secret{}).
 		Owns(&corev1.ConfigMap{}).
 		Owns(&appsv1.Deployment{}).
@@ -303,7 +303,7 @@ func (r *TenantControlPlaneReconciler) SetupWithManager(ctx context.Context, mgr
 		Watches(&batchv1.Job{}, handler.EnqueueRequestsFromMapFunc(func(_ context.Context, object client.Object) []reconcile.Request {
 			labels := object.GetLabels()
 
-			name, namespace := labels["tcp.kamaji.clastix.io/name"], labels["tcp.kamaji.clastix.io/namespace"]
+			name, namespace := labels["tcp.steward.butlerlabs.dev/name"], labels["tcp.steward.butlerlabs.dev/namespace"]
 
 			return []reconcile.Request{
 				{
@@ -314,7 +314,7 @@ func (r *TenantControlPlaneReconciler) SetupWithManager(ctx context.Context, mgr
 				},
 			}
 		}), builder.WithPredicates(predicate.NewPredicateFuncs(func(object client.Object) bool {
-			if object.GetNamespace() != r.KamajiNamespace {
+			if object.GetNamespace() != r.StewardNamespace {
 				return false
 			}
 
@@ -324,7 +324,7 @@ func (r *TenantControlPlaneReconciler) SetupWithManager(ctx context.Context, mgr
 				return false
 			}
 
-			v, ok := labels["kamaji.clastix.io/component"]
+			v, ok := labels["steward.butlerlabs.dev/component"]
 
 			return ok && v == "migrate"
 		})))
@@ -348,8 +348,8 @@ func (r *TenantControlPlaneReconciler) SetupWithManager(ctx context.Context, mgr
 }
 
 func (r *TenantControlPlaneReconciler) getTenantControlPlane(ctx context.Context, namespacedName k8stypes.NamespacedName) utils.TenantControlPlaneRetrievalFn {
-	return func() (*kamajiv1alpha1.TenantControlPlane, error) {
-		tcp := &kamajiv1alpha1.TenantControlPlane{}
+	return func() (*stewardv1alpha1.TenantControlPlane, error) {
+		tcp := &stewardv1alpha1.TenantControlPlane{}
 		if err := r.APIReader.Get(ctx, namespacedName, tcp); err != nil {
 			return nil, err
 		}
@@ -358,17 +358,17 @@ func (r *TenantControlPlaneReconciler) getTenantControlPlane(ctx context.Context
 	}
 }
 
-func (r *TenantControlPlaneReconciler) RemoveFinalizer(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
+func (r *TenantControlPlaneReconciler) RemoveFinalizer(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
 	controllerutil.RemoveFinalizer(tenantControlPlane, finalizers.DatastoreFinalizer)
 
 	return r.Client.Update(ctx, tenantControlPlane)
 }
 
-var ErrMissingDataStore = errors.New("the Tenant Control Plane doesn't have a DataStore assigned, and Kamaji is running with no default DataStore fallback")
+var ErrMissingDataStore = errors.New("the Tenant Control Plane doesn't have a DataStore assigned, and Steward is running with no default DataStore fallback")
 
 // dataStore retrieves the override DataStore for the given Tenant Control Plane if specified,
-// otherwise fallback to the default one specified in the Kamaji setup.
-func (r *TenantControlPlaneReconciler) dataStore(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (*kamajiv1alpha1.DataStore, error) {
+// otherwise fallback to the default one specified in the Steward setup.
+func (r *TenantControlPlaneReconciler) dataStore(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (*stewardv1alpha1.DataStore, error) {
 	if tenantControlPlane.Spec.DataStore == "" && r.Config.DefaultDataStoreName == "" {
 		return nil, ErrMissingDataStore
 	}
@@ -377,23 +377,23 @@ func (r *TenantControlPlaneReconciler) dataStore(ctx context.Context, tenantCont
 		tenantControlPlane.Spec.DataStore = r.Config.DefaultDataStoreName
 	}
 
-	var ds kamajiv1alpha1.DataStore
+	var ds stewardv1alpha1.DataStore
 	if err := r.Client.Get(ctx, k8stypes.NamespacedName{Name: tenantControlPlane.Spec.DataStore}, &ds); err != nil {
-		return nil, errors.Wrap(err, "cannot retrieve *kamajiv1alpha.DataStore object")
+		return nil, errors.Wrap(err, "cannot retrieve *stewardv1alpha.DataStore object")
 	}
 
 	return &ds, nil
 }
 
-func (r *TenantControlPlaneReconciler) dataStoreOverride(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) ([]controlplanebuilder.DataStoreOverrides, error) {
+func (r *TenantControlPlaneReconciler) dataStoreOverride(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) ([]controlplanebuilder.DataStoreOverrides, error) {
 	datastores := make([]controlplanebuilder.DataStoreOverrides, 0, len(tenantControlPlane.Spec.DataStoreOverrides))
 
 	for _, dso := range tenantControlPlane.Spec.DataStoreOverrides {
-		var ds kamajiv1alpha1.DataStore
+		var ds stewardv1alpha1.DataStore
 		if err := r.Client.Get(ctx, k8stypes.NamespacedName{Name: dso.DataStore}, &ds); err != nil {
-			return nil, errors.Wrap(err, "cannot retrieve *kamajiv1alpha.DataStore object")
+			return nil, errors.Wrap(err, "cannot retrieve *stewardv1alpha.DataStore object")
 		}
-		if ds.Spec.Driver != kamajiv1alpha1.EtcdDriver {
+		if ds.Spec.Driver != stewardv1alpha1.EtcdDriver {
 			return nil, errors.New("DataStoreOverrides can only use ETCD driver")
 		}
 

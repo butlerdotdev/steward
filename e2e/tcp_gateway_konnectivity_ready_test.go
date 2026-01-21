@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package e2e
@@ -16,34 +16,34 @@ import (
 	gatewayv1 "sigs.k8s.io/gateway-api/apis/v1"
 	gatewayv1alpha2 "sigs.k8s.io/gateway-api/apis/v1alpha2"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
 )
 
 var _ = Describe("Deploy a TenantControlPlane with Gateway API and Konnectivity", func() {
-	var tcp *kamajiv1alpha1.TenantControlPlane
+	var tcp *stewardv1alpha1.TenantControlPlane
 
 	JustBeforeEach(func() {
-		tcp = &kamajiv1alpha1.TenantControlPlane{
+		tcp = &stewardv1alpha1.TenantControlPlane{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      "tcp-konnectivity-gateway",
 				Namespace: "default",
 			},
-			Spec: kamajiv1alpha1.TenantControlPlaneSpec{
-				ControlPlane: kamajiv1alpha1.ControlPlane{
-					Deployment: kamajiv1alpha1.DeploymentSpec{
+			Spec: stewardv1alpha1.TenantControlPlaneSpec{
+				ControlPlane: stewardv1alpha1.ControlPlane{
+					Deployment: stewardv1alpha1.DeploymentSpec{
 						Replicas: pointer.To(int32(1)),
 					},
-					Service: kamajiv1alpha1.ServiceSpec{
+					Service: stewardv1alpha1.ServiceSpec{
 						ServiceType: "ClusterIP",
 					},
-					Gateway: &kamajiv1alpha1.GatewaySpec{
+					Gateway: &stewardv1alpha1.GatewaySpec{
 						Hostname: gatewayv1.Hostname("tcp-gateway-konnectivity.example.com"),
-						AdditionalMetadata: kamajiv1alpha1.AdditionalMetadata{
+						AdditionalMetadata: stewardv1alpha1.AdditionalMetadata{
 							Labels: map[string]string{
-								"test.kamaji.io/gateway": "true",
+								"test.steward.io/gateway": "true",
 							},
 							Annotations: map[string]string{
-								"test.kamaji.io/created-by": "e2e-test",
+								"test.steward.io/created-by": "e2e-test",
 							},
 						},
 						GatewayParentRefs: []gatewayv1.ParentReference{
@@ -53,22 +53,22 @@ var _ = Describe("Deploy a TenantControlPlane with Gateway API and Konnectivity"
 						},
 					},
 				},
-				NetworkProfile: kamajiv1alpha1.NetworkProfileSpec{
+				NetworkProfile: stewardv1alpha1.NetworkProfileSpec{
 					Address: "172.18.0.4",
 				},
-				Kubernetes: kamajiv1alpha1.KubernetesSpec{
+				Kubernetes: stewardv1alpha1.KubernetesSpec{
 					Version: "v1.28.0",
-					Kubelet: kamajiv1alpha1.KubeletSpec{
+					Kubelet: stewardv1alpha1.KubeletSpec{
 						CGroupFS: "cgroupfs",
 					},
-					AdmissionControllers: kamajiv1alpha1.AdmissionControllers{
+					AdmissionControllers: stewardv1alpha1.AdmissionControllers{
 						"LimitRanger",
 						"ResourceQuota",
 					},
 				},
-				Addons: kamajiv1alpha1.AddonsSpec{
-					Konnectivity: &kamajiv1alpha1.KonnectivitySpec{
-						KonnectivityServerSpec: kamajiv1alpha1.KonnectivityServerSpec{
+				Addons: stewardv1alpha1.AddonsSpec{
+					Konnectivity: &stewardv1alpha1.KonnectivitySpec{
+						KonnectivityServerSpec: stewardv1alpha1.KonnectivityServerSpec{
 							Port: 8132,
 						},
 					},
@@ -86,14 +86,14 @@ var _ = Describe("Deploy a TenantControlPlane with Gateway API and Konnectivity"
 			err := k8sClient.Get(context.Background(), types.NamespacedName{
 				Name:      tcp.Name,
 				Namespace: tcp.Namespace,
-			}, &kamajiv1alpha1.TenantControlPlane{})
+			}, &stewardv1alpha1.TenantControlPlane{})
 
 			return err != nil // Returns true when object is not found (deleted)
 		}).WithTimeout(time.Minute).Should(BeTrue())
 	})
 
 	It("Should be Ready", func() {
-		StatusMustEqualTo(tcp, kamajiv1alpha1.VersionReady)
+		StatusMustEqualTo(tcp, stewardv1alpha1.VersionReady)
 	})
 
 	It("Should create Konnectivity TLSRoute with correct sectionName", func() {

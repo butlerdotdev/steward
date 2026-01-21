@@ -19,7 +19,7 @@ By default, all write operations are allowed.
 You can enable ReadOnly mode by setting all the boolean fields of `TenantControlPlane.spec.writePermissions` to `true`.
 
 ```yaml
-apiVersion: kamaji.clastix.io/v1alpha1
+apiVersion: steward.butlerlabs.io/v1alpha1
 kind: TenantControlPlane
 metadata:
   name: my-control-plane
@@ -38,7 +38,7 @@ If your Tenant Control Plane has a Datastore quota, this feature allows freezing
 but still allowing its tenants to perform a clean-up by deleting exceeding resources.
 
 ```yaml
-apiVersion: kamaji.clastix.io/v1alpha1
+apiVersion: steward.butlerlabs.io/v1alpha1
 kind: TenantControlPlane
 metadata:
   name: my-control-plane
@@ -50,7 +50,7 @@ spec:
 ```
 
 !!! note "Datastore quota"
-    Kamaji does **not** enforce storage quota for a given Tenant Control Plane:
+    Steward does **not** enforce storage quota for a given Tenant Control Plane:
     you have to implement it according to your business logic.
 
 ## Monitoring the status
@@ -67,12 +67,12 @@ The `STATUS` field will display `WriteLimited` when write permissions are limite
 
 ## How it works
 
-When a Tenant Control Plane write status is _limited_, Kamaji creates a `ValidatingWebhookConfiguration` in the Tenant Cluster:
+When a Tenant Control Plane write status is _limited_, Steward creates a `ValidatingWebhookConfiguration` in the Tenant Cluster:
 
 ```
 $: kubectl get validatingwebhookconfigurations
 NAME                       WEBHOOKS   AGE
-kamaji-write-permissions   2          59m
+steward-write-permissions   2          59m
 ```
 
 The webhook intercepts all API requests to the Tenant Control Plane and programmatically denies any attempts to modify resources.
@@ -94,7 +94,7 @@ If a tenant user tries to perform non-allowed write operations, such as:
 the following error is returned:
 
 ```
-Error from server (Forbidden): admission webhook "catchall.write-permissions.kamaji.clastix.io" denied the request:
+Error from server (Forbidden): admission webhook "catchall.write-permissions.steward.butlerlabs.io" denied the request:
 the current Control Plane has limited write permissions, current changes are blocked:
 removing the webhook may lead to an inconsistent state upon its completion
 ```
@@ -112,4 +112,4 @@ Typical scenarios where ReadOnly mode is useful:
 
 !!! info "Migrating the DataStore"
     In a similar manner, when migrating a Tenant Control Plane to a different store, similar enforcement is put in place.
-    This is managed automatically by Kamaji: there's no need to toggle on and off the ReadOnly mode.
+    This is managed automatically by Steward: there's no need to toggle on and off the ReadOnly mode.

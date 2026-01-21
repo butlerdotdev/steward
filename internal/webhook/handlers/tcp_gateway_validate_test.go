@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package handlers_test
@@ -14,8 +14,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 	gatewayv1 "sigs.k8s.io/gateway-api/apis/v1"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/webhook/handlers"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/webhook/handlers"
 )
 
 // Mock discovery client for testing.
@@ -46,7 +46,7 @@ var _ = Describe("TCP Gateway Validation Webhook", func() {
 	var (
 		ctx           context.Context
 		handler       handlers.TenantControlPlaneGatewayValidation
-		tcp           *kamajiv1alpha1.TenantControlPlane
+		tcp           *stewardv1alpha1.TenantControlPlane
 		mockClient    client.Client
 		mockDiscovery *mockDiscoveryClient
 	)
@@ -64,12 +64,12 @@ var _ = Describe("TCP Gateway Validation Webhook", func() {
 			DiscoveryClient: mockDiscovery,
 		}
 
-		tcp = &kamajiv1alpha1.TenantControlPlane{
+		tcp = &stewardv1alpha1.TenantControlPlane{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      "test-tcp",
 				Namespace: "default",
 			},
-			Spec: kamajiv1alpha1.TenantControlPlaneSpec{},
+			Spec: stewardv1alpha1.TenantControlPlaneSpec{},
 		}
 	})
 
@@ -97,7 +97,7 @@ var _ = Describe("TCP Gateway Validation Webhook", func() {
 
 	Context("when TenantControlPlane has Gateway configuration", func() {
 		BeforeEach(func() {
-			tcp.Spec.ControlPlane.Gateway = &kamajiv1alpha1.GatewaySpec{
+			tcp.Spec.ControlPlane.Gateway = &stewardv1alpha1.GatewaySpec{
 				Hostname: gatewayv1.Hostname("api.example.com"),
 			}
 		})
@@ -176,7 +176,7 @@ var _ = Describe("TCP Gateway Validation Webhook", func() {
 		It("should validate Gateway APIs when adding Gateway configuration", func() {
 			oldTCP := tcp.DeepCopy()
 
-			tcp.Spec.ControlPlane.Gateway = &kamajiv1alpha1.GatewaySpec{
+			tcp.Spec.ControlPlane.Gateway = &stewardv1alpha1.GatewaySpec{
 				Hostname: gatewayv1.Hostname("api.example.com"),
 			}
 
@@ -192,7 +192,7 @@ var _ = Describe("TCP Gateway Validation Webhook", func() {
 		It("should allow removing Gateway configuration", func() {
 			// Start with Gateway configuration
 			oldTCP := tcp.DeepCopy()
-			oldTCP.Spec.ControlPlane.Gateway = &kamajiv1alpha1.GatewaySpec{
+			oldTCP.Spec.ControlPlane.Gateway = &stewardv1alpha1.GatewaySpec{
 				Hostname: gatewayv1.Hostname("api.example.com"),
 			}
 
@@ -207,7 +207,7 @@ var _ = Describe("TCP Gateway Validation Webhook", func() {
 
 	Context("OnDelete operations", func() {
 		It("should always allow delete operations", func() {
-			tcp.Spec.ControlPlane.Gateway = &kamajiv1alpha1.GatewaySpec{
+			tcp.Spec.ControlPlane.Gateway = &stewardv1alpha1.GatewaySpec{
 				Hostname: gatewayv1.Hostname("api.example.com"),
 			}
 
@@ -223,7 +223,7 @@ var _ = Describe("TCP Gateway Validation Webhook", func() {
 
 	Context("with different Gateway API versions", func() {
 		BeforeEach(func() {
-			tcp.Spec.ControlPlane.Gateway = &kamajiv1alpha1.GatewaySpec{
+			tcp.Spec.ControlPlane.Gateway = &stewardv1alpha1.GatewaySpec{
 				Hostname: gatewayv1.Hostname("api.example.com"),
 			}
 			mockDiscovery.serverGroups = &metav1.APIGroupList{

@@ -1,0 +1,34 @@
+apiVersion: steward.butlerlabs.dev/v1alpha1
+kind: TenantControlPlane
+metadata:
+  name: k8s-133
+  labels:
+    tenant.butlerlabs.io: k8s-133
+spec:
+  controlPlane:
+    deployment:
+      replicas: 2
+    service:
+      serviceType: LoadBalancer
+  kubernetes:
+    version: "v1.33.0"
+    kubelet:
+      configurationJSONPatches:
+        - op: add
+          path: /featureGates
+          value:
+            KubeletCrashLoopBackOffMax: false
+            KubeletEnsureSecretPulledImages: false
+        - op: replace
+          path: /cgroupDriver
+          value: systemd
+  networkProfile:
+    port: 6443
+  addons:
+    coreDNS: {}
+    kubeProxy: {}
+    konnectivity:
+      server:
+        port: 8132
+      agent:
+        mode: DaemonSet

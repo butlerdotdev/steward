@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package handlers
@@ -16,8 +16,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/webhook/utils"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/webhook/utils"
 )
 
 type DataStoreSecretValidation struct {
@@ -36,9 +36,9 @@ func (d DataStoreSecretValidation) OnUpdate(object runtime.Object, _ runtime.Obj
 	return func(ctx context.Context, _ admission.Request) ([]jsonpatch.JsonPatchOperation, error) {
 		secret := object.(*corev1.Secret) //nolint:forcetypeassert
 
-		dsList := &kamajiv1alpha1.DataStoreList{}
+		dsList := &stewardv1alpha1.DataStoreList{}
 
-		if err := d.Client.List(ctx, dsList, client.MatchingFieldsSelector{Selector: fields.OneTermEqualSelector(kamajiv1alpha1.DatastoreUsedSecretNamespacedNameKey, fmt.Sprintf("%s/%s", secret.GetNamespace(), secret.GetName()))}); err != nil {
+		if err := d.Client.List(ctx, dsList, client.MatchingFieldsSelector{Selector: fields.OneTermEqualSelector(stewardv1alpha1.DatastoreUsedSecretNamespacedNameKey, fmt.Sprintf("%s/%s", secret.GetNamespace(), secret.GetName()))}); err != nil {
 			return nil, errors.Wrap(err, "cannot list Tenant Control Plane using the provided Secret")
 		}
 
@@ -49,7 +49,7 @@ func (d DataStoreSecretValidation) OnUpdate(object runtime.Object, _ runtime.Obj
 				res = append(res, ds.GetName())
 			}
 
-			return nil, fmt.Errorf("the Secret is used by the following kamajiv1alpha1.DataStores and cannot be deleted (%s)", strings.Join(res, ", "))
+			return nil, fmt.Errorf("the Secret is used by the following stewardv1alpha1.DataStores and cannot be deleted (%s)", strings.Join(res, ", "))
 		}
 
 		return nil, nil

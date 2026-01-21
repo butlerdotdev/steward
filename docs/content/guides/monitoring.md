@@ -1,6 +1,6 @@
 # Tenant Control Plane Monitoring
 
-Kamaji exposes a set of metrics that can be used to monitor the health of the Tenant Control Plane (TCP) and its components. The metrics are exposed in Prometheus format and can be scraped by a Prometheus server instance running in the Management Cluster.
+Steward exposes a set of metrics that can be used to monitor the health of the Tenant Control Plane (TCP) and its components. The metrics are exposed in Prometheus format and can be scraped by a Prometheus server instance running in the Management Cluster.
 
 
 ## Prerequisites
@@ -17,7 +17,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    kamaji.clastix.io/name: charlie-metrics
+    steward.butlerlabs.io/name: charlie-metrics
   name: charlie-metrics
   namespace: default
 spec:
@@ -35,7 +35,7 @@ spec:
     protocol: TCP
     targetPort: 10259
   selector:
-    kamaji.clastix.io/name: charlie
+    steward.butlerlabs.io/name: charlie
   type: ClusterIP
 ```
 
@@ -134,11 +134,11 @@ spec:
       replacement: kube-scheduler
   selector:
     matchLabels:
-      kamaji.clastix.io/name: charlie-metrics
+      steward.butlerlabs.io/name: charlie-metrics
 ```
 
 !!! tip "TLS certificates"
-    To access metrics endpoints, the Prometheus must authenticate with the control plane endpoints. You can use the `<tcp_name>-api-server-kubelet-client-certificate` secret. This secret is automatically created by Kamaji in the namespace and contains the client certificate and key needed for the control plane components.
+    To access metrics endpoints, the Prometheus must authenticate with the control plane endpoints. You can use the `<tcp_name>-api-server-kubelet-client-certificate` secret. This secret is automatically created by Steward in the namespace and contains the client certificate and key needed for the control plane components.
 
 Finally, ensure the Prometheus service account, e.g. `kube-prometheus-stack-prometheus` has the necessary permissions to access the secret containing the certificates. The following is an example of a `ClusterRole` and `ClusterRoleBinding` that grants the required permissions:
 
@@ -183,19 +183,19 @@ kubeApiServer:
     relabelings:
     - action: replace
         targetLabel: cluster
-        replacement: kamaji
+        replacement: steward
 kubeControllerManager:
     serviceMonitor:
     relabelings:
     - action: replace
         targetLabel: cluster
-        replacement: kamaji
+        replacement: steward
 kubeScheduler:
     serviceMonitor:
     relabelings:
     - action: replace
         targetLabel: cluster
-        replacement: kamaji
+        replacement: steward
 ...
 ```
 

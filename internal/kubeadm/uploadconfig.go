@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package kubeadm
@@ -20,7 +20,7 @@ import (
 	"k8s.io/kubernetes/pkg/apis/rbac"
 	kubeletv1beta1 "k8s.io/kubernetes/pkg/kubelet/apis/config/v1beta1"
 
-	"github.com/clastix/kamaji/internal/utilities"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 const (
@@ -92,7 +92,7 @@ func getKubeletConfigmapContent(kubeletConfiguration KubeletConfiguration, patch
 	// https://github.com/kubernetes/component-base/blob/55b3ab0db0081303695d641b9b43d560bf3f7a65/logs/api/v1/types.go#L42-L45
 	kc.Logging.FlushFrequency.SerializeAsString = false
 	// Restore default behaviour so Kubelet will automatically
-	// determine the resolvConf location, as reported in clastix/kamaji#581.
+	// determine the resolvConf location, as reported in butlerlabs/steward#581.
 	kc.ResolverConfig = nil
 
 	if len(patch) > 0 {

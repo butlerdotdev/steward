@@ -3,7 +3,7 @@ defaultPlatforms:
   - linux/amd64
   - linux/arm
 builds:
-  - id: kamaji
+  - id: steward
     main: .
     ldflags:
       - '{{ if index .Env "LD_FLAGS" }}{{ .Env.LD_FLAGS }}{{ end }}'

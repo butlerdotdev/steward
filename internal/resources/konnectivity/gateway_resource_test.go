@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package konnectivity_test
@@ -18,8 +18,8 @@ import (
 	gatewayv1 "sigs.k8s.io/gateway-api/apis/v1"
 	gatewayv1alpha2 "sigs.k8s.io/gateway-api/apis/v1alpha2"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/resources/konnectivity"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/resources/konnectivity"
 )
 
 func TestKonnectivityGatewayResource(t *testing.T) {
@@ -32,13 +32,13 @@ var runtimeScheme *runtime.Scheme
 var _ = BeforeSuite(func() {
 	runtimeScheme = runtime.NewScheme()
 	Expect(scheme.AddToScheme(runtimeScheme)).To(Succeed())
-	Expect(kamajiv1alpha1.AddToScheme(runtimeScheme)).To(Succeed())
+	Expect(stewardv1alpha1.AddToScheme(runtimeScheme)).To(Succeed())
 	Expect(gatewayv1alpha2.Install(runtimeScheme)).To(Succeed())
 })
 
 var _ = Describe("KubernetesKonnectivityGatewayResource", func() {
 	var (
-		tcp      *kamajiv1alpha1.TenantControlPlane
+		tcp      *stewardv1alpha1.TenantControlPlane
 		resource *konnectivity.KubernetesKonnectivityGatewayResource
 		ctx      context.Context
 	)
@@ -55,14 +55,14 @@ var _ = Describe("KubernetesKonnectivityGatewayResource", func() {
 		}
 
 		namespace := gatewayv1.Namespace("default")
-		tcp = &kamajiv1alpha1.TenantControlPlane{
+		tcp = &stewardv1alpha1.TenantControlPlane{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      "test-tcp",
 				Namespace: "default",
 			},
-			Spec: kamajiv1alpha1.TenantControlPlaneSpec{
-				ControlPlane: kamajiv1alpha1.ControlPlane{
-					Gateway: &kamajiv1alpha1.GatewaySpec{
+			Spec: stewardv1alpha1.TenantControlPlaneSpec{
+				ControlPlane: stewardv1alpha1.ControlPlane{
+					Gateway: &stewardv1alpha1.GatewaySpec{
 						Hostname: gatewayv1alpha2.Hostname("test.example.com"),
 						GatewayParentRefs: []gatewayv1alpha2.ParentReference{
 							{
@@ -72,18 +72,18 @@ var _ = Describe("KubernetesKonnectivityGatewayResource", func() {
 						},
 					},
 				},
-				Addons: kamajiv1alpha1.AddonsSpec{
-					Konnectivity: &kamajiv1alpha1.KonnectivitySpec{
-						KonnectivityServerSpec: kamajiv1alpha1.KonnectivityServerSpec{
+				Addons: stewardv1alpha1.AddonsSpec{
+					Konnectivity: &stewardv1alpha1.KonnectivitySpec{
+						KonnectivityServerSpec: stewardv1alpha1.KonnectivityServerSpec{
 							Port: 8132,
 						},
 					},
 				},
 			},
-			Status: kamajiv1alpha1.TenantControlPlaneStatus{
-				Addons: kamajiv1alpha1.AddonsStatus{
-					Konnectivity: kamajiv1alpha1.KonnectivityStatus{
-						Service: kamajiv1alpha1.KubernetesServiceStatus{
+			Status: stewardv1alpha1.TenantControlPlaneStatus{
+				Addons: stewardv1alpha1.AddonsStatus{
+					Konnectivity: stewardv1alpha1.KonnectivityStatus{
+						Service: stewardv1alpha1.KubernetesServiceStatus{
 							Name: "test-konnectivity-service",
 							Port: 8132,
 						},
@@ -200,8 +200,8 @@ var _ = Describe("KubernetesKonnectivityGatewayResource", func() {
 	Context("When Konnectivity gateway should not be configured", func() {
 		BeforeEach(func() {
 			tcp.Spec.Addons.Konnectivity = nil
-			tcp.Status.Addons.Konnectivity = kamajiv1alpha1.KonnectivityStatus{
-				Gateway: &kamajiv1alpha1.KubernetesGatewayStatus{
+			tcp.Status.Addons.Konnectivity = stewardv1alpha1.KonnectivityStatus{
+				Gateway: &stewardv1alpha1.KubernetesGatewayStatus{
 					AccessPoints: nil,
 				},
 			}

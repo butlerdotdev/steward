@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package konnectivity
@@ -14,10 +14,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
-	"github.com/clastix/kamaji/internal/constants"
-	"github.com/clastix/kamaji/internal/resources"
-	"github.com/clastix/kamaji/internal/utilities"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
+	"github.com/butlerdotdev/steward/internal/constants"
+	"github.com/butlerdotdev/steward/internal/resources"
+	"github.com/butlerdotdev/steward/internal/utilities"
 )
 
 type ClusterRoleBindingResource struct {
@@ -33,17 +33,17 @@ func (r *ClusterRoleBindingResource) GetHistogram() prometheus.Histogram {
 	return clusterrolebindingCollector
 }
 
-func (r *ClusterRoleBindingResource) ShouldStatusBeUpdated(_ context.Context, tcp *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *ClusterRoleBindingResource) ShouldStatusBeUpdated(_ context.Context, tcp *stewardv1alpha1.TenantControlPlane) bool {
 	return tcp.Spec.Addons.Konnectivity == nil && tcp.Status.Addons.Konnectivity.ClusterRoleBinding.Name != "" ||
 		tcp.Spec.Addons.Konnectivity != nil && (tcp.Status.Addons.Konnectivity.ClusterRoleBinding.Name == "" ||
 			tcp.Status.Addons.Konnectivity.ClusterRoleBinding.Name != r.resource.GetName())
 }
 
-func (r *ClusterRoleBindingResource) ShouldCleanup(tenantControlPlane *kamajiv1alpha1.TenantControlPlane) bool {
+func (r *ClusterRoleBindingResource) ShouldCleanup(tenantControlPlane *stewardv1alpha1.TenantControlPlane) bool {
 	return tenantControlPlane.Spec.Addons.Konnectivity == nil && tenantControlPlane.Status.Addons.Konnectivity.Enabled
 }
 
-func (r *ClusterRoleBindingResource) CleanUp(ctx context.Context, _ *kamajiv1alpha1.TenantControlPlane) (bool, error) {
+func (r *ClusterRoleBindingResource) CleanUp(ctx context.Context, _ *stewardv1alpha1.TenantControlPlane) (bool, error) {
 	logger := log.FromContext(ctx, "resource", r.GetName())
 
 	if err := r.tenantClient.Get(ctx, client.ObjectKeyFromObject(r.resource), r.resource); err != nil {
@@ -73,7 +73,7 @@ func (r *ClusterRoleBindingResource) CleanUp(ctx context.Context, _ *kamajiv1alp
 	return true, nil
 }
 
-func (r *ClusterRoleBindingResource) Define(ctx context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) (err error) {
+func (r *ClusterRoleBindingResource) Define(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) (err error) {
 	logger := log.FromContext(ctx, "resource", r.GetName())
 
 	r.resource = &rbacv1.ClusterRoleBinding{
@@ -91,7 +91,7 @@ func (r *ClusterRoleBindingResource) Define(ctx context.Context, tenantControlPl
 	return nil
 }
 
-func (r *ClusterRoleBindingResource) CreateOrUpdate(ctx context.Context, tcp *kamajiv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
+func (r *ClusterRoleBindingResource) CreateOrUpdate(ctx context.Context, tcp *stewardv1alpha1.TenantControlPlane) (controllerutil.OperationResult, error) {
 	if tcp.Spec.Addons.Konnectivity == nil {
 		return controllerutil.OperationResultNone, nil
 	}
@@ -103,11 +103,11 @@ func (r *ClusterRoleBindingResource) GetName() string {
 	return "konnectivity-clusterrolebinding"
 }
 
-func (r *ClusterRoleBindingResource) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *kamajiv1alpha1.TenantControlPlane) error {
-	tenantControlPlane.Status.Addons.Konnectivity.ClusterRoleBinding = kamajiv1alpha1.ExternalKubernetesObjectStatus{}
+func (r *ClusterRoleBindingResource) UpdateTenantControlPlaneStatus(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) error {
+	tenantControlPlane.Status.Addons.Konnectivity.ClusterRoleBinding = stewardv1alpha1.ExternalKubernetesObjectStatus{}
 
 	if tenantControlPlane.Spec.Addons.Konnectivity != nil {
-		tenantControlPlane.Status.Addons.Konnectivity.ClusterRoleBinding = kamajiv1alpha1.ExternalKubernetesObjectStatus{
+		tenantControlPlane.Status.Addons.Konnectivity.ClusterRoleBinding = stewardv1alpha1.ExternalKubernetesObjectStatus{
 			Name: r.resource.GetName(),
 		}
 	}
@@ -115,11 +115,11 @@ func (r *ClusterRoleBindingResource) UpdateTenantControlPlaneStatus(_ context.Co
 	return nil
 }
 
-func (r *ClusterRoleBindingResource) mutate(tenantControlPlane *kamajiv1alpha1.TenantControlPlane) controllerutil.MutateFn {
+func (r *ClusterRoleBindingResource) mutate(tenantControlPlane *stewardv1alpha1.TenantControlPlane) controllerutil.MutateFn {
 	return func() error {
 		r.resource.SetLabels(utilities.MergeMaps(
 			r.resource.GetLabels(),
-			utilities.KamajiLabels(tenantControlPlane.GetName(), r.GetName()),
+			utilities.StewardLabels(tenantControlPlane.GetName(), r.GetName()),
 			map[string]string{
 				"kubernetes.io/cluster-service":   "true",
 				"addonmanager.kubernetes.io/mode": "Reconcile",

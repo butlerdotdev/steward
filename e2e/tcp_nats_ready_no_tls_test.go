@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package e2e
@@ -11,29 +11,29 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	pointer "k8s.io/utils/ptr"
 
-	kamajiv1alpha1 "github.com/clastix/kamaji/api/v1alpha1"
+	stewardv1alpha1 "github.com/butlerdotdev/steward/api/v1alpha1"
 )
 
 var _ = Describe("Deploy a TenantControlPlane resource with the NATS driver without TLS", func() {
 	// Fill TenantControlPlane object
-	tcp := &kamajiv1alpha1.TenantControlPlane{
+	tcp := &stewardv1alpha1.TenantControlPlane{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "nats-notls",
 			Namespace: "default",
 		},
-		Spec: kamajiv1alpha1.TenantControlPlaneSpec{
+		Spec: stewardv1alpha1.TenantControlPlaneSpec{
 			DataStore: "nats-notls",
-			ControlPlane: kamajiv1alpha1.ControlPlane{
-				Deployment: kamajiv1alpha1.DeploymentSpec{
+			ControlPlane: stewardv1alpha1.ControlPlane{
+				Deployment: stewardv1alpha1.DeploymentSpec{
 					Replicas: pointer.To(int32(1)),
 				},
-				Service: kamajiv1alpha1.ServiceSpec{
+				Service: stewardv1alpha1.ServiceSpec{
 					ServiceType: "ClusterIP",
 				},
 			},
-			Kubernetes: kamajiv1alpha1.KubernetesSpec{
+			Kubernetes: stewardv1alpha1.KubernetesSpec{
 				Version: "v1.23.6",
-				Kubelet: kamajiv1alpha1.KubeletSpec{
+				Kubelet: stewardv1alpha1.KubeletSpec{
 					CGroupFS: "cgroupfs",
 				},
 			},
@@ -49,6 +49,6 @@ var _ = Describe("Deploy a TenantControlPlane resource with the NATS driver with
 	})
 	// Check if TenantControlPlane resource has been created
 	It("Should be Ready", func() {
-		StatusMustEqualTo(tcp, kamajiv1alpha1.VersionReady)
+		StatusMustEqualTo(tcp, stewardv1alpha1.VersionReady)
 	})
 })

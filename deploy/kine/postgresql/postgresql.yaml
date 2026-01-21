@@ -3,7 +3,7 @@ kind: Cluster
 metadata:
   name: postgres-$NAME
 spec:
-  description: PostgreSQL cluster used by Kamaji along with kine
+  description: PostgreSQL cluster used by Steward along with kine
   instances: 3
   postgresql:
     pg_hba:

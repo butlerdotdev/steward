@@ -1,0 +1,11 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: {{ .Release.Namespace }}/{{ include "steward.certificateName" . }}
+  labels:
+    {{- $data := . | mustMergeOverwrite (dict "instance" "mutating-webhook-configuration") -}}
+    {{- include "steward.labels" $data | nindent 4 }}
+  name: steward-mutating-webhook-configuration
+webhooks:
+{{ tpl (.Files.Get "controller-gen/mutating-webhook.yaml") . }}

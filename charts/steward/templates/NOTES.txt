@@ -1,0 +1,9 @@
+Steward has been installed successfully!
+
+List the available CRDs installed by Steward:
+
+  kubectl get crds | grep steward.butlerlabs.dev
+
+List TenantControlPlanes:
+
+  kubectl get tenantcontrolplanes.steward.butlerlabs.dev --all-namespaces

@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package utils
@@ -6,7 +6,7 @@ package utils
 import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/clastix/kamaji/api/v1alpha1"
+	"github.com/butlerdotdev/steward/api/v1alpha1"
 )
 
 func IsPaused(obj client.Object) bool {

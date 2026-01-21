@@ -1,0 +1,3 @@
+Steward Custom Resource Definitions have been installed.
+
+You can now install or upgrade the Steward controller.

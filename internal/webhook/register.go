@@ -1,4 +1,4 @@
-// Copyright 2022 Clastix Labs
+// Copyright 2022 Butler Labs Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package webhook
@@ -9,8 +9,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 
-	webhookhandlers "github.com/clastix/kamaji/internal/webhook/handlers"
-	webhookroutes "github.com/clastix/kamaji/internal/webhook/routes"
+	webhookhandlers "github.com/butlerdotdev/steward/internal/webhook/handlers"
+	webhookroutes "github.com/butlerdotdev/steward/internal/webhook/routes"
 )
 
 func Register(mgr controllerruntime.Manager, routes map[webhookroutes.Route][]webhookhandlers.Handler) error {

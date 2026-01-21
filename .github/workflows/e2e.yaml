@@ -6,7 +6,7 @@ on:
     paths:
       - '.github/workflows/e2e.yaml'
       - 'api/**'
-      - 'charts/kamaji/**'
+      - 'charts/steward/**'
       - 'controllers/**'
       - 'e2e/*'
       - '.ko.yaml'
@@ -20,7 +20,7 @@ on:
     paths:
       - '.github/workflows/e2e.yaml'
       - 'api/**'
-      - 'charts/kamaji/**'
+      - 'charts/steward/**'
       - 'controllers/**'
       - 'e2e/*'
       - '.ko.yaml'
