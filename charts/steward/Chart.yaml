@@ -15,8 +15,8 @@ type: application
 version: 0.0.0+latest
 dependencies:
   - name: steward-etcd
-    version: ">=0.14.0"
-    repository: "file://../../../butler-charts/charts/steward-etcd"
+    version: "0.14.0"
+    repository: "oci://ghcr.io/butlerdotdev/charts"
     condition: steward-etcd.deploy
 annotations:
   artifacthub.io/crds: |

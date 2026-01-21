@@ -1,8 +1,10 @@
 name: Helm Chart
-
 on:
   push:
     branches: [ "master" ]
+    tags:
+      - 'steward-v*'
+      - 'steward-crds-v*'
   pull_request:
     branches: [ "*" ]
 
@@ -11,7 +13,7 @@ jobs:
     name: diff
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - run: make -C charts/steward docs
@@ -20,36 +22,61 @@ jobs:
       - run: make -C charts/steward-crds docs
       - name: Checking if Steward CRDs Helm Chart docs is not aligned
         run: if [[ $(git diff | wc -l) -gt 0 ]]; then echo ">>> Untracked changes have not been committed" && git --no-pager diff && exit 1; fi
+
   lint:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
       - uses: azure/setup-helm@v4
         with:
-          version: 3.3.4
+          version: 3.14.0
+      - name: Login to GHCR for OCI dependencies
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Building dependencies
-        run: |-
-          helm repo add butlerlabs https://butlerlabs.github.io/charts 
-          helm dependency build ./charts/steward
+        run: helm dependency build ./charts/steward
       - name: Linting Steward Helm Chart
         run: helm lint ./charts/steward
-      - name: Linting Steward CRDS Helm Chart
+      - name: Linting Steward CRDs Helm Chart
         run: helm lint ./charts/steward-crds
+
   release:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
     needs: [ "lint", "diff" ]
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      packages: write
     steps:
-      - uses: actions/checkout@v6
-      - name: Publish Helm chart
-        uses: stefanprodan/helm-gh-pages@master
+      - uses: actions/checkout@v4
+      
+      - uses: azure/setup-helm@v4
         with:
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
-          charts_dir: charts
-          charts_url: https://butlerlabs.github.io/charts
-          owner: butlerlabs
-          repository: charts
-          branch: gh-pages
-          target_dir: .
-          commit_username: prometherion
-          commit_email: dario@tranchitella.eu
+          version: 3.14.0
+      
+      - name: Login to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
+      
+      - name: Parse tag
+        id: parse
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          # Extract version (everything after -v)
+          VERSION=$(echo "$TAG" | sed -E 's/.*-v(.*)/\1/')
+          # Extract chart name (everything before -v<version>)
+          CHART_NAME=$(echo "$TAG" | sed -E "s/-v${VERSION}$//")
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "chart_name=$CHART_NAME" >> $GITHUB_OUTPUT
+          echo "Parsed: chart=$CHART_NAME version=$VERSION"
+      
+      - name: Build dependencies (for steward chart)
+        if: steps.parse.outputs.chart_name == 'steward'
+        run: helm dependency build ./charts/steward
+      
+      - name: Package chart
+        run: |
+          helm package ./charts/${{ steps.parse.outputs.chart_name }} --version ${{ steps.parse.outputs.version }}
+      
+      - name: Push to GHCR
+        run: |
+          helm push ${{ steps.parse.outputs.chart_name }}-${{ steps.parse.outputs.version }}.tgz oci://ghcr.io/butlerdotdev/charts
