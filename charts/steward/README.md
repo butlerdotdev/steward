@@ -43,9 +43,9 @@ helm uninstall steward -n steward-system
 | extraArgs | list | `[]` | A list of extra arguments to add to the steward controller default ones |
 | fullnameOverride | string | `""` |  |
 | healthProbeBindAddress | string | `":8081"` | The address the probe endpoint binds to. (default ":8081") |
-| image.pullPolicy | string | `"Always"` |  |
-| image.repository | string | `"butlerlabs/steward"` | The container image of the Steward controller. |
-| image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
+| image.pullPolicy | string | `"IfNotPresent"` |  |
+| image.repository | string | `"ghcr.io/butlerdotdev/steward"` | The container image of the Steward controller. |
+| image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` |  |
 | kubeconfigGenerator.affinity | object | `{}` | Kubernetes affinity rules to apply to Kubeconfig Generator controller pods |
 | kubeconfigGenerator.enableLeaderElect | bool | `true` | Enables the leader election. |
