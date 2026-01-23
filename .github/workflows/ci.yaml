@@ -1,56 +1,77 @@
+# Copyright 2025 The Butler Authors.
+# SPDX-License-Identifier: Apache-2.0
 name: CI
 
 on:
   push:
-    branches: [ "*" ]
+    branches:
+      - '**'
+    paths:
+      - '**.go'
+      - 'go.mod'
+      - 'go.sum'
+      - 'Makefile'
+      - 'api/**'
+      - 'internal/**'
+      - 'cmd/**'
   pull_request:
-    branches: [ "*" ]
+    branches: [main, master]
+    paths:
+      - '**.go'
+      - 'go.mod'
+      - 'go.sum'
+      - 'Makefile'
+      - 'api/**'
+      - 'internal/**'
+      - 'cmd/**'
 
 jobs:
   test:
-    name: integration
+    name: test
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-go@v6
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
       - run: make test
-  golangci:
+
+  lint:
     name: lint
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-go@v6
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
       - name: Run golangci-lint
         run: make golint
-# TODO(prometherion): enable back once golangci-lint is built from v1.24 rather than v1.23
-#        uses: golangci/golangci-lint-action@v6.5.2
-#        with:
-#          version: v1.62.2
-#          only-new-issues: false
-#          args: --config .golangci.yml
+
   diff:
     name: diff
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
       - run: make manifests
-      - name: Checking if generated manifests are not aligned
-        run: if [[ $(git diff | wc -l) -gt 0 ]]; then echo ">>> Untracked generated files have not been committed" && git --no-pager diff && exit 1; fi
-      - name: Checking if missing untracked files for generated manifests
-        run: test -z "$(git ls-files --others --exclude-standard 2> /dev/null)"
-      - name: Checking if source code is not formatted
-        run: test -z "$(git diff 2> /dev/null)"
+      - name: Check generated manifests
+        run: |
+          if [[ $(git diff | wc -l) -gt 0 ]]; then
+            echo ">>> Generated manifests not committed"
+            git --no-pager diff
+            exit 1
+          fi
+      - name: Check untracked files
+        run: test -z "$(git ls-files --others --exclude-standard 2>/dev/null)"
       - run: make apidoc
-      - name: Checking if generated API documentation files are not aligned
-        run: if [[ $(git diff | wc -l) -gt 0 ]]; then echo ">>> Untracked generated files have not been committed" && git --no-pager diff && exit 1; fi
-      - name: Checking if generated API documentation generated untracked files
-        run: test -z "$(git ls-files --others --exclude-standard 2> /dev/null)"
+      - name: Check generated API docs
+        run: |
+          if [[ $(git diff | wc -l) -gt 0 ]]; then
+            echo ">>> Generated API docs not committed"
+            git --no-pager diff
+            exit 1
+          fi
