@@ -7,10 +7,10 @@ replicaCount: 1
 
 image:
   # -- The container image of the Steward controller.
-  repository: butlerlabs/steward
-  pullPolicy: Always
+  repository: ghcr.io/butlerdotdev/steward
+  pullPolicy: IfNotPresent
   # -- Overrides the image tag whose default is the chart appVersion.
-  tag:
+  tag: ""
 
 # -- A list of extra arguments to add to the steward controller default ones
 extraArgs: []
