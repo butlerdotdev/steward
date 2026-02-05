@@ -208,11 +208,8 @@ func (r *Agent) mutate(ctx context.Context, tcp *stewardv1alpha1.TenantControlPl
 		container.Name = "tcp-proxy"
 		container.Image = image
 		container.Args = []string{
-			fmt.Sprintf("--external-endpoint=%s", externalEndpoint),
-			fmt.Sprintf("--listen-port=%d", ProxyPort),
-			fmt.Sprintf("--health-port=%d", HealthPort),
-			fmt.Sprintf("--metrics-port=%d", MetricsPort),
-			"--manage-endpoint-slice=true",
+			fmt.Sprintf("--upstream-addr=%s", externalEndpoint),
+			fmt.Sprintf("--listen-addr=:%d", ProxyPort),
 		}
 		container.Ports = []corev1.ContainerPort{
 			{
@@ -220,23 +217,11 @@ func (r *Agent) mutate(ctx context.Context, tcp *stewardv1alpha1.TenantControlPl
 				ContainerPort: ProxyPort,
 				Protocol:      corev1.ProtocolTCP,
 			},
-			{
-				Name:          "health",
-				ContainerPort: HealthPort,
-				Protocol:      corev1.ProtocolTCP,
-			},
-			{
-				Name:          "metrics",
-				ContainerPort: MetricsPort,
-				Protocol:      corev1.ProtocolTCP,
-			},
 		}
 		container.LivenessProbe = &corev1.Probe{
 			ProbeHandler: corev1.ProbeHandler{
-				HTTPGet: &corev1.HTTPGetAction{
-					Path:   "/healthz",
-					Port:   intstr.FromInt32(HealthPort),
-					Scheme: corev1.URISchemeHTTP,
+				TCPSocket: &corev1.TCPSocketAction{
+					Port: intstr.FromInt32(ProxyPort),
 				},
 			},
 			InitialDelaySeconds: 5,
@@ -247,10 +232,8 @@ func (r *Agent) mutate(ctx context.Context, tcp *stewardv1alpha1.TenantControlPl
 		}
 		container.ReadinessProbe = &corev1.Probe{
 			ProbeHandler: corev1.ProbeHandler{
-				HTTPGet: &corev1.HTTPGetAction{
-					Path:   "/readyz",
-					Port:   intstr.FromInt32(HealthPort),
-					Scheme: corev1.URISchemeHTTP,
+				TCPSocket: &corev1.TCPSocketAction{
+					Port: intstr.FromInt32(ProxyPort),
 				},
 			},
 			InitialDelaySeconds: 3,
