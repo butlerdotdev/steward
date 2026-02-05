@@ -721,6 +721,13 @@ func (d Deployment) buildKubeAPIServerCommand(tenantControlPlane stewardv1alpha1
 		desiredArgs["--etcd-servers-overrides"] = d.etcdServersOverrides()
 	}
 
+	// When tcp-proxy is enabled, disable the built-in endpoint reconciler.
+	// tcp-proxy manages the kubernetes EndpointSlice directly inside the
+	// tenant cluster, so kube-apiserver must not fight it for ownership.
+	if tenantControlPlane.Spec.Addons.TCPProxy != nil {
+		desiredArgs["--endpoint-reconciler-type"] = "none"
+	}
+
 	// Order matters, here: extraArgs could try to overwrite some arguments managed by Steward and that would be crucial.
 	// Adding as first element of the array of maps, we're sure that these overrides will be sanitized by our configuration.
 	return utilities.MergeMaps(current, desiredArgs, extraArgs)

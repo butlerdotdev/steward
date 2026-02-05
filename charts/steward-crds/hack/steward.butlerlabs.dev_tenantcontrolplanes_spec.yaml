@@ -288,6 +288,78 @@ versions:
                           In case this value is set, kubeadm does not change automatically the version of the above components during upgrades.
                         type: string
                     type: object
+                  tcpProxy:
+                    description: |-
+                      TCPProxy enables the tcp-proxy addon in the tenant cluster.
+                      When enabled, tcp-proxy rewrites the default kubernetes EndpointSlice
+                      to route API server traffic through a local proxy, eliminating SNI
+                      rewriting requirements for Ingress and Gateway API network modes.
+                    properties:
+                      image:
+                        description: |-
+                          Image is the container image for the tcp-proxy.
+                          Defaults to ghcr.io/butlerdotdev/steward-tcp-proxy:<steward-version>
+                        type: string
+                      resources:
+                        description: Resources defines the compute resources for the tcp-proxy container.
+                        properties:
+                          claims:
+                            description: |-
+                              Claims lists the names of resources, defined in spec.resourceClaims,
+                              that are used by this container.
+
+                              This field depends on the
+                              DynamicResourceAllocation feature gate.
+
+                              This field is immutable. It can only be set for containers.
+                            items:
+                              description: ResourceClaim references one entry in PodSpec.ResourceClaims.
+                              properties:
+                                name:
+                                  description: |-
+                                    Name must match the name of one entry in pod.spec.resourceClaims of
+                                    the Pod where this field is used. It makes that resource available
+                                    inside a container.
+                                  type: string
+                                request:
+                                  description: |-
+                                    Request is the name chosen for a request in the referenced claim.
+                                    If empty, everything from the claim is made available, otherwise
+                                    only the result of this request.
+                                  type: string
+                              required:
+                                - name
+                              type: object
+                            type: array
+                            x-kubernetes-list-map-keys:
+                              - name
+                            x-kubernetes-list-type: map
+                          limits:
+                            additionalProperties:
+                              anyOf:
+                                - type: integer
+                                - type: string
+                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              x-kubernetes-int-or-string: true
+                            description: |-
+                              Limits describes the maximum amount of compute resources allowed.
+                              More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+                            type: object
+                          requests:
+                            additionalProperties:
+                              anyOf:
+                                - type: integer
+                                - type: string
+                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              x-kubernetes-int-or-string: true
+                            description: |-
+                              Requests describes the minimum amount of compute resources required.
+                              If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+                              otherwise to an implementation-defined value. Requests cannot exceed Limits.
+                              More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+                            type: object
+                        type: object
+                    type: object
                 type: object
               controlPlane:
                 description: |-
@@ -7910,6 +7982,75 @@ versions:
                       lastUpdate:
                         format: date-time
                         type: string
+                    required:
+                      - enabled
+                    type: object
+                  tcpProxy:
+                    description: TCPProxyStatus defines the observed state of the TCP proxy addon.
+                    properties:
+                      clusterRole:
+                        description: ClusterRole contains the status of the tcp-proxy ClusterRole.
+                        properties:
+                          lastUpdate:
+                            description: Last time when k8s object was updated
+                            format: date-time
+                            type: string
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                      clusterRoleBinding:
+                        description: ClusterRoleBinding contains the status of the tcp-proxy ClusterRoleBinding.
+                        properties:
+                          lastUpdate:
+                            description: Last time when k8s object was updated
+                            format: date-time
+                            type: string
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                      deployment:
+                        description: Deployment contains the status of the tcp-proxy Deployment in the tenant cluster.
+                        properties:
+                          lastUpdate:
+                            description: Last time when k8s object was updated
+                            format: date-time
+                            type: string
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                      enabled:
+                        description: Enabled indicates whether the tcp-proxy addon is currently active.
+                        type: boolean
+                      service:
+                        description: Service contains the status of the tcp-proxy Service in the tenant cluster.
+                        properties:
+                          lastUpdate:
+                            description: Last time when k8s object was updated
+                            format: date-time
+                            type: string
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                      serviceAccount:
+                        description: ServiceAccount contains the status of the tcp-proxy ServiceAccount.
+                        properties:
+                          lastUpdate:
+                            description: Last time when k8s object was updated
+                            format: date-time
+                            type: string
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
                     required:
                       - enabled
                     type: object

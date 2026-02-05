@@ -348,6 +348,12 @@ type AddonsSpec struct {
 	// Enables the kube-proxy addon in the Tenant Cluster.
 	// The registry and the tag are configurable, the image is hard-coded to `kube-proxy`.
 	KubeProxy *AddonSpec `json:"kubeProxy,omitempty"`
+	// TCPProxy enables the tcp-proxy addon in the tenant cluster.
+	// When enabled, tcp-proxy rewrites the default kubernetes EndpointSlice
+	// to route API server traffic through a local proxy, eliminating SNI
+	// rewriting requirements for Ingress and Gateway API network modes.
+	// +optional
+	TCPProxy *TCPProxySpec `json:"tcpProxy,omitempty"`
 }
 
 type Permissions struct {
