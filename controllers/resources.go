@@ -69,7 +69,7 @@ func GetResources(ctx context.Context, config GroupResourceBuilderConfiguration)
 	resources = append(resources, getKubernetesDeploymentResources(config.client, config.tcpReconcilerConfig, config.DataStore, config.DataStoreOverrides)...)
 	resources = append(resources, getKonnectivityServerPatchResources(config.client)...)
 	resources = append(resources, getDataStoreMigratingCleanup(config.client, config.StewardNamespace)...)
-	resources = append(resources, getKubernetesIngressResources(config.client)...)
+	resources = append(resources, getKubernetesIngressResources(config.client, &config.tenantControlPlane)...)
 
 	// Conditionally add Gateway resources
 	if utilities.AreGatewayResourcesAvailable(ctx, config.client, config.DiscoveryClient) {
@@ -304,11 +304,25 @@ func getKubernetesDeploymentResources(c client.Client, tcpReconcilerConfig Tenan
 	}
 }
 
-func getKubernetesIngressResources(c client.Client) []resources.Resource {
+func getKubernetesIngressResources(c client.Client, tcp *stewardv1alpha1.TenantControlPlane) []resources.Resource {
+	// If no ingress is configured, return standard ingress resource (it will handle cleanup/no-op)
+	if tcp.Spec.ControlPlane.Ingress == nil {
+		return []resources.Resource{
+			&resources.KubernetesIngressResource{Client: c},
+		}
+	}
+
+	// Route to Traefik IngressRouteTCP if controllerType is "traefik"
+	// Standard Kubernetes Ingress doesn't support TLS passthrough with Traefik
+	if tcp.Spec.ControlPlane.Ingress.ControllerType == "traefik" {
+		return []resources.Resource{
+			&resources.TraefikIngressRouteTCPResource{Client: c},
+		}
+	}
+
+	// For haproxy, nginx, generic, or unspecified - use standard Ingress with controller-specific annotations
 	return []resources.Resource{
-		&resources.KubernetesIngressResource{
-			Client: c,
-		},
+		&resources.KubernetesIngressResource{Client: c},
 	}
 }
 

@@ -149,12 +149,38 @@ func (r *KubernetesIngressResource) Define(_ context.Context, tenantControlPlane
 	return nil
 }
 
+// getControllerAnnotations returns the TLS passthrough annotations for the specified ingress controller type.
+func (r *KubernetesIngressResource) getControllerAnnotations(controllerType string) map[string]string {
+	switch controllerType {
+	case "haproxy":
+		return map[string]string{
+			"haproxy.org/ssl-passthrough": "true",
+		}
+	case "nginx":
+		return map[string]string{
+			"nginx.ingress.kubernetes.io/ssl-passthrough":  "true",
+			"nginx.ingress.kubernetes.io/backend-protocol": "HTTPS",
+		}
+	default: // "generic" or empty - no automatic annotations
+		return map[string]string{}
+	}
+}
+
 func (r *KubernetesIngressResource) mutate(tenantControlPlane *stewardv1alpha1.TenantControlPlane) controllerutil.MutateFn {
 	return func() error {
 		labels := utilities.MergeMaps(r.resource.GetLabels(), utilities.StewardLabels(tenantControlPlane.GetName(), r.GetName()), tenantControlPlane.Spec.ControlPlane.Ingress.AdditionalMetadata.Labels)
 		r.resource.SetLabels(labels)
 
-		annotations := utilities.MergeMaps(r.resource.GetAnnotations(), tenantControlPlane.Spec.ControlPlane.Ingress.AdditionalMetadata.Annotations)
+		// Get controller-specific TLS passthrough annotations
+		controllerType := tenantControlPlane.Spec.ControlPlane.Ingress.ControllerType
+		controllerAnnotations := r.getControllerAnnotations(controllerType)
+
+		// Merge annotations: controller defaults first, then user overrides
+		annotations := utilities.MergeMaps(
+			r.resource.GetAnnotations(),
+			controllerAnnotations,
+			tenantControlPlane.Spec.ControlPlane.Ingress.AdditionalMetadata.Annotations,
+		)
 		r.resource.SetAnnotations(annotations)
 
 		if tenantControlPlane.Spec.ControlPlane.Ingress.IngressClassName != "" {
@@ -204,6 +230,14 @@ func (r *KubernetesIngressResource) mutate(tenantControlPlane *stewardv1alpha1.T
 
 		r.resource.Spec.Rules = []networkingv1.IngressRule{
 			rule,
+		}
+
+		// Add TLS spec for TLS passthrough support
+		// The TLS section signals to ingress controllers that TLS handling is expected
+		r.resource.Spec.TLS = []networkingv1.IngressTLS{
+			{
+				Hosts: []string{rule.Host},
+			},
 		}
 
 		return controllerutil.SetControllerReference(tenantControlPlane, r.resource, r.Client.Scheme())
