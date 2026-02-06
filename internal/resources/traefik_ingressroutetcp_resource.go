@@ -176,10 +176,11 @@ func (r *TraefikIngressRouteTCPResource) mutate(tenantControlPlane *stewardv1alp
 			return fmt.Errorf("failed to set IngressRouteTCP spec: %w", err)
 		}
 
-		// Set owner reference
+		// Set owner reference using known GVK for TenantControlPlane
+		// (APIVersion and Kind fields may be empty on retrieved objects)
 		ownerRef := metav1.OwnerReference{
-			APIVersion:         tenantControlPlane.APIVersion,
-			Kind:               tenantControlPlane.Kind,
+			APIVersion:         stewardv1alpha1.GroupVersion.String(),
+			Kind:               "TenantControlPlane",
 			Name:               tenantControlPlane.Name,
 			UID:                tenantControlPlane.UID,
 			Controller:         func() *bool { b := true; return &b }(),
