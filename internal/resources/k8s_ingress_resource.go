@@ -83,7 +83,12 @@ func (r *KubernetesIngressResource) ShouldStatusBeUpdated(_ context.Context, tcp
 }
 
 func (r *KubernetesIngressResource) ShouldCleanup(tcp *stewardv1alpha1.TenantControlPlane) bool {
-	return tcp.Spec.ControlPlane.Ingress == nil
+	// Cleanup if ingress is not specified
+	if tcp.Spec.ControlPlane.Ingress == nil {
+		return true
+	}
+	// Cleanup when controllerType is traefik (Traefik uses IngressRouteTCP instead)
+	return tcp.Spec.ControlPlane.Ingress.ControllerType == "traefik"
 }
 
 func (r *KubernetesIngressResource) CleanUp(ctx context.Context, tcp *stewardv1alpha1.TenantControlPlane) (bool, error) {

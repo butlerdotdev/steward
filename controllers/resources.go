@@ -314,8 +314,11 @@ func getKubernetesIngressResources(c client.Client, tcp *stewardv1alpha1.TenantC
 
 	// Route to Traefik IngressRouteTCP if controllerType is "traefik"
 	// Standard Kubernetes Ingress doesn't support TLS passthrough with Traefik
+	// We return BOTH resources: KubernetesIngressResource will cleanup any existing Ingress,
+	// and TraefikIngressRouteTCPResource will create the IngressRouteTCP
 	if tcp.Spec.ControlPlane.Ingress.ControllerType == "traefik" {
 		return []resources.Resource{
+			&resources.KubernetesIngressResource{Client: c},
 			&resources.TraefikIngressRouteTCPResource{Client: c},
 		}
 	}

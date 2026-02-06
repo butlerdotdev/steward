@@ -55,8 +55,10 @@ func (t *TCPProxy) Reconcile(ctx context.Context, _ reconcile.Request) (reconcil
 		return reconcile.Result{}, err
 	}
 
-	// Early return if tcpProxy addon is not configured.
-	if tcp.Spec.Addons.TCPProxy == nil {
+	// Early return only if tcpProxy was never enabled (nothing to create or cleanup).
+	// If tcpProxy was previously enabled (status shows enabled=true), we must continue
+	// to allow resources.Handle to call ShouldCleanup and perform cleanup.
+	if tcp.Spec.Addons.TCPProxy == nil && !tcp.Status.Addons.TCPProxy.Enabled {
 		return reconcile.Result{}, nil
 	}
 
