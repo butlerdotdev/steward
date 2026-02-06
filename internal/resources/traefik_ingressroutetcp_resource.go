@@ -1,4 +1,4 @@
-// Copyright 2022 Butler Labs Labs
+// Copyright 2022 Butler Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package resources
@@ -37,6 +37,7 @@ type TraefikIngressRouteTCPResource struct {
 func (r *TraefikIngressRouteTCPResource) GetHistogram() prometheus.Histogram {
 	// Reuse the ingress collector since this is functionally similar
 	ingressCollector = LazyLoadHistogramFromResource(ingressCollector, r)
+
 	return ingressCollector
 }
 
@@ -51,6 +52,7 @@ func (r *TraefikIngressRouteTCPResource) ShouldCleanup(tcp *stewardv1alpha1.Tena
 	if tcp.Spec.ControlPlane.Ingress == nil {
 		return true
 	}
+
 	return tcp.Spec.ControlPlane.Ingress.ControllerType != "traefik"
 }
 
@@ -66,8 +68,10 @@ func (r *TraefikIngressRouteTCPResource) CleanUp(ctx context.Context, tcp *stewa
 	}, existing); err != nil {
 		if !k8serrors.IsNotFound(err) {
 			logger.Error(err, "failed to get IngressRouteTCP resource before cleanup")
+
 			return false, err
 		}
+
 		return false, nil
 	}
 
@@ -77,6 +81,7 @@ func (r *TraefikIngressRouteTCPResource) CleanUp(ctx context.Context, tcp *stewa
 	for _, ref := range ownerRefs {
 		if ref.UID == tcp.GetUID() {
 			isOwned = true
+
 			break
 		}
 	}
