@@ -30,6 +30,7 @@ type ClusterRoleBindingResource struct {
 
 func (r *ClusterRoleBindingResource) GetHistogram() prometheus.Histogram {
 	clusterRoleBindingCollector = resources.LazyLoadHistogramFromResource(clusterRoleBindingCollector, r)
+
 	return clusterRoleBindingCollector
 }
 

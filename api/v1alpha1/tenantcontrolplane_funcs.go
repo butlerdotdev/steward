@@ -1,4 +1,4 @@
-// Copyright 2022 Butler Labs Labs
+// Copyright 2026 Butler Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package v1alpha1
@@ -86,6 +86,7 @@ func (in *TenantControlPlane) ExternalControlPlaneAddress(ctx context.Context, c
 		if idx := strings.Index(hostname, ":"); idx != -1 {
 			hostname = hostname[:idx]
 		}
+
 		return hostname, 443, nil
 	}
 
@@ -99,6 +100,7 @@ func (in *TenantControlPlane) ExternalControlPlaneAddress(ctx context.Context, c
 	if err != nil {
 		return "", 0, err
 	}
+
 	return addr, in.Spec.NetworkProfile.Port, nil
 }
 

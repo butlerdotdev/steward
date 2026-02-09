@@ -1,4 +1,4 @@
-// Copyright 2022 Butler Labs
+// Copyright 2026 Butler Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package resources
@@ -13,6 +13,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/utils/ptr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
@@ -89,14 +90,17 @@ func (r *TraefikIngressRouteTCPResource) CleanUp(ctx context.Context, tcp *stewa
 
 	if !isOwned {
 		logger.Info("skipping cleanup: IngressRouteTCP is not managed by Steward", "name", existing.GetName(), "namespace", existing.GetNamespace())
+
 		return false, nil
 	}
 
 	if err := r.Client.Delete(ctx, existing); err != nil {
 		if !k8serrors.IsNotFound(err) {
 			logger.Error(err, "cannot cleanup IngressRouteTCP resource")
+
 			return false, err
 		}
+
 		return false, nil
 	}
 
@@ -113,6 +117,7 @@ func (r *TraefikIngressRouteTCPResource) Define(_ context.Context, tenantControl
 	r.resource.SetGroupVersionKind(ingressRouteTCPGVK)
 	r.resource.SetName(tenantControlPlane.GetName())
 	r.resource.SetNamespace(tenantControlPlane.GetNamespace())
+
 	return nil
 }
 
@@ -214,8 +219,8 @@ func (r *TraefikIngressRouteTCPResource) mutate(tenantControlPlane *stewardv1alp
 			Kind:               "TenantControlPlane",
 			Name:               tenantControlPlane.Name,
 			UID:                tenantControlPlane.UID,
-			Controller:         func() *bool { b := true; return &b }(),
-			BlockOwnerDeletion: func() *bool { b := true; return &b }(),
+			Controller:         ptr.To(true),
+			BlockOwnerDeletion: ptr.To(true),
 		}
 		r.resource.SetOwnerReferences([]metav1.OwnerReference{ownerRef})
 

@@ -30,6 +30,7 @@ type ServiceAccountResource struct {
 
 func (r *ServiceAccountResource) GetHistogram() prometheus.Histogram {
 	serviceAccountCollector = resources.LazyLoadHistogramFromResource(serviceAccountCollector, r)
+
 	return serviceAccountCollector
 }
 

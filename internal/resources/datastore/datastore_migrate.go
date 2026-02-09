@@ -1,4 +1,4 @@
-// Copyright 2022 Butler Labs Labs
+// Copyright 2026 Butler Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package datastore
@@ -25,12 +25,12 @@ import (
 )
 
 type Migrate struct {
-	Client               client.Client
+	Client                client.Client
 	StewardNamespace      string
 	StewardServiceAccount string
 	StewardServiceName    string
-	ShouldCleanUp        bool
-	MigrateImage         string
+	ShouldCleanUp         bool
+	MigrateImage          string
 
 	actualDatastore  *stewardv1alpha1.DataStore
 	desiredDatastore *stewardv1alpha1.DataStore

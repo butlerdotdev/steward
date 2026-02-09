@@ -1,4 +1,4 @@
-// Copyright 2022 Butler Labs Labs
+// Copyright 2026 Butler Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package controlplane
@@ -26,10 +26,10 @@ const (
 	konnectivityServerPath                      = "/run/konnectivity"
 	konnectivityServerCertPath                  = "/etc/konnectivity/pki"
 
-	egressSelectorConfigurationVolume    = "egress-selector-configuration"
-	konnectivityUDSVolume                = "konnectivity-uds"
-	konnectivityServerKubeconfigVolume   = "konnectivity-server-kubeconfig"
-	konnectivityServerCertificateVolume  = "konnectivity-server-certificate"
+	egressSelectorConfigurationVolume   = "egress-selector-configuration"
+	konnectivityUDSVolume               = "konnectivity-uds"
+	konnectivityServerKubeconfigVolume  = "konnectivity-server-kubeconfig"
+	konnectivityServerCertificateVolume = "konnectivity-server-certificate"
 )
 
 type Konnectivity struct {

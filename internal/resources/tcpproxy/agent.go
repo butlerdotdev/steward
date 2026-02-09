@@ -45,6 +45,7 @@ type Agent struct {
 
 func (r *Agent) GetHistogram() prometheus.Histogram {
 	deploymentCollector = resources.LazyLoadHistogramFromResource(deploymentCollector, r)
+
 	return deploymentCollector
 }
 
@@ -162,6 +163,7 @@ func getIngressHostname(tcp *stewardv1alpha1.TenantControlPlane) string {
 	if tcp.Spec.ControlPlane.Gateway != nil && len(tcp.Spec.ControlPlane.Gateway.Hostname) > 0 {
 		return string(tcp.Spec.ControlPlane.Gateway.Hostname)
 	}
+
 	return ""
 }
 
@@ -202,10 +204,12 @@ func (r *Agent) ensureTLSSecret(ctx context.Context, tcp *stewardv1alpha1.Tenant
 			"tls.crt": mgmtSecret.Data[kubeadmconstants.APIServerCertName],
 			"tls.key": mgmtSecret.Data[kubeadmconstants.APIServerKeyName],
 		}
+
 		return nil
 	})
 	if err != nil {
 		logger.Error(err, "failed to create/update TLS secret in tenant cluster")
+
 		return err
 	}
 
@@ -215,7 +219,7 @@ func (r *Agent) ensureTLSSecret(ctx context.Context, tcp *stewardv1alpha1.Tenant
 // resolveUpstreamEndpoint determines the upstream address for tcp-proxy.
 // For Ingress/Gateway modes, uses the Ingress hostname (TLS termination mode).
 // For LoadBalancer/NodePort, uses the assigned address (passthrough mode).
-func resolveUpstreamEndpoint(ctx context.Context, c client.Client, tcp *stewardv1alpha1.TenantControlPlane) (string, error) {
+func resolveUpstreamEndpoint(_ context.Context, _ client.Client, tcp *stewardv1alpha1.TenantControlPlane) (string, error) {
 	if isIngressOrGatewayMode(tcp) {
 		// Use the Ingress hostname - tcp-proxy will connect with proper SNI
 		hostname := getIngressHostname(tcp)
@@ -246,6 +250,7 @@ func (r *Agent) mutate(ctx context.Context, tcp *stewardv1alpha1.TenantControlPl
 		upstreamEndpoint, err := resolveUpstreamEndpoint(ctx, r.Client, tcp)
 		if err != nil {
 			logger.Error(err, "unable to resolve upstream endpoint for tcp-proxy")
+
 			return err
 		}
 

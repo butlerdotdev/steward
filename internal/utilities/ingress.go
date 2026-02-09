@@ -1,4 +1,4 @@
-// Copyright 2022 Butler Labs Labs
+// Copyright 2026 Butler Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package utilities
@@ -27,6 +27,7 @@ func GetControlPlaneAddressAndPortFromHostname(hostname string, defaultPort int3
 // ExtractHost extracts the host part from a host:port string.
 func ExtractHost(hostPort string) string {
 	parts := strings.Split(hostPort, ":")
+
 	return parts[0]
 }
 
@@ -37,5 +38,6 @@ func ExtractPort(hostPort string) string {
 	if len(parts) == 2 {
 		return parts[1]
 	}
+
 	return "6443"
 }

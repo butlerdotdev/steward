@@ -1,4 +1,4 @@
-// Copyright 2022 Butler Labs Labs
+// Copyright 2026 Butler Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package controllers
@@ -35,10 +35,10 @@ type GroupResourceBuilderConfiguration struct {
 	DataStore                     stewardv1alpha1.DataStore
 	DataStoreOverrides            []builder.DataStoreOverrides
 	DataStoreOverriedsConnections map[string]datastore.Connection
-	StewardNamespace               string
-	StewardServiceAccount          string
-	StewardService                 string
-	StewardMigrateImage            string
+	StewardNamespace              string
+	StewardServiceAccount         string
+	StewardService                string
+	StewardMigrateImage           string
 	DiscoveryClient               discovery.DiscoveryInterface
 }
 
@@ -104,9 +104,9 @@ func GetDeletableResources(tcp *stewardv1alpha1.TenantControlPlane, config Group
 func getDataStoreMigratingCleanup(c client.Client, stewardNamespace string) []resources.Resource {
 	return []resources.Resource{
 		&ds.Migrate{
-			Client:          c,
+			Client:           c,
 			StewardNamespace: stewardNamespace,
-			ShouldCleanUp:   true,
+			ShouldCleanUp:    true,
 		},
 	}
 }
@@ -114,8 +114,8 @@ func getDataStoreMigratingCleanup(c client.Client, stewardNamespace string) []re
 func getDataStoreMigratingResources(c client.Client, stewardNamespace, migrateImage string, stewardServiceAccount, stewardService string) []resources.Resource {
 	return []resources.Resource{
 		&ds.Migrate{
-			Client:               c,
-			MigrateImage:         migrateImage,
+			Client:                c,
+			MigrateImage:          migrateImage,
 			StewardNamespace:      stewardNamespace,
 			StewardServiceAccount: stewardServiceAccount,
 			StewardServiceName:    stewardService,

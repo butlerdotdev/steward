@@ -1,4 +1,4 @@
-// Copyright 2022 Butler Labs Labs
+// Copyright 2026 Butler Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package controllers
@@ -50,10 +50,10 @@ type TenantControlPlaneReconciler struct {
 	APIReader               client.Reader
 	Config                  TenantControlPlaneReconcilerConfig
 	TriggerChan             chan event.GenericEvent
-	StewardNamespace         string
-	StewardServiceAccount    string
-	StewardService           string
-	StewardMigrateImage      string
+	StewardNamespace        string
+	StewardServiceAccount   string
+	StewardService          string
+	StewardMigrateImage     string
 	MaxConcurrentReconciles int
 	ReconcileTimeout        time.Duration
 	DiscoveryClient         discovery.DiscoveryInterface
@@ -211,10 +211,10 @@ func (r *TenantControlPlaneReconciler) Reconcile(ctx context.Context, req ctrl.R
 		DataStore:                     *ds,
 		DataStoreOverrides:            dso,
 		DataStoreOverriedsConnections: dsoConnections,
-		StewardNamespace:               r.StewardNamespace,
-		StewardServiceAccount:          r.StewardServiceAccount,
-		StewardService:                 r.StewardService,
-		StewardMigrateImage:            r.StewardMigrateImage,
+		StewardNamespace:              r.StewardNamespace,
+		StewardServiceAccount:         r.StewardServiceAccount,
+		StewardService:                r.StewardService,
+		StewardMigrateImage:           r.StewardMigrateImage,
 		DiscoveryClient:               r.DiscoveryClient,
 	}
 	registeredResources := GetResources(ctx, groupResourceBuilderConfiguration)

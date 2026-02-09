@@ -48,10 +48,12 @@ func (t *TCPProxy) Reconcile(ctx context.Context, _ reconcile.Request) (reconcil
 	if err != nil {
 		if errors.Is(err, sooterrors.ErrPausedReconciliation) {
 			t.Logger.Info(err.Error())
+
 			return reconcile.Result{}, nil
 		}
 
 		t.Logger.Error(err, "cannot retrieve TenantControlPlane")
+
 		return reconcile.Result{}, err
 	}
 
@@ -68,21 +70,25 @@ func (t *TCPProxy) Reconcile(ctx context.Context, _ reconcile.Request) (reconcil
 		result, handlingErr := resources.Handle(ctx, resource, tcp)
 		if handlingErr != nil {
 			t.Logger.Error(handlingErr, "resource process failed", "resource", resource.GetName())
+
 			return reconcile.Result{}, handlingErr
 		}
 
 		if result == controllerutil.OperationResultNone {
 			t.Logger.Info("resource processed", "resource", resource.GetName())
+
 			continue
 		}
 
 		if err = utils.UpdateStatus(ctx, t.AdminClient, tcp, resource); err != nil {
 			t.Logger.Error(err, "update status failed", "resource", resource.GetName())
+
 			return reconcile.Result{}, err
 		}
 	}
 
 	t.Logger.Info("reconciliation completed")
+
 	return reconcile.Result{}, nil
 }
 
@@ -112,6 +118,7 @@ func (t *TCPProxy) SetupWithManager(mgr manager.Manager) error {
 							},
 						}}
 					}
+
 					return nil
 				},
 			),
@@ -127,6 +134,7 @@ func (t *TCPProxy) SetupWithManager(mgr manager.Manager) error {
 							},
 						}}
 					}
+
 					return nil
 				},
 			),
