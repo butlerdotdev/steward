@@ -278,7 +278,7 @@ e2e: env build load helm ginkgo cert-manager gateway-api envoy-gateway ## Create
 
 ##@ Document
 
-CAPI_URL = https://github.com/butlerdotdev/steward-capi-provider.git
+CAPI_URL = https://github.com/butlerdotdev/cluster-api-control-plane-provider-steward.git
 CAPI_DIR := $(shell mktemp -d)
 CRDS_DIR := $(shell mktemp -d)
 
