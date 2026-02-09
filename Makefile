@@ -233,6 +233,9 @@ build-ko: $(KO) ## Build using ko (legacy).
 	KOCACHE=/tmp/ko-cache KO_DOCKER_REPO=${CONTAINER_REPOSITORY} \
 	$(KO) build ./ --bare --tags=$(VERSION) --local=$(KO_LOCAL) --push=$(KO_PUSH)
 
+docker-build: ## Build the Docker image locally.
+	docker build -t ${CONTAINER_REPOSITORY}:${VERSION} .
+
 ##@ Development
 
 metallb:
@@ -268,7 +271,7 @@ cleanup: kind
 	$(KIND) delete cluster --name steward
 
 .PHONY: e2e
-e2e: env build load helm ginkgo cert-manager gateway-api envoy-gateway ## Create a KinD cluster, install Steward on it and run the test suite.
+e2e: env docker-build load helm ginkgo cert-manager gateway-api envoy-gateway ## Create a KinD cluster, install Steward on it and run the test suite.
 	$(HELM) upgrade --debug --install steward-crds ./charts/steward-crds --create-namespace --namespace steward-system
 	$(HELM) repo add butlerlabs https://butlerdotdev.github.io/charts
 	$(HELM) dependency build ./charts/steward
