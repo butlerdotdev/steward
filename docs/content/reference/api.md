@@ -259,6 +259,16 @@ The registry and the tag are configurable, the image is hard-coded to `coredns`.
 The registry and the tag are configurable, the image is hard-coded to `kube-proxy`.<br/>
         </td>
         <td>false</td>
+      </tr><tr>
+        <td><b><a href="#stewardcontrolplanespecaddonstcpproxy">tcpProxy</a></b></td>
+        <td>object</td>
+        <td>
+          TCPProxy enables the tcp-proxy addon in the tenant cluster.
+When enabled, tcp-proxy rewrites the default kubernetes EndpointSlice
+to route API server traffic through a local proxy, eliminating SNI
+rewriting requirements for Ingress and Gateway API network modes.<br/>
+        </td>
+        <td>false</td>
       </tr></tbody>
 </table>
 
@@ -674,6 +684,181 @@ if not set, the default ImageRepository will be used instead.<br/>
         <td>
           ImageTag allows to specify a tag for the image.
 In case this value is set, kubeadm does not change automatically the version of the above components during upgrades.<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="stewardcontrolplanespecaddonstcpproxy">`StewardControlPlane.spec.addons.tcpProxy`</span>
+
+
+TCPProxy enables the tcp-proxy addon in the tenant cluster.
+When enabled, tcp-proxy rewrites the default kubernetes EndpointSlice
+to route API server traffic through a local proxy, eliminating SNI
+rewriting requirements for Ingress and Gateway API network modes.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b><a href="#stewardcontrolplanespecaddonstcpproxyhostaliasesindex">hostAliases</a></b></td>
+        <td>[]object</td>
+        <td>
+          HostAliases provides hostname-to-IP mappings for /etc/hosts injection.
+Required for Ingress/Gateway modes where the API server hostname must be
+resolved before CoreDNS is available. The tcp-proxy uses hostNetwork,
+so it needs these entries to connect to the upstream API server.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>image</b></td>
+        <td>string</td>
+        <td>
+          Image is the container image for the tcp-proxy.
+Defaults to ghcr.io/butlerdotdev/steward-tcp-proxy:<steward-version><br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>internalEndpoint</b></td>
+        <td>string</td>
+        <td>
+          InternalEndpoint is the direct endpoint for tcp-proxy to reach the API server.
+For Ingress/Gateway modes, this should be a management cluster node IP that
+is reachable from tenant worker nodes (e.g., "10.40.0.201"). The NodePort
+is automatically appended by Steward based on the service configuration.
+If not specified, Steward attempts to use the service's LoadBalancer IP.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b><a href="#stewardcontrolplanespecaddonstcpproxyresources">resources</a></b></td>
+        <td>object</td>
+        <td>
+          Resources defines the compute resources for the tcp-proxy container.<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="stewardcontrolplanespecaddonstcpproxyhostaliasesindex">`StewardControlPlane.spec.addons.tcpProxy.hostAliases[index]`</span>
+
+
+TCPProxyHostAlias defines a hostname-to-IP mapping for /etc/hosts injection.
+Used to resolve hostnames before DNS is available (bootstrap phase).
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>hostnames</b></td>
+        <td>[]string</td>
+        <td>
+          Hostnames for the IP address.<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>ip</b></td>
+        <td>string</td>
+        <td>
+          IP address of the host entry.<br/>
+        </td>
+        <td>true</td>
+      </tr></tbody>
+</table>
+
+
+<span id="stewardcontrolplanespecaddonstcpproxyresources">`StewardControlPlane.spec.addons.tcpProxy.resources`</span>
+
+
+Resources defines the compute resources for the tcp-proxy container.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b><a href="#stewardcontrolplanespecaddonstcpproxyresourcesclaimsindex">claims</a></b></td>
+        <td>[]object</td>
+        <td>
+          Claims lists the names of resources, defined in spec.resourceClaims,
+that are used by this container.
+
+This field depends on the
+DynamicResourceAllocation feature gate.
+
+This field is immutable. It can only be set for containers.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>limits</b></td>
+        <td>map[string]int or string</td>
+        <td>
+          Limits describes the maximum amount of compute resources allowed.
+More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>requests</b></td>
+        <td>map[string]int or string</td>
+        <td>
+          Requests describes the minimum amount of compute resources required.
+If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+otherwise to an implementation-defined value. Requests cannot exceed Limits.
+More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="stewardcontrolplanespecaddonstcpproxyresourcesclaimsindex">`StewardControlPlane.spec.addons.tcpProxy.resources.claims[index]`</span>
+
+
+ResourceClaim references one entry in PodSpec.ResourceClaims.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>name</b></td>
+        <td>string</td>
+        <td>
+          Name must match the name of one entry in pod.spec.resourceClaims of
+the Pod where this field is used. It makes that resource available
+inside a container.<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>request</b></td>
+        <td>string</td>
+        <td>
+          Request is the name chosen for a request in the referenced claim.
+If empty, everything from the claim is made available, otherwise
+only the result of this request.<br/>
         </td>
         <td>false</td>
       </tr></tbody>
@@ -13256,6 +13441,14 @@ When set to an empty slice, Steward will automatically inflect it from the Servi
         </td>
         <td>false</td>
       </tr><tr>
+        <td><b><a href="#stewardcontrolplanespecnetworkgateway">gateway</a></b></td>
+        <td>object</td>
+        <td>
+          When specified, the StewardControlPlane will be reachable using a Gateway API TLSRoute
+deployed in the management cluster.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
         <td><b><a href="#stewardcontrolplanespecnetworkingress">ingress</a></b></td>
         <td>object</td>
         <td>
@@ -13306,6 +13499,221 @@ helping when serviceType is NodePort.<br/>
 </table>
 
 
+<span id="stewardcontrolplanespecnetworkgateway">`StewardControlPlane.spec.network.gateway`</span>
+
+
+When specified, the StewardControlPlane will be reachable using a Gateway API TLSRoute
+deployed in the management cluster.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>hostname</b></td>
+        <td>string</td>
+        <td>
+          Hostname is used as the TLSRoute hostname for Gateway API routing.
+When using a Gateway the hostname is automatically added to the Certificate SANs.<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>extraAnnotations</b></td>
+        <td>map[string]string</td>
+        <td>
+          ExtraAnnotations defines extra annotations for the TLSRoute object.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>extraLabels</b></td>
+        <td>map[string]string</td>
+        <td>
+          ExtraLabels defines extra labels for the TLSRoute object.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b><a href="#stewardcontrolplanespecnetworkgatewayparentrefsindex">parentRefs</a></b></td>
+        <td>[]object</td>
+        <td>
+          ParentRefs defines the Gateway parent references for TLS routing.
+Do not specify port or sectionName; these are set automatically by Steward.<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="stewardcontrolplanespecnetworkgatewayparentrefsindex">`StewardControlPlane.spec.network.gateway.parentRefs[index]`</span>
+
+
+ParentReference identifies an API object (usually a Gateway) that can be considered
+a parent of this resource (usually a route). There are two kinds of parent resources
+with "Core" support:
+
+* Gateway (Gateway conformance profile)
+* Service (Mesh conformance profile, ClusterIP Services only)
+
+This API may be extended in the future to support additional kinds of parent
+resources.
+
+The API object must be valid in the cluster; the Group and Kind must
+be registered in the cluster for this reference to be valid.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>name</b></td>
+        <td>string</td>
+        <td>
+          Name is the name of the referent.
+
+Support: Core<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>group</b></td>
+        <td>string</td>
+        <td>
+          Group is the group of the referent.
+When unspecified, "gateway.networking.k8s.io" is inferred.
+To set the core API group (such as for a "Service" kind referent),
+Group must be explicitly set to "" (empty string).
+
+Support: Core<br/>
+          <br/>
+            <i>Default</i>: gateway.networking.k8s.io<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>kind</b></td>
+        <td>string</td>
+        <td>
+          Kind is kind of the referent.
+
+There are two kinds of parent resources with "Core" support:
+
+* Gateway (Gateway conformance profile)
+* Service (Mesh conformance profile, ClusterIP Services only)
+
+Support for other resources is Implementation-Specific.<br/>
+          <br/>
+            <i>Default</i>: Gateway<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>namespace</b></td>
+        <td>string</td>
+        <td>
+          Namespace is the namespace of the referent. When unspecified, this refers
+to the local namespace of the Route.
+
+Note that there are specific rules for ParentRefs which cross namespace
+boundaries. Cross-namespace references are only valid if they are explicitly
+allowed by something in the namespace they are referring to. For example:
+Gateway has the AllowedRoutes field, and ReferenceGrant provides a
+generic way to enable any other kind of cross-namespace reference.
+
+<gateway:experimental:description>
+ParentRefs from a Route to a Service in the same namespace are "producer"
+routes, which apply default routing rules to inbound connections from
+any namespace to the Service.
+
+ParentRefs from a Route to a Service in a different namespace are
+"consumer" routes, and these routing rules are only applied to outbound
+connections originating from the same namespace as the Route, for which
+the intended destination of the connections are a Service targeted as a
+ParentRef of the Route.
+</gateway:experimental:description>
+
+Support: Core<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>port</b></td>
+        <td>integer</td>
+        <td>
+          Port is the network port this Route targets. It can be interpreted
+differently based on the type of parent resource.
+
+When the parent resource is a Gateway, this targets all listeners
+listening on the specified port that also support this kind of Route(and
+select this Route). It's not recommended to set `Port` unless the
+networking behaviors specified in a Route must apply to a specific port
+as opposed to a listener(s) whose port(s) may be changed. When both Port
+and SectionName are specified, the name and port of the selected listener
+must match both specified values.
+
+<gateway:experimental:description>
+When the parent resource is a Service, this targets a specific port in the
+Service spec. When both Port (experimental) and SectionName are specified,
+the name and port of the selected port must match both specified values.
+</gateway:experimental:description>
+
+Implementations MAY choose to support other parent resources.
+Implementations supporting other types of parent resources MUST clearly
+document how/if Port is interpreted.
+
+For the purpose of status, an attachment is considered successful as
+long as the parent resource accepts it partially. For example, Gateway
+listeners can restrict which Routes can attach to them by Route kind,
+namespace, or hostname. If 1 of 2 Gateway listeners accept attachment
+from the referencing Route, the Route MUST be considered successfully
+attached. If no Gateway listeners accept attachment from this Route,
+the Route MUST be considered detached from the Gateway.
+
+Support: Extended<br/>
+          <br/>
+            <i>Format</i>: int32<br/>
+            <i>Minimum</i>: 1<br/>
+            <i>Maximum</i>: 65535<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>sectionName</b></td>
+        <td>string</td>
+        <td>
+          SectionName is the name of a section within the target resource. In the
+following resources, SectionName is interpreted as the following:
+
+* Gateway: Listener name. When both Port (experimental) and SectionName
+are specified, the name and port of the selected listener must match
+both specified values.
+* Service: Port name. When both Port (experimental) and SectionName
+are specified, the name and port of the selected listener must match
+both specified values.
+
+Implementations MAY choose to support attaching Routes to other resources.
+If that is the case, they MUST clearly document how SectionName is
+interpreted.
+
+When unspecified (empty string), this will reference the entire resource.
+For the purpose of status, an attachment is considered successful if at
+least one section in the parent resource accepts it. For example, Gateway
+listeners can restrict which Routes can attach to them by Route kind,
+namespace, or hostname. If 1 of 2 Gateway listeners accept attachment from
+the referencing Route, the Route MUST be considered successfully
+attached. If no Gateway listeners accept attachment from this Route, the
+Route MUST be considered detached from the Gateway.
+
+Support: Core<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
 <span id="stewardcontrolplanespecnetworkingress">`StewardControlPlane.spec.network.ingress`</span>
 
 
@@ -13334,6 +13742,21 @@ When using an Ingress object the FQDN is automatically added to the Certificate 
         <td>string</td>
         <td>
           Defines the Ingress Class for the Ingress object.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>controllerType</b></td>
+        <td>enum</td>
+        <td>
+          ControllerType specifies the ingress controller type for automatic TLS passthrough configuration.
+Supported values: "haproxy", "nginx", "traefik", "generic"
+- haproxy: Uses haproxy.org/ssl-passthrough annotation
+- nginx: Uses nginx.ingress.kubernetes.io/ssl-passthrough annotation
+- traefik: Creates IngressRouteTCP instead of standard Ingress
+- generic: No automatic annotations, use extraAnnotations for custom configuration
+If not specified, defaults to "generic".<br/>
+          <br/>
+            <i>Enum</i>: haproxy, nginx, traefik, generic<br/>
         </td>
         <td>false</td>
       </tr><tr>
@@ -14073,6 +14496,16 @@ The registry and the tag are configurable, the image is hard-coded to `coredns`.
 The registry and the tag are configurable, the image is hard-coded to `kube-proxy`.<br/>
         </td>
         <td>false</td>
+      </tr><tr>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecaddonstcpproxy">tcpProxy</a></b></td>
+        <td>object</td>
+        <td>
+          TCPProxy enables the tcp-proxy addon in the tenant cluster.
+When enabled, tcp-proxy rewrites the default kubernetes EndpointSlice
+to route API server traffic through a local proxy, eliminating SNI
+rewriting requirements for Ingress and Gateway API network modes.<br/>
+        </td>
+        <td>false</td>
       </tr></tbody>
 </table>
 
@@ -14488,6 +14921,181 @@ if not set, the default ImageRepository will be used instead.<br/>
         <td>
           ImageTag allows to specify a tag for the image.
 In case this value is set, kubeadm does not change automatically the version of the above components during upgrades.<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="stewardcontrolplanetemplatespectemplatespecaddonstcpproxy">`StewardControlPlaneTemplate.spec.template.spec.addons.tcpProxy`</span>
+
+
+TCPProxy enables the tcp-proxy addon in the tenant cluster.
+When enabled, tcp-proxy rewrites the default kubernetes EndpointSlice
+to route API server traffic through a local proxy, eliminating SNI
+rewriting requirements for Ingress and Gateway API network modes.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecaddonstcpproxyhostaliasesindex">hostAliases</a></b></td>
+        <td>[]object</td>
+        <td>
+          HostAliases provides hostname-to-IP mappings for /etc/hosts injection.
+Required for Ingress/Gateway modes where the API server hostname must be
+resolved before CoreDNS is available. The tcp-proxy uses hostNetwork,
+so it needs these entries to connect to the upstream API server.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>image</b></td>
+        <td>string</td>
+        <td>
+          Image is the container image for the tcp-proxy.
+Defaults to ghcr.io/butlerdotdev/steward-tcp-proxy:<steward-version><br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>internalEndpoint</b></td>
+        <td>string</td>
+        <td>
+          InternalEndpoint is the direct endpoint for tcp-proxy to reach the API server.
+For Ingress/Gateway modes, this should be a management cluster node IP that
+is reachable from tenant worker nodes (e.g., "10.40.0.201"). The NodePort
+is automatically appended by Steward based on the service configuration.
+If not specified, Steward attempts to use the service's LoadBalancer IP.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecaddonstcpproxyresources">resources</a></b></td>
+        <td>object</td>
+        <td>
+          Resources defines the compute resources for the tcp-proxy container.<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="stewardcontrolplanetemplatespectemplatespecaddonstcpproxyhostaliasesindex">`StewardControlPlaneTemplate.spec.template.spec.addons.tcpProxy.hostAliases[index]`</span>
+
+
+TCPProxyHostAlias defines a hostname-to-IP mapping for /etc/hosts injection.
+Used to resolve hostnames before DNS is available (bootstrap phase).
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>hostnames</b></td>
+        <td>[]string</td>
+        <td>
+          Hostnames for the IP address.<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>ip</b></td>
+        <td>string</td>
+        <td>
+          IP address of the host entry.<br/>
+        </td>
+        <td>true</td>
+      </tr></tbody>
+</table>
+
+
+<span id="stewardcontrolplanetemplatespectemplatespecaddonstcpproxyresources">`StewardControlPlaneTemplate.spec.template.spec.addons.tcpProxy.resources`</span>
+
+
+Resources defines the compute resources for the tcp-proxy container.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecaddonstcpproxyresourcesclaimsindex">claims</a></b></td>
+        <td>[]object</td>
+        <td>
+          Claims lists the names of resources, defined in spec.resourceClaims,
+that are used by this container.
+
+This field depends on the
+DynamicResourceAllocation feature gate.
+
+This field is immutable. It can only be set for containers.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>limits</b></td>
+        <td>map[string]int or string</td>
+        <td>
+          Limits describes the maximum amount of compute resources allowed.
+More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>requests</b></td>
+        <td>map[string]int or string</td>
+        <td>
+          Requests describes the minimum amount of compute resources required.
+If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+otherwise to an implementation-defined value. Requests cannot exceed Limits.
+More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="stewardcontrolplanetemplatespectemplatespecaddonstcpproxyresourcesclaimsindex">`StewardControlPlaneTemplate.spec.template.spec.addons.tcpProxy.resources.claims[index]`</span>
+
+
+ResourceClaim references one entry in PodSpec.ResourceClaims.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>name</b></td>
+        <td>string</td>
+        <td>
+          Name must match the name of one entry in pod.spec.resourceClaims of
+the Pod where this field is used. It makes that resource available
+inside a container.<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>request</b></td>
+        <td>string</td>
+        <td>
+          Request is the name chosen for a request in the referenced claim.
+If empty, everything from the claim is made available, otherwise
+only the result of this request.<br/>
         </td>
         <td>false</td>
       </tr></tbody>
@@ -27036,6 +27644,14 @@ When set to an empty slice, Steward will automatically inflect it from the Servi
         </td>
         <td>false</td>
       </tr><tr>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecnetworkgateway">gateway</a></b></td>
+        <td>object</td>
+        <td>
+          When specified, the StewardControlPlane will be reachable using a Gateway API TLSRoute
+deployed in the management cluster.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
         <td><b><a href="#stewardcontrolplanetemplatespectemplatespecnetworkingress">ingress</a></b></td>
         <td>object</td>
         <td>
@@ -27086,6 +27702,221 @@ helping when serviceType is NodePort.<br/>
 </table>
 
 
+<span id="stewardcontrolplanetemplatespectemplatespecnetworkgateway">`StewardControlPlaneTemplate.spec.template.spec.network.gateway`</span>
+
+
+When specified, the StewardControlPlane will be reachable using a Gateway API TLSRoute
+deployed in the management cluster.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>hostname</b></td>
+        <td>string</td>
+        <td>
+          Hostname is used as the TLSRoute hostname for Gateway API routing.
+When using a Gateway the hostname is automatically added to the Certificate SANs.<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>extraAnnotations</b></td>
+        <td>map[string]string</td>
+        <td>
+          ExtraAnnotations defines extra annotations for the TLSRoute object.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>extraLabels</b></td>
+        <td>map[string]string</td>
+        <td>
+          ExtraLabels defines extra labels for the TLSRoute object.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecnetworkgatewayparentrefsindex">parentRefs</a></b></td>
+        <td>[]object</td>
+        <td>
+          ParentRefs defines the Gateway parent references for TLS routing.
+Do not specify port or sectionName; these are set automatically by Steward.<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="stewardcontrolplanetemplatespectemplatespecnetworkgatewayparentrefsindex">`StewardControlPlaneTemplate.spec.template.spec.network.gateway.parentRefs[index]`</span>
+
+
+ParentReference identifies an API object (usually a Gateway) that can be considered
+a parent of this resource (usually a route). There are two kinds of parent resources
+with "Core" support:
+
+* Gateway (Gateway conformance profile)
+* Service (Mesh conformance profile, ClusterIP Services only)
+
+This API may be extended in the future to support additional kinds of parent
+resources.
+
+The API object must be valid in the cluster; the Group and Kind must
+be registered in the cluster for this reference to be valid.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>name</b></td>
+        <td>string</td>
+        <td>
+          Name is the name of the referent.
+
+Support: Core<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>group</b></td>
+        <td>string</td>
+        <td>
+          Group is the group of the referent.
+When unspecified, "gateway.networking.k8s.io" is inferred.
+To set the core API group (such as for a "Service" kind referent),
+Group must be explicitly set to "" (empty string).
+
+Support: Core<br/>
+          <br/>
+            <i>Default</i>: gateway.networking.k8s.io<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>kind</b></td>
+        <td>string</td>
+        <td>
+          Kind is kind of the referent.
+
+There are two kinds of parent resources with "Core" support:
+
+* Gateway (Gateway conformance profile)
+* Service (Mesh conformance profile, ClusterIP Services only)
+
+Support for other resources is Implementation-Specific.<br/>
+          <br/>
+            <i>Default</i>: Gateway<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>namespace</b></td>
+        <td>string</td>
+        <td>
+          Namespace is the namespace of the referent. When unspecified, this refers
+to the local namespace of the Route.
+
+Note that there are specific rules for ParentRefs which cross namespace
+boundaries. Cross-namespace references are only valid if they are explicitly
+allowed by something in the namespace they are referring to. For example:
+Gateway has the AllowedRoutes field, and ReferenceGrant provides a
+generic way to enable any other kind of cross-namespace reference.
+
+<gateway:experimental:description>
+ParentRefs from a Route to a Service in the same namespace are "producer"
+routes, which apply default routing rules to inbound connections from
+any namespace to the Service.
+
+ParentRefs from a Route to a Service in a different namespace are
+"consumer" routes, and these routing rules are only applied to outbound
+connections originating from the same namespace as the Route, for which
+the intended destination of the connections are a Service targeted as a
+ParentRef of the Route.
+</gateway:experimental:description>
+
+Support: Core<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>port</b></td>
+        <td>integer</td>
+        <td>
+          Port is the network port this Route targets. It can be interpreted
+differently based on the type of parent resource.
+
+When the parent resource is a Gateway, this targets all listeners
+listening on the specified port that also support this kind of Route(and
+select this Route). It's not recommended to set `Port` unless the
+networking behaviors specified in a Route must apply to a specific port
+as opposed to a listener(s) whose port(s) may be changed. When both Port
+and SectionName are specified, the name and port of the selected listener
+must match both specified values.
+
+<gateway:experimental:description>
+When the parent resource is a Service, this targets a specific port in the
+Service spec. When both Port (experimental) and SectionName are specified,
+the name and port of the selected port must match both specified values.
+</gateway:experimental:description>
+
+Implementations MAY choose to support other parent resources.
+Implementations supporting other types of parent resources MUST clearly
+document how/if Port is interpreted.
+
+For the purpose of status, an attachment is considered successful as
+long as the parent resource accepts it partially. For example, Gateway
+listeners can restrict which Routes can attach to them by Route kind,
+namespace, or hostname. If 1 of 2 Gateway listeners accept attachment
+from the referencing Route, the Route MUST be considered successfully
+attached. If no Gateway listeners accept attachment from this Route,
+the Route MUST be considered detached from the Gateway.
+
+Support: Extended<br/>
+          <br/>
+            <i>Format</i>: int32<br/>
+            <i>Minimum</i>: 1<br/>
+            <i>Maximum</i>: 65535<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>sectionName</b></td>
+        <td>string</td>
+        <td>
+          SectionName is the name of a section within the target resource. In the
+following resources, SectionName is interpreted as the following:
+
+* Gateway: Listener name. When both Port (experimental) and SectionName
+are specified, the name and port of the selected listener must match
+both specified values.
+* Service: Port name. When both Port (experimental) and SectionName
+are specified, the name and port of the selected listener must match
+both specified values.
+
+Implementations MAY choose to support attaching Routes to other resources.
+If that is the case, they MUST clearly document how SectionName is
+interpreted.
+
+When unspecified (empty string), this will reference the entire resource.
+For the purpose of status, an attachment is considered successful if at
+least one section in the parent resource accepts it. For example, Gateway
+listeners can restrict which Routes can attach to them by Route kind,
+namespace, or hostname. If 1 of 2 Gateway listeners accept attachment from
+the referencing Route, the Route MUST be considered successfully
+attached. If no Gateway listeners accept attachment from this Route, the
+Route MUST be considered detached from the Gateway.
+
+Support: Core<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
 <span id="stewardcontrolplanetemplatespectemplatespecnetworkingress">`StewardControlPlaneTemplate.spec.template.spec.network.ingress`</span>
 
 
@@ -27114,6 +27945,21 @@ When using an Ingress object the FQDN is automatically added to the Certificate 
         <td>string</td>
         <td>
           Defines the Ingress Class for the Ingress object.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>controllerType</b></td>
+        <td>enum</td>
+        <td>
+          ControllerType specifies the ingress controller type for automatic TLS passthrough configuration.
+Supported values: "haproxy", "nginx", "traefik", "generic"
+- haproxy: Uses haproxy.org/ssl-passthrough annotation
+- nginx: Uses nginx.ingress.kubernetes.io/ssl-passthrough annotation
+- traefik: Creates IngressRouteTCP instead of standard Ingress
+- generic: No automatic annotations, use extraAnnotations for custom configuration
+If not specified, defaults to "generic".<br/>
+          <br/>
+            <i>Enum</i>: haproxy, nginx, traefik, generic<br/>
         </td>
         <td>false</td>
       </tr><tr>
