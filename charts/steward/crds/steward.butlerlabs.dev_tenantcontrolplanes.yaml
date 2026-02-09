@@ -332,6 +332,14 @@ spec:
                             Image is the container image for the tcp-proxy.
                             Defaults to ghcr.io/butlerdotdev/steward-tcp-proxy:<steward-version>
                           type: string
+                        internalEndpoint:
+                          description: |-
+                            InternalEndpoint is the direct endpoint for tcp-proxy to reach the API server.
+                            For Ingress/Gateway modes, this should be a management cluster node IP that
+                            is reachable from tenant worker nodes (e.g., "10.40.0.201"). The NodePort
+                            is automatically appended by Steward based on the service configuration.
+                            If not specified, Steward attempts to use the service's LoadBalancer IP.
+                          type: string
                         resources:
                           description: Resources defines the compute resources for the tcp-proxy container.
                           properties:
