@@ -40,6 +40,165 @@ The state is managed by the `Datastore` API, a cluster-scoped resource which can
 > For further information about the API specifications and all the available options,
 > refer to the official [API reference](https://steward.butlerlabs.io/reference/api/#tenantcontrolplane).
 
+### TenantControlPlane Example
+
+```yaml
+apiVersion: steward.butlerlabs.dev/v1alpha1
+kind: TenantControlPlane
+metadata:
+  name: tenant-1
+  namespace: tenants
+spec:
+  dataStore: default
+  kubernetes:
+    version: "1.29.0"
+    kubelet:
+      preferredAddressTypes:
+        - InternalIP
+        - ExternalIP
+        - Hostname
+    admissionControllers: CertificateApproval,CertificateSigning,CertificateSubjectRestriction,DefaultIngressClass,DefaultStorageClass,DefaultTolerationSeconds,LimitRanger,MutatingAdmissionWebhook,NamespaceLifecycle,PersistentVolumeClaimResize,Priority,ResourceQuota,RuntimeClass,ServiceAccount,StorageObjectInUseProtection,TaintNodesByCondition,ValidatingAdmissionWebhook
+  networkProfile:
+    address: ""  # Auto-assigned by LoadBalancer
+    port: 6443
+    serviceCidr: "10.96.0.0/16"
+    podCidr: "10.244.0.0/16"
+    certSANs:
+      - "tenant-1.example.com"
+  controlPlane:
+    deployment:
+      replicas: 2
+      resources:
+        limits:
+          cpu: "500m"
+          memory: "512Mi"
+        requests:
+          cpu: "250m"
+          memory: "256Mi"
+    service:
+      serviceType: LoadBalancer
+  addons:
+    coreDNS: {}
+    kubeProxy: {}
+    konnectivity:
+      server:
+        port: 8132
+```
+
+### DataStore Examples
+
+Steward supports multiple backend storage drivers for Tenant Control Plane data.
+
+#### etcd DataStore
+
+```yaml
+apiVersion: steward.butlerlabs.dev/v1alpha1
+kind: DataStore
+metadata:
+  name: default
+spec:
+  driver: etcd
+  endpoints:
+    - etcd-0.etcd.steward-system.svc.cluster.local:2379
+    - etcd-1.etcd.steward-system.svc.cluster.local:2379
+    - etcd-2.etcd.steward-system.svc.cluster.local:2379
+  tlsConfig:
+    certificateAuthority:
+      certificate:
+        secretReference:
+          name: etcd-certs
+          namespace: steward-system
+          keyPath: ca.crt
+      privateKey:
+        secretReference:
+          name: etcd-certs
+          namespace: steward-system
+          keyPath: ca.key
+    clientCertificate:
+      certificate:
+        secretReference:
+          name: etcd-certs
+          namespace: steward-system
+          keyPath: tls.crt
+      privateKey:
+        secretReference:
+          name: etcd-certs
+          namespace: steward-system
+          keyPath: tls.key
+```
+
+#### PostgreSQL DataStore
+
+```yaml
+apiVersion: steward.butlerlabs.dev/v1alpha1
+kind: DataStore
+metadata:
+  name: postgres-store
+spec:
+  driver: PostgreSQL
+  endpoints:
+    - postgres.steward-system.svc.cluster.local:5432
+  basicAuth:
+    username:
+      secretReference:
+        name: postgres-credentials
+        namespace: steward-system
+        keyPath: username
+    password:
+      secretReference:
+        name: postgres-credentials
+        namespace: steward-system
+        keyPath: password
+```
+
+#### MySQL DataStore
+
+```yaml
+apiVersion: steward.butlerlabs.dev/v1alpha1
+kind: DataStore
+metadata:
+  name: mysql-store
+spec:
+  driver: MySQL
+  endpoints:
+    - mysql.steward-system.svc.cluster.local:3306
+  basicAuth:
+    username:
+      secretReference:
+        name: mysql-credentials
+        namespace: steward-system
+        keyPath: username
+    password:
+      secretReference:
+        name: mysql-credentials
+        namespace: steward-system
+        keyPath: password
+```
+
+#### NATS DataStore
+
+```yaml
+apiVersion: steward.butlerlabs.dev/v1alpha1
+kind: DataStore
+metadata:
+  name: nats-store
+spec:
+  driver: NATS
+  endpoints:
+    - nats.steward-system.svc.cluster.local:4222
+  basicAuth:
+    username:
+      secretReference:
+        name: nats-credentials
+        namespace: steward-system
+        keyPath: username
+    password:
+      secretReference:
+        name: nats-credentials
+        namespace: steward-system
+        keyPath: password
+```
+
 ### ⭐️ Main features
 
 - **Fast provisioning time**: depending on the infrastructure, Tenant Control Planes are up and ready to serve traffic in **16 seconds**.
@@ -125,6 +284,20 @@ The commit messages are checked according to the described [semantics](https://g
 Commits are used to generate the changelog, and their author will be referenced in it.
 
 In case of **✨ Feature Requests** please use the [Discussion's Feature Request section](https://github.com/butlerlabs/steward/discussions/categories/feature-requests).
+
+### 📜 Project History
+
+Steward is a community-governed fork of [Kamaji](https://github.com/clastix/kamaji), created in July 2024 after CLASTIX Labs gated stable releases behind commercial support.
+
+**Key differences from Kamaji:**
+- Stable releases published to public registries
+- Community-driven roadmap and governance
+- Integration with the [Butler](https://github.com/butlerdotdev/butler) Kubernetes-as-a-Service platform
+- No commercial gating of features
+
+Steward is maintained by [Butler Labs](https://butlerlabs.dev) and the open source community, with a goal of achieving CNCF Sandbox status by ~2027.
+
+We thank the CLASTIX team for their foundational work on Kamaji.
 
 ### 📝 License
 
