@@ -225,7 +225,10 @@ KO_LOCAL ?= true
 run: manifests generate ## Run a controller from your host.
 	go run ./main.go
 
-build: $(KO)
+build: ## Build the manager binary.
+	CGO_ENABLED=0 go build -ldflags $(LD_FLAGS) -o bin/manager .
+
+build-ko: $(KO) ## Build using ko (legacy).
 	LD_FLAGS=$(LD_FLAGS) \
 	KOCACHE=/tmp/ko-cache KO_DOCKER_REPO=${CONTAINER_REPOSITORY} \
 	$(KO) build ./ --bare --tags=$(VERSION) --local=$(KO_LOCAL) --push=$(KO_PUSH)
