@@ -1,12 +1,12 @@
 # API Reference
 
-This section contains the Steward Customer Resource Definitions,
+This section contains the Steward Custom Resource Definitions,
 as well as the Cluster API Control Plane provider ones.
 
 Packages:
 
 - [controlplane.cluster.x-k8s.io/v1alpha1](#controlplaneclusterx-k8siov1alpha1)
-- [steward.butlerlabs.io/v1alpha1](#stewardbutlerlabsiov1alpha1)
+- [steward.butlerlabs.dev/v1alpha1](#stewardbutlerlabsdevv1alpha1)
 
 ## controlplane.cluster.x-k8s.io/v1alpha1
 
@@ -137,7 +137,7 @@ More info: https://kubernetes.io/docs/reference/access-authn-authz/admission-con
         <td>string</td>
         <td>
           The Steward DataStore to use for the given TenantControlPlane.
-Retrieve the list of the allowed ones by issuing "kubectl get datastores.steward.butlerlabs.io".<br/>
+Retrieve the list of the allowed ones by issuing "kubectl get datastores.steward.butlerlabs.dev".<br/>
         </td>
         <td>false</td>
       </tr><tr>
@@ -467,9 +467,10 @@ If the key is empty, operator must be Exists; this combination means to match al
         <td>string</td>
         <td>
           Operator represents a key's relationship to the value.
-Valid operators are Exists and Equal. Defaults to Equal.
+Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
 Exists is equivalent to wildcard for value, so that a pod can
-tolerate all taints of a particular category.<br/>
+tolerate all taints of a particular category.
+Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).<br/>
         </td>
         <td>false</td>
       </tr><tr>
@@ -3049,7 +3050,8 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
         <td><b><a href="#stewardcontrolplanespecdeploymentextracontainersindexresizepolicyindex">resizePolicy</a></b></td>
         <td>[]object</td>
         <td>
-          Resources resize policy for the container.<br/>
+          Resources resize policy for the container.
+This field cannot be set on ephemeral containers.<br/>
         </td>
         <td>false</td>
       </tr><tr>
@@ -6000,7 +6002,8 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
         <td><b><a href="#stewardcontrolplanespecdeploymentextrainitcontainersindexresizepolicyindex">resizePolicy</a></b></td>
         <td>[]object</td>
         <td>
-          Resources resize policy for the container.<br/>
+          Resources resize policy for the container.
+This field cannot be set on ephemeral containers.<br/>
         </td>
         <td>false</td>
       </tr><tr>
@@ -10107,7 +10110,7 @@ There are three important differences between dataSource and dataSourceRef:
         <td>object</td>
         <td>
           resources represents the minimum resources the volume should have.
-If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+Users are allowed to specify resource requirements
 that are lower than previous value but must still be higher than capacity recorded in the
 status field of the claim.
 More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources<br/>
@@ -10287,7 +10290,7 @@ Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGr
 
 
 resources represents the minimum resources the volume should have.
-If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+Users are allowed to specify resource requirements
 that are lower than previous value but must still be higher than capacity recorded in the
 status field of the claim.
 More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
@@ -11819,6 +11822,25 @@ longer than 24 hours.<br/>
             <i>Format</i>: int32<br/>
         </td>
         <td>false</td>
+      </tr><tr>
+        <td><b>userAnnotations</b></td>
+        <td>map[string]string</td>
+        <td>
+          userAnnotations allow pod authors to pass additional information to
+the signer implementation.  Kubernetes does not restrict or validate this
+metadata in any way.
+
+These values are copied verbatim into the `spec.unverifiedUserAnnotations` field of
+the PodCertificateRequest objects that Kubelet creates.
+
+Entries are subject to the same validation as object metadata annotations,
+with the addition that all keys must be domain-prefixed. No restrictions
+are placed on values, except an overall size limitation on the entire field.
+
+Signers should document the keys and values they support. Signers should
+deny requests that contain keys they do not recognize.<br/>
+        </td>
+        <td>false</td>
       </tr></tbody>
 </table>
 
@@ -12714,9 +12736,10 @@ If the key is empty, operator must be Exists; this combination means to match al
         <td>string</td>
         <td>
           Operator represents a key's relationship to the value.
-Valid operators are Exists and Equal. Defaults to Equal.
+Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
 Exists is equivalent to wildcard for value, so that a pod can
-tolerate all taints of a particular category.<br/>
+tolerate all taints of a particular category.
+Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).<br/>
         </td>
         <td>false</td>
       </tr><tr>
@@ -13120,9 +13143,22 @@ Configure the Kubelet options, such as the preferred address types, or the expec
         <td>enum</td>
         <td>
           CGroupFS defines the cgroup driver for Kubelet
-https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/configure-cgroup-driver/<br/>
+https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/configure-cgroup-driver/
+
+Deprecated: use ConfigurationJSONPatches.<br/>
           <br/>
             <i>Enum</i>: systemd, cgroupfs<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b><a href="#stewardcontrolplanespeckubeletconfigurationjsonpatchesindex">configurationJSONPatches</a></b></td>
+        <td>[]object</td>
+        <td>
+          ConfigurationJSONPatches contains the RFC 6902 JSON patches to customise the kubeadm generate configuration,
+useful to customise and mangling the configuration according to your needs;
+e.g.: configuring the cgroup driver used by Kubelet is possible via the following patch:
+
+[{"op": "replace", "path": "/cgroupDriver", "value": "systemd"}]<br/>
         </td>
         <td>false</td>
       </tr><tr>
@@ -13134,6 +13170,54 @@ Default to InternalIP, ExternalIP, Hostname.<br/>
           <br/>
             <i>Enum</i>: Hostname, InternalIP, ExternalIP, InternalDNS, ExternalDNS<br/>
             <i>Default</i>: [InternalIP ExternalIP Hostname]<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="stewardcontrolplanespeckubeletconfigurationjsonpatchesindex">`StewardControlPlane.spec.kubelet.configurationJSONPatches[index]`</span>
+
+
+
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>op</b></td>
+        <td>enum</td>
+        <td>
+          Op is the RFC 6902 JSON Patch operation.<br/>
+          <br/>
+            <i>Enum</i>: add, remove, replace, move, copy, test<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>path</b></td>
+        <td>string</td>
+        <td>
+          Path specifies the target location in the JSON document. Use "/" to separate keys; "-" for appending to arrays.<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>from</b></td>
+        <td>string</td>
+        <td>
+          From specifies the source location for move or copy operations.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>value</b></td>
+        <td>JSON</td>
+        <td>
+          Value is the operation value to be used when Op is add, replace, test.<br/>
         </td>
         <td>false</td>
       </tr></tbody>
@@ -13878,7 +13962,7 @@ More info: https://kubernetes.io/docs/reference/access-authn-authz/admission-con
         <td>string</td>
         <td>
           The Steward DataStore to use for the given TenantControlPlane.
-Retrieve the list of the allowed ones by issuing "kubectl get datastores.steward.butlerlabs.io".<br/>
+Retrieve the list of the allowed ones by issuing "kubectl get datastores.steward.butlerlabs.dev".<br/>
         </td>
         <td>false</td>
       </tr><tr>
@@ -14197,9 +14281,10 @@ If the key is empty, operator must be Exists; this combination means to match al
         <td>string</td>
         <td>
           Operator represents a key's relationship to the value.
-Valid operators are Exists and Equal. Defaults to Equal.
+Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
 Exists is equivalent to wildcard for value, so that a pod can
-tolerate all taints of a particular category.<br/>
+tolerate all taints of a particular category.
+Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).<br/>
         </td>
         <td>false</td>
       </tr><tr>
@@ -16745,7 +16830,8 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
         <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextracontainersindexresizepolicyindex">resizePolicy</a></b></td>
         <td>[]object</td>
         <td>
-          Resources resize policy for the container.<br/>
+          Resources resize policy for the container.
+This field cannot be set on ephemeral containers.<br/>
         </td>
         <td>false</td>
       </tr><tr>
@@ -19696,7 +19782,8 @@ More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#cont
         <td><b><a href="#stewardcontrolplanetemplatespectemplatespecdeploymentextrainitcontainersindexresizepolicyindex">resizePolicy</a></b></td>
         <td>[]object</td>
         <td>
-          Resources resize policy for the container.<br/>
+          Resources resize policy for the container.
+This field cannot be set on ephemeral containers.<br/>
         </td>
         <td>false</td>
       </tr><tr>
@@ -23803,7 +23890,7 @@ There are three important differences between dataSource and dataSourceRef:
         <td>object</td>
         <td>
           resources represents the minimum resources the volume should have.
-If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+Users are allowed to specify resource requirements
 that are lower than previous value but must still be higher than capacity recorded in the
 status field of the claim.
 More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources<br/>
@@ -23983,7 +24070,7 @@ Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGr
 
 
 resources represents the minimum resources the volume should have.
-If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+Users are allowed to specify resource requirements
 that are lower than previous value but must still be higher than capacity recorded in the
 status field of the claim.
 More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
@@ -25515,6 +25602,25 @@ longer than 24 hours.<br/>
             <i>Format</i>: int32<br/>
         </td>
         <td>false</td>
+      </tr><tr>
+        <td><b>userAnnotations</b></td>
+        <td>map[string]string</td>
+        <td>
+          userAnnotations allow pod authors to pass additional information to
+the signer implementation.  Kubernetes does not restrict or validate this
+metadata in any way.
+
+These values are copied verbatim into the `spec.unverifiedUserAnnotations` field of
+the PodCertificateRequest objects that Kubelet creates.
+
+Entries are subject to the same validation as object metadata annotations,
+with the addition that all keys must be domain-prefixed. No restrictions
+are placed on values, except an overall size limitation on the entire field.
+
+Signers should document the keys and values they support. Signers should
+deny requests that contain keys they do not recognize.<br/>
+        </td>
+        <td>false</td>
       </tr></tbody>
 </table>
 
@@ -26410,9 +26516,10 @@ If the key is empty, operator must be Exists; this combination means to match al
         <td>string</td>
         <td>
           Operator represents a key's relationship to the value.
-Valid operators are Exists and Equal. Defaults to Equal.
+Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
 Exists is equivalent to wildcard for value, so that a pod can
-tolerate all taints of a particular category.<br/>
+tolerate all taints of a particular category.
+Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).<br/>
         </td>
         <td>false</td>
       </tr><tr>
@@ -26816,9 +26923,22 @@ Configure the Kubelet options, such as the preferred address types, or the expec
         <td>enum</td>
         <td>
           CGroupFS defines the cgroup driver for Kubelet
-https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/configure-cgroup-driver/<br/>
+https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/configure-cgroup-driver/
+
+Deprecated: use ConfigurationJSONPatches.<br/>
           <br/>
             <i>Enum</i>: systemd, cgroupfs<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespeckubeletconfigurationjsonpatchesindex">configurationJSONPatches</a></b></td>
+        <td>[]object</td>
+        <td>
+          ConfigurationJSONPatches contains the RFC 6902 JSON patches to customise the kubeadm generate configuration,
+useful to customise and mangling the configuration according to your needs;
+e.g.: configuring the cgroup driver used by Kubelet is possible via the following patch:
+
+[{"op": "replace", "path": "/cgroupDriver", "value": "systemd"}]<br/>
         </td>
         <td>false</td>
       </tr><tr>
@@ -26830,6 +26950,54 @@ Default to InternalIP, ExternalIP, Hostname.<br/>
           <br/>
             <i>Enum</i>: Hostname, InternalIP, ExternalIP, InternalDNS, ExternalDNS<br/>
             <i>Default</i>: [InternalIP ExternalIP Hostname]<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="stewardcontrolplanetemplatespectemplatespeckubeletconfigurationjsonpatchesindex">`StewardControlPlaneTemplate.spec.template.spec.kubelet.configurationJSONPatches[index]`</span>
+
+
+
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>op</b></td>
+        <td>enum</td>
+        <td>
+          Op is the RFC 6902 JSON Patch operation.<br/>
+          <br/>
+            <i>Enum</i>: add, remove, replace, move, copy, test<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>path</b></td>
+        <td>string</td>
+        <td>
+          Path specifies the target location in the JSON document. Use "/" to separate keys; "-" for appending to arrays.<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>from</b></td>
+        <td>string</td>
+        <td>
+          From specifies the source location for move or copy operations.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>value</b></td>
+        <td>JSON</td>
+        <td>
+          Value is the operation value to be used when Op is add, replace, test.<br/>
         </td>
         <td>false</td>
       </tr></tbody>
@@ -27269,7 +27437,7 @@ More info: http://kubernetes.io/docs/user-guide/labels<br/>
       </tr></tbody>
 </table>
 
-## steward.butlerlabs.io/v1alpha1
+## steward.butlerlabs.dev/v1alpha1
 
 Resource Types:
 
@@ -27302,7 +27470,7 @@ DataStore is the Schema for the datastores API.
     <tbody><tr>
       <td><b>apiVersion</b></td>
       <td>string</td>
-      <td>steward.butlerlabs.io/v1alpha1</td>
+      <td>steward.butlerlabs.dev/v1alpha1</td>
       <td>true</td>
       </tr>
       <tr>
@@ -28011,7 +28179,7 @@ KubeconfigGenerator is the Schema for the kubeconfiggenerators API.
     <tbody><tr>
       <td><b>apiVersion</b></td>
       <td>string</td>
-      <td>steward.butlerlabs.io/v1alpha1</td>
+      <td>steward.butlerlabs.dev/v1alpha1</td>
       <td>true</td>
       </tr>
       <tr>
@@ -28420,7 +28588,7 @@ TenantControlPlane is the Schema for the tenantcontrolplanes API.
     <tbody><tr>
       <td><b>apiVersion</b></td>
       <td>string</td>
-      <td>steward.butlerlabs.io/v1alpha1</td>
+      <td>steward.butlerlabs.dev/v1alpha1</td>
       <td>true</td>
       </tr>
       <tr>
@@ -28496,7 +28664,7 @@ such as the number of Pod replicas, the Service resource, or the Ingress.<br/>
 When Steward runs with the default DataStore flag, all empty values will inherit the default value.
 By leaving it empty and running Steward with no default DataStore flag, it is possible to achieve automatic assignment to a specific DataStore object.
 
-Migration from one DataStore to another backed by the same Driver is possible. See: https://steward.butlerlabs.io/guides/datastore-migration/
+Migration from one DataStore to another backed by the same Driver is possible. See: https://steward.butlerlabs.dev/guides/datastore-migration/
 Migration from one DataStore to another backed by a different Driver is not supported.<br/>
         </td>
         <td>false</td>
@@ -41662,6 +41830,21 @@ Defining the options for an Optional Ingress which will expose API Server of the
         </td>
         <td>false</td>
       </tr><tr>
+        <td><b>controllerType</b></td>
+        <td>enum</td>
+        <td>
+          ControllerType specifies the ingress controller type for automatic TLS passthrough configuration.
+Supported values: "haproxy", "nginx", "traefik", "generic"
+- haproxy: Uses haproxy.org/ssl-passthrough annotation
+- nginx: Uses nginx.ingress.kubernetes.io/ssl-passthrough annotation
+- traefik: Creates IngressRouteTCP instead of standard Ingress (standard Ingress doesn't support TLS passthrough)
+- generic: No automatic annotations, use additionalMetadata.annotations for custom configuration
+If not specified, defaults to "generic".<br/>
+          <br/>
+            <i>Enum</i>: haproxy, nginx, traefik, generic<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
         <td><b>hostname</b></td>
         <td>string</td>
         <td>
@@ -41890,6 +42073,16 @@ The registry and the tag are configurable, the image is hard-coded to `coredns`.
         <td>
           Enables the kube-proxy addon in the Tenant Cluster.
 The registry and the tag are configurable, the image is hard-coded to `kube-proxy`.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b><a href="#tenantcontrolplanespecaddonstcpproxy">tcpProxy</a></b></td>
+        <td>object</td>
+        <td>
+          TCPProxy enables the tcp-proxy addon in the tenant cluster.
+When enabled, tcp-proxy rewrites the default kubernetes EndpointSlice
+to route API server traffic through a local proxy, eliminating SNI
+rewriting requirements for Ingress and Gateway API network modes.<br/>
         </td>
         <td>false</td>
       </tr></tbody>
@@ -42305,6 +42498,181 @@ In case this value is set, kubeadm does not change automatically the version of 
 </table>
 
 
+<span id="tenantcontrolplanespecaddonstcpproxy">`TenantControlPlane.spec.addons.tcpProxy`</span>
+
+
+TCPProxy enables the tcp-proxy addon in the tenant cluster.
+When enabled, tcp-proxy rewrites the default kubernetes EndpointSlice
+to route API server traffic through a local proxy, eliminating SNI
+rewriting requirements for Ingress and Gateway API network modes.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b><a href="#tenantcontrolplanespecaddonstcpproxyhostaliasesindex">hostAliases</a></b></td>
+        <td>[]object</td>
+        <td>
+          HostAliases provides hostname-to-IP mappings for /etc/hosts injection.
+Required for Ingress/Gateway modes where the API server hostname must be
+resolved before CoreDNS is available. The tcp-proxy uses hostNetwork,
+so it needs these entries to connect to the upstream API server.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>image</b></td>
+        <td>string</td>
+        <td>
+          Image is the container image for the tcp-proxy.
+Defaults to ghcr.io/butlerdotdev/steward-tcp-proxy:<steward-version><br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>internalEndpoint</b></td>
+        <td>string</td>
+        <td>
+          InternalEndpoint is the direct endpoint for tcp-proxy to reach the API server.
+For Ingress/Gateway modes, this should be a management cluster node IP that
+is reachable from tenant worker nodes (e.g., "10.40.0.201"). The NodePort
+is automatically appended by Steward based on the service configuration.
+If not specified, Steward attempts to use the service's LoadBalancer IP.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b><a href="#tenantcontrolplanespecaddonstcpproxyresources">resources</a></b></td>
+        <td>object</td>
+        <td>
+          Resources defines the compute resources for the tcp-proxy container.<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="tenantcontrolplanespecaddonstcpproxyhostaliasesindex">`TenantControlPlane.spec.addons.tcpProxy.hostAliases[index]`</span>
+
+
+TCPProxyHostAlias defines a hostname-to-IP mapping for /etc/hosts injection.
+Used to resolve hostnames before DNS is available (bootstrap phase).
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>hostnames</b></td>
+        <td>[]string</td>
+        <td>
+          Hostnames for the IP address.<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>ip</b></td>
+        <td>string</td>
+        <td>
+          IP address of the host entry.<br/>
+        </td>
+        <td>true</td>
+      </tr></tbody>
+</table>
+
+
+<span id="tenantcontrolplanespecaddonstcpproxyresources">`TenantControlPlane.spec.addons.tcpProxy.resources`</span>
+
+
+Resources defines the compute resources for the tcp-proxy container.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b><a href="#tenantcontrolplanespecaddonstcpproxyresourcesclaimsindex">claims</a></b></td>
+        <td>[]object</td>
+        <td>
+          Claims lists the names of resources, defined in spec.resourceClaims,
+that are used by this container.
+
+This field depends on the
+DynamicResourceAllocation feature gate.
+
+This field is immutable. It can only be set for containers.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>limits</b></td>
+        <td>map[string]int or string</td>
+        <td>
+          Limits describes the maximum amount of compute resources allowed.
+More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>requests</b></td>
+        <td>map[string]int or string</td>
+        <td>
+          Requests describes the minimum amount of compute resources required.
+If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+otherwise to an implementation-defined value. Requests cannot exceed Limits.
+More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="tenantcontrolplanespecaddonstcpproxyresourcesclaimsindex">`TenantControlPlane.spec.addons.tcpProxy.resources.claims[index]`</span>
+
+
+ResourceClaim references one entry in PodSpec.ResourceClaims.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>name</b></td>
+        <td>string</td>
+        <td>
+          Name must match the name of one entry in pod.spec.resourceClaims of
+the Pod where this field is used. It makes that resource available
+inside a container.<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>request</b></td>
+        <td>string</td>
+        <td>
+          Request is the name chosen for a request in the referenced claim.
+If empty, everything from the claim is made available, otherwise
+only the result of this request.<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
 <span id="tenantcontrolplanespecdatastoreoverridesindex">`TenantControlPlane.spec.dataStoreOverrides[index]`</span>
 
 
@@ -42599,6 +42967,13 @@ Addons contains the status of the different Addons
         <td>object</td>
         <td>
           AddonStatus defines the observed state of an Addon.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b><a href="#tenantcontrolplanestatusaddonstcpproxy">tcpProxy</a></b></td>
+        <td>object</td>
+        <td>
+          TCPProxyStatus defines the observed state of the TCP proxy addon.<br/>
         </td>
         <td>false</td>
       </tr></tbody>
@@ -43751,6 +44126,271 @@ AddonStatus defines the observed state of an Addon.
           <br/>
           <br/>
             <i>Format</i>: date-time<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="tenantcontrolplanestatusaddonstcpproxy">`TenantControlPlane.status.addons.tcpProxy`</span>
+
+
+TCPProxyStatus defines the observed state of the TCP proxy addon.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>enabled</b></td>
+        <td>boolean</td>
+        <td>
+          Enabled indicates whether the tcp-proxy addon is currently active.<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b><a href="#tenantcontrolplanestatusaddonstcpproxyclusterrole">clusterRole</a></b></td>
+        <td>object</td>
+        <td>
+          ClusterRole contains the status of the tcp-proxy ClusterRole.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b><a href="#tenantcontrolplanestatusaddonstcpproxyclusterrolebinding">clusterRoleBinding</a></b></td>
+        <td>object</td>
+        <td>
+          ClusterRoleBinding contains the status of the tcp-proxy ClusterRoleBinding.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b><a href="#tenantcontrolplanestatusaddonstcpproxydeployment">deployment</a></b></td>
+        <td>object</td>
+        <td>
+          Deployment contains the status of the tcp-proxy Deployment in the tenant cluster.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b><a href="#tenantcontrolplanestatusaddonstcpproxyservice">service</a></b></td>
+        <td>object</td>
+        <td>
+          Service contains the status of the tcp-proxy Service in the tenant cluster.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b><a href="#tenantcontrolplanestatusaddonstcpproxyserviceaccount">serviceAccount</a></b></td>
+        <td>object</td>
+        <td>
+          ServiceAccount contains the status of the tcp-proxy ServiceAccount.<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="tenantcontrolplanestatusaddonstcpproxyclusterrole">`TenantControlPlane.status.addons.tcpProxy.clusterRole`</span>
+
+
+ClusterRole contains the status of the tcp-proxy ClusterRole.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>lastUpdate</b></td>
+        <td>string</td>
+        <td>
+          Last time when k8s object was updated<br/>
+          <br/>
+            <i>Format</i>: date-time<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>name</b></td>
+        <td>string</td>
+        <td>
+          <br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>namespace</b></td>
+        <td>string</td>
+        <td>
+          <br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="tenantcontrolplanestatusaddonstcpproxyclusterrolebinding">`TenantControlPlane.status.addons.tcpProxy.clusterRoleBinding`</span>
+
+
+ClusterRoleBinding contains the status of the tcp-proxy ClusterRoleBinding.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>lastUpdate</b></td>
+        <td>string</td>
+        <td>
+          Last time when k8s object was updated<br/>
+          <br/>
+            <i>Format</i>: date-time<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>name</b></td>
+        <td>string</td>
+        <td>
+          <br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>namespace</b></td>
+        <td>string</td>
+        <td>
+          <br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="tenantcontrolplanestatusaddonstcpproxydeployment">`TenantControlPlane.status.addons.tcpProxy.deployment`</span>
+
+
+Deployment contains the status of the tcp-proxy Deployment in the tenant cluster.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>lastUpdate</b></td>
+        <td>string</td>
+        <td>
+          Last time when k8s object was updated<br/>
+          <br/>
+            <i>Format</i>: date-time<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>name</b></td>
+        <td>string</td>
+        <td>
+          <br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>namespace</b></td>
+        <td>string</td>
+        <td>
+          <br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="tenantcontrolplanestatusaddonstcpproxyservice">`TenantControlPlane.status.addons.tcpProxy.service`</span>
+
+
+Service contains the status of the tcp-proxy Service in the tenant cluster.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>lastUpdate</b></td>
+        <td>string</td>
+        <td>
+          Last time when k8s object was updated<br/>
+          <br/>
+            <i>Format</i>: date-time<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>name</b></td>
+        <td>string</td>
+        <td>
+          <br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>namespace</b></td>
+        <td>string</td>
+        <td>
+          <br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="tenantcontrolplanestatusaddonstcpproxyserviceaccount">`TenantControlPlane.status.addons.tcpProxy.serviceAccount`</span>
+
+
+ServiceAccount contains the status of the tcp-proxy ServiceAccount.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>lastUpdate</b></td>
+        <td>string</td>
+        <td>
+          Last time when k8s object was updated<br/>
+          <br/>
+            <i>Format</i>: date-time<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>name</b></td>
+        <td>string</td>
+        <td>
+          <br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>namespace</b></td>
+        <td>string</td>
+        <td>
+          <br/>
         </td>
         <td>false</td>
       </tr></tbody>
