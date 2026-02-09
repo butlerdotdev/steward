@@ -297,8 +297,6 @@ Steward is a community-governed fork of [Kamaji](https://github.com/clastix/kama
 
 Steward is maintained by [Butler Labs](https://butlerlabs.dev) and the open source community, with a goal of achieving CNCF Sandbox status by ~2027.
 
-We thank the CLASTIX team for their foundational work on Kamaji.
-
 ### 📝 License
 
 Steward is licensed under Apache 2.0.

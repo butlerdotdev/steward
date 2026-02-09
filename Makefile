@@ -177,15 +177,13 @@ datastore-postgres:
 	$(MAKE) NAME=gold _datastore-postgres
 
 _datastore-etcd:
-	$(HELM) upgrade --install etcd-$(NAME) butlerlabs/steward-etcd --create-namespace -n $(NAMESPACE) --set datastore.enabled=true --set fullnameOverride=etcd-$(NAME) $(EXTRA_ARGS)
+	$(HELM) upgrade --install etcd-$(NAME) oci://ghcr.io/butlerdotdev/charts/steward-etcd --create-namespace -n $(NAMESPACE) --set datastore.enabled=true --set fullnameOverride=etcd-$(NAME) $(EXTRA_ARGS)
 
 _datastore-nats:
 	$(MAKE) NAME=$(NAME) NAMESPACE=nats-system -C deploy/kine/nats nats
 	kubectl apply -f $(shell pwd)/config/samples/steward_v1alpha1_datastore_nats_$(NAME).yaml
 
 datastore-etcd: helm
-	$(HELM) repo add butlerlabs https://butlerdotdev.github.io/charts
-	$(HELM) repo update
 	$(MAKE) NAME=bronze NAMESPACE=etcd-system _datastore-etcd
 	$(MAKE) NAME=silver NAMESPACE=etcd-system _datastore-etcd
 	$(MAKE) NAME=gold NAMESPACE=etcd-system _datastore-etcd
@@ -274,7 +272,7 @@ e2e: env build load helm ginkgo cert-manager gateway-api envoy-gateway ## Create
 
 ##@ Document
 
-CAPI_URL = https://github.com/butlerdotdev/steward-capi-provider.git
+CAPI_URL = https://github.com/butlerdotdev/cluster-api-control-plane-provider-steward.git
 CAPI_DIR := $(shell mktemp -d)
 CRDS_DIR := $(shell mktemp -d)
 
