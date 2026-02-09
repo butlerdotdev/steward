@@ -267,7 +267,6 @@ cleanup: kind
 .PHONY: e2e
 e2e: env build load helm ginkgo cert-manager gateway-api envoy-gateway ## Create a KinD cluster, install Steward on it and run the test suite.
 	$(HELM) upgrade --debug --install steward-crds ./charts/steward-crds --create-namespace --namespace steward-system
-	$(HELM) repo add butlerlabs https://butlerdotdev.github.io/charts
 	$(HELM) dependency build ./charts/steward
 	$(HELM) upgrade --debug --install steward ./charts/steward --create-namespace --namespace steward-system --set "image.tag=$(VERSION)" --set "image.pullPolicy=Never"
 	$(MAKE) datastores
