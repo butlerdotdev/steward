@@ -94,6 +94,6 @@ nav:
   - reference/api.md
 - 'Telemetry': telemetry.md
 - 'Addons':
-  - enterprise-addons/index.md
-  - enterprise-addons/ingress.md
+  - addons/index.md
+  - addons/ingress.md
 

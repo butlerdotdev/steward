@@ -23,7 +23,8 @@ const (
 	ClusterRoleBindingName = "steward:tcp-proxy"
 
 	// DefaultImage is the default container image for tcp-proxy.
-	DefaultImage = "ghcr.io/butlerdotdev/steward-tcp-proxy:v0.1.0"
+	// TLS termination mode for Ingress/Gateway, passthrough for LoadBalancer/NodePort.
+	DefaultImage = "ghcr.io/butlerdotdev/steward-tcp-proxy:tls-termination-20260208151640"
 
 	// ProxyPort is the port tcp-proxy listens on for proxied connections.
 	ProxyPort = 6443

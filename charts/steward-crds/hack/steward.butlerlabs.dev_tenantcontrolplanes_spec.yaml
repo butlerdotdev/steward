@@ -295,6 +295,30 @@ versions:
                       to route API server traffic through a local proxy, eliminating SNI
                       rewriting requirements for Ingress and Gateway API network modes.
                     properties:
+                      hostAliases:
+                        description: |-
+                          HostAliases provides hostname-to-IP mappings for /etc/hosts injection.
+                          Required for Ingress/Gateway modes where the API server hostname must be
+                          resolved before CoreDNS is available. The tcp-proxy uses hostNetwork,
+                          so it needs these entries to connect to the upstream API server.
+                        items:
+                          description: |-
+                            TCPProxyHostAlias defines a hostname-to-IP mapping for /etc/hosts injection.
+                            Used to resolve hostnames before DNS is available (bootstrap phase).
+                          properties:
+                            hostnames:
+                              description: Hostnames for the IP address.
+                              items:
+                                type: string
+                              type: array
+                            ip:
+                              description: IP address of the host entry.
+                              type: string
+                          required:
+                            - hostnames
+                            - ip
+                          type: object
+                        type: array
                       image:
                         description: |-
                           Image is the container image for the tcp-proxy.

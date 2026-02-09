@@ -81,12 +81,16 @@ func (r *KubeadmConfigResource) mutate(ctx context.Context, tenantControlPlane *
 	return func() error {
 		logger := log.FromContext(ctx, "resource", r.GetName())
 
-		address, port, err := tenantControlPlane.AssignedControlPlaneAddress()
+		// Use DeclaredControlPlaneAddress for kubeadm config - it needs an IP, not hostname
+		// For Ingress/Gateway modes, Status.ControlPlaneEndpoint contains the hostname,
+		// but kubeadm requires an internal IP address for advertiseAddress
+		address, err := tenantControlPlane.DeclaredControlPlaneAddress(ctx, r.Client)
 		if err != nil {
 			logger.Error(err, "cannot retrieve Tenant Control Plane address")
 
 			return err
 		}
+		port := tenantControlPlane.Spec.NetworkProfile.Port
 
 		r.resource.SetLabels(utilities.MergeMaps(r.resource.GetLabels(), utilities.StewardLabels(tenantControlPlane.GetName(), r.GetName())))
 
@@ -94,13 +98,17 @@ func (r *KubeadmConfigResource) mutate(ctx context.Context, tenantControlPlane *
 		spec := tenantControlPlane.Spec.ControlPlane
 		if spec.Gateway != nil {
 			if len(spec.Gateway.Hostname) > 0 {
-				gaddr, gport := utilities.GetControlPlaneAddressAndPortFromHostname(string(spec.Gateway.Hostname), port)
+				// For Gateway mode, default to port 443 (standard HTTPS port)
+				// since Gateway/Ingress controllers expose on 443, not 6443
+				gaddr, gport := utilities.GetControlPlaneAddressAndPortFromHostname(string(spec.Gateway.Hostname), 443)
 				endpoint = net.JoinHostPort(gaddr, strconv.FormatInt(int64(gport), 10))
 			}
 		}
 		if spec.Ingress != nil {
 			if len(spec.Ingress.Hostname) > 0 {
-				iaddr, iport := utilities.GetControlPlaneAddressAndPortFromHostname(spec.Ingress.Hostname, port)
+				// For Ingress mode, default to port 443 (standard HTTPS port)
+				// since Ingress controllers expose on 443, not 6443
+				iaddr, iport := utilities.GetControlPlaneAddressAndPortFromHostname(spec.Ingress.Hostname, 443)
 				endpoint = net.JoinHostPort(iaddr, strconv.FormatInt(int64(iport), 10))
 			}
 		}

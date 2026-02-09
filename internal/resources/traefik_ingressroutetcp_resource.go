@@ -6,6 +6,7 @@ package resources
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/prometheus/client_golang/prometheus"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
@@ -137,6 +138,9 @@ func (r *TraefikIngressRouteTCPResource) mutate(tenantControlPlane *stewardv1alp
 		// Get the host part without port
 		host, _ := utilities.GetControlPlaneAddressAndPortFromHostname(hostname, 0)
 
+		// Generate konnectivity hostname by replacing "k8s" with "konnectivity"
+		konnectivityHost := strings.Replace(host, ".k8s.", ".konnectivity.", 1)
+
 		// Set labels
 		labels := utilities.MergeMaps(
 			r.resource.GetLabels(),
@@ -152,21 +156,48 @@ func (r *TraefikIngressRouteTCPResource) mutate(tenantControlPlane *stewardv1alp
 		)
 		r.resource.SetAnnotations(annotations)
 
+		// Build routes list - API server route
+		// Include multiple SNI patterns to support:
+		// 1. External access with proper hostname
+		// 2. In-cluster access via kubernetes.default.svc (tcp-proxy forwards these)
+		// The tcp-proxy intercepts connections to kubernetes.default.svc and forwards
+		// them to this ingress using the proper external hostname as SNI.
+		// NOTE: Do NOT use HostSNI(`*`) - it breaks multi-tenant routing on shared Traefik.
+		apiServerMatch := fmt.Sprintf(
+			"HostSNI(`%s`) || HostSNI(`kubernetes`) || HostSNI(`kubernetes.default`) || HostSNI(`kubernetes.default.svc`) || HostSNI(`kubernetes.default.svc.cluster.local`)",
+			host,
+		)
+		routes := []interface{}{
+			map[string]interface{}{
+				"match": apiServerMatch,
+				"services": []interface{}{
+					map[string]interface{}{
+						"name": serviceName,
+						"port": int64(servicePort),
+					},
+				},
+			},
+		}
+
+		// Add konnectivity route if konnectivity addon is enabled
+		if tenantControlPlane.Spec.Addons.Konnectivity != nil {
+			konnectivityPort := tenantControlPlane.Spec.Addons.Konnectivity.KonnectivityServerSpec.Port
+			routes = append(routes, map[string]interface{}{
+				"match": fmt.Sprintf("HostSNI(`%s`)", konnectivityHost),
+				"services": []interface{}{
+					map[string]interface{}{
+						"name": serviceName,
+						"port": int64(konnectivityPort),
+					},
+				},
+			})
+		}
+
 		// Build the IngressRouteTCP spec
 		// See: https://doc.traefik.io/traefik/routing/providers/kubernetes-crd/#kind-ingressroutetcp
 		spec := map[string]interface{}{
 			"entryPoints": []interface{}{"websecure"},
-			"routes": []interface{}{
-				map[string]interface{}{
-					"match": fmt.Sprintf("HostSNI(`%s`)", host),
-					"services": []interface{}{
-						map[string]interface{}{
-							"name": serviceName,
-							"port": int64(servicePort),
-						},
-					},
-				},
-			},
+			"routes":      routes,
 			"tls": map[string]interface{}{
 				"passthrough": true,
 			},

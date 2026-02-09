@@ -24,10 +24,12 @@ const (
 	konnectivityEgressSelectorConfigurationPath = "/etc/kubernetes/konnectivity/configurations/egress-selector-configuration.yaml"
 	konnectivityServerName                      = "konnectivity-server"
 	konnectivityServerPath                      = "/run/konnectivity"
+	konnectivityServerCertPath                  = "/etc/konnectivity/pki"
 
-	egressSelectorConfigurationVolume  = "egress-selector-configuration"
-	konnectivityUDSVolume              = "konnectivity-uds"
-	konnectivityServerKubeconfigVolume = "konnectivity-server-kubeconfig"
+	egressSelectorConfigurationVolume    = "egress-selector-configuration"
+	konnectivityUDSVolume                = "konnectivity-uds"
+	konnectivityServerKubeconfigVolume   = "konnectivity-server-kubeconfig"
+	konnectivityServerCertificateVolume  = "konnectivity-server-certificate"
 )
 
 type Konnectivity struct {
@@ -47,7 +49,10 @@ func (k Konnectivity) serverVersion(tcpVersion, addonVersion string) string {
 	return fmt.Sprintf("v0.%d.0", version.Minor)
 }
 
-func (k Konnectivity) buildKonnectivityContainer(tcpVersion string, addon *stewardv1alpha1.KonnectivitySpec, replicas int32, podSpec *corev1.PodSpec) {
+func (k Konnectivity) buildKonnectivityContainer(tcp stewardv1alpha1.TenantControlPlane, podSpec *corev1.PodSpec) {
+	addon := tcp.Spec.Addons.Konnectivity
+	replicas := *tcp.Spec.ControlPlane.Deployment.Replicas
+
 	found, index := utilities.HasNamedContainer(podSpec.Containers, konnectivityServerName)
 	if !found {
 		index = len(podSpec.Containers)
@@ -55,14 +60,12 @@ func (k Konnectivity) buildKonnectivityContainer(tcpVersion string, addon *stewa
 	}
 
 	podSpec.Containers[index].Name = konnectivityServerName
-	podSpec.Containers[index].Image = fmt.Sprintf("%s:%s", addon.KonnectivityServerSpec.Image, k.serverVersion(tcpVersion, addon.KonnectivityServerSpec.Version))
+	podSpec.Containers[index].Image = fmt.Sprintf("%s:%s", addon.KonnectivityServerSpec.Image, k.serverVersion(tcp.Spec.Kubernetes.Version, addon.KonnectivityServerSpec.Version))
 	podSpec.Containers[index].Command = []string{"/proxy-server"}
 
 	args := utilities.ArgsFromSliceToMap(addon.KonnectivityServerSpec.ExtraArgs)
 
 	args["--uds-name"] = fmt.Sprintf("%s/konnectivity-server.socket", konnectivityServerPath)
-	args["--cluster-cert"] = "/etc/kubernetes/pki/apiserver.crt"
-	args["--cluster-key"] = "/etc/kubernetes/pki/apiserver.key"
 	args["--mode"] = "grpc"
 	args["--server-port"] = "0"
 	args["--agent-port"] = fmt.Sprintf("%d", addon.KonnectivityServerSpec.Port)
@@ -73,6 +76,20 @@ func (k Konnectivity) buildKonnectivityContainer(tcpVersion string, addon *stewa
 	args["--kubeconfig"] = "/etc/kubernetes/konnectivity-server.conf"
 	args["--authentication-audience"] = CertCommonName
 	args["--server-count"] = fmt.Sprintf("%d", replicas)
+
+	// For Ingress/Gateway mode, the konnectivity-agent connects via TLS passthrough,
+	// so the server must present a TLS certificate on the agent port.
+	// The --cluster-cert/--cluster-key are used for TLS on agent connections.
+	// For LoadBalancer mode, use the apiserver cert (agents connect directly).
+	// For Ingress/Gateway mode, use the konnectivity cert (has the konnectivity hostname SAN).
+	useServerTLS := tcp.Spec.ControlPlane.Ingress != nil || tcp.Spec.ControlPlane.Gateway != nil
+	if useServerTLS {
+		args["--cluster-cert"] = fmt.Sprintf("%s/tls.crt", konnectivityServerCertPath)
+		args["--cluster-key"] = fmt.Sprintf("%s/tls.key", konnectivityServerCertPath)
+	} else {
+		args["--cluster-cert"] = "/etc/kubernetes/pki/apiserver.crt"
+		args["--cluster-key"] = "/etc/kubernetes/pki/apiserver.key"
+	}
 
 	podSpec.Containers[index].Args = utilities.ArgsFromMapToSlice(args)
 	podSpec.Containers[index].LivenessProbe = &corev1.Probe{
@@ -106,7 +123,7 @@ func (k Konnectivity) buildKonnectivityContainer(tcpVersion string, addon *stewa
 			Protocol:      corev1.ProtocolTCP,
 		},
 	}
-	podSpec.Containers[index].VolumeMounts = []corev1.VolumeMount{
+	volumeMounts := []corev1.VolumeMount{
 		{
 			Name:      "etc-kubernetes-pki",
 			MountPath: "/etc/kubernetes/pki",
@@ -124,6 +141,15 @@ func (k Konnectivity) buildKonnectivityContainer(tcpVersion string, addon *stewa
 			ReadOnly:  false,
 		},
 	}
+	// For Ingress/Gateway mode, mount the konnectivity server certificate
+	if useServerTLS {
+		volumeMounts = append(volumeMounts, corev1.VolumeMount{
+			Name:      konnectivityServerCertificateVolume,
+			MountPath: konnectivityServerCertPath,
+			ReadOnly:  true,
+		})
+	}
+	podSpec.Containers[index].VolumeMounts = volumeMounts
 	podSpec.Containers[index].ImagePullPolicy = corev1.PullAlways
 	podSpec.Containers[index].Resources = corev1.ResourceRequirements{
 		Limits:   nil,
@@ -221,7 +247,9 @@ func (k Konnectivity) buildVolumeMounts(podSpec *corev1.PodSpec) {
 	podSpec.Containers[index].VolumeMounts[vIndex].MountPath = "/etc/kubernetes/konnectivity/configurations"
 }
 
-func (k Konnectivity) buildVolumes(status stewardv1alpha1.KonnectivityStatus, podSpec *corev1.PodSpec) {
+func (k Konnectivity) buildVolumes(tcp stewardv1alpha1.TenantControlPlane, podSpec *corev1.PodSpec) {
+	status := tcp.Status.Addons.Konnectivity
+
 	// Defining volumes for the UDS socket
 	found, index := utilities.HasNamedVolume(podSpec.Volumes, konnectivityUDSVolume)
 	if !found {
@@ -265,12 +293,30 @@ func (k Konnectivity) buildVolumes(status stewardv1alpha1.KonnectivityStatus, po
 			DefaultMode: pointer.To(int32(420)),
 		},
 	}
+
+	// For Ingress/Gateway mode, add volume for the konnectivity server certificate
+	// This certificate is used for TLS on the agent port when agents connect via Ingress
+	if tcp.Spec.ControlPlane.Ingress != nil || tcp.Spec.ControlPlane.Gateway != nil {
+		found, index = utilities.HasNamedVolume(podSpec.Volumes, konnectivityServerCertificateVolume)
+		if !found {
+			podSpec.Volumes = append(podSpec.Volumes, corev1.Volume{})
+			index = len(podSpec.Volumes) - 1
+		}
+
+		podSpec.Volumes[index].Name = konnectivityServerCertificateVolume
+		podSpec.Volumes[index].VolumeSource = corev1.VolumeSource{
+			Secret: &corev1.SecretVolumeSource{
+				SecretName:  status.Certificate.SecretName,
+				DefaultMode: pointer.To(int32(420)),
+			},
+		}
+	}
 }
 
 func (k Konnectivity) Build(deployment *appsv1.Deployment, tenantControlPlane stewardv1alpha1.TenantControlPlane) {
-	k.buildKonnectivityContainer(tenantControlPlane.Spec.Kubernetes.Version, tenantControlPlane.Spec.Addons.Konnectivity, *tenantControlPlane.Spec.ControlPlane.Deployment.Replicas, &deployment.Spec.Template.Spec)
+	k.buildKonnectivityContainer(tenantControlPlane, &deployment.Spec.Template.Spec)
 	k.buildVolumeMounts(&deployment.Spec.Template.Spec)
-	k.buildVolumes(tenantControlPlane.Status.Addons.Konnectivity, &deployment.Spec.Template.Spec)
+	k.buildVolumes(tenantControlPlane, &deployment.Spec.Template.Spec)
 
 	k.Scheme.Default(deployment)
 }

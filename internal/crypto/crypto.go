@@ -257,6 +257,13 @@ func checkPublicKeys(a crypto.PublicKey, b crypto.Signer) bool {
 // NewCertificateTemplate returns the template that must be used to generate a certificate,
 // used to perform the authentication against the DataStore.
 func NewCertificateTemplate(commonName string) *x509.Certificate {
+	return NewCertificateTemplateWithSANs(commonName, nil, nil)
+}
+
+// NewCertificateTemplateWithSANs returns a certificate template with DNS names and/or IP addresses
+// in the Subject Alternative Names field. This is required for TLS server certificates where
+// clients verify the hostname matches the certificate.
+func NewCertificateTemplateWithSANs(commonName string, dnsNames []string, ipAddresses []net.IP) *x509.Certificate {
 	return &x509.Certificate{
 		PublicKeyAlgorithm: x509.RSA,
 		SerialNumber:       big.NewInt(mathrand.Int63()),
@@ -272,6 +279,8 @@ func NewCertificateTemplate(commonName string) *x509.Certificate {
 			x509.ExtKeyUsageServerAuth,
 			x509.ExtKeyUsageCodeSigning,
 		},
-		KeyUsage: x509.KeyUsageDigitalSignature,
+		KeyUsage:    x509.KeyUsageDigitalSignature,
+		DNSNames:    dnsNames,
+		IPAddresses: ipAddresses,
 	}
 }

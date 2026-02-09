@@ -33,10 +33,23 @@ func (r *KubernetesServiceResource) GetHistogram() prometheus.Histogram {
 	return serviceCollector
 }
 
-func (r *KubernetesServiceResource) ShouldStatusBeUpdated(_ context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) bool {
-	return tenantControlPlane.Status.Kubernetes.Service.Name != r.resource.GetName() ||
+func (r *KubernetesServiceResource) ShouldStatusBeUpdated(ctx context.Context, tenantControlPlane *stewardv1alpha1.TenantControlPlane) bool {
+	// Check if basic service info changed
+	if tenantControlPlane.Status.Kubernetes.Service.Name != r.resource.GetName() ||
 		tenantControlPlane.Status.Kubernetes.Service.Namespace != r.resource.GetNamespace() ||
-		tenantControlPlane.Status.Kubernetes.Service.Port != r.resource.Spec.Ports[0].Port
+		tenantControlPlane.Status.Kubernetes.Service.Port != r.resource.Spec.Ports[0].Port {
+		return true
+	}
+
+	// Also check if ControlPlaneEndpoint needs to be updated
+	// This is important for Ingress/Gateway mode where the endpoint must use the hostname
+	address, port, err := tenantControlPlane.ExternalControlPlaneAddress(ctx, r.Client)
+	if err != nil {
+		return false
+	}
+
+	expectedEndpoint := net.JoinHostPort(address, strconv.FormatInt(int64(port), 10))
+	return tenantControlPlane.Status.ControlPlaneEndpoint != expectedEndpoint
 }
 
 func (r *KubernetesServiceResource) ShouldCleanup(*stewardv1alpha1.TenantControlPlane) bool {
@@ -53,11 +66,13 @@ func (r *KubernetesServiceResource) UpdateTenantControlPlaneStatus(ctx context.C
 	tenantControlPlane.Status.Kubernetes.Service.Namespace = r.resource.GetNamespace()
 	tenantControlPlane.Status.Kubernetes.Service.Port = r.resource.Spec.Ports[0].Port
 
-	address, err := tenantControlPlane.DeclaredControlPlaneAddress(ctx, r.Client)
+	// Use ExternalControlPlaneAddress for the status endpoint
+	// This returns the Ingress/Gateway hostname for those modes, or LoadBalancer IP otherwise
+	address, port, err := tenantControlPlane.ExternalControlPlaneAddress(ctx, r.Client)
 	if err != nil {
 		return err
 	}
-	tenantControlPlane.Status.ControlPlaneEndpoint = net.JoinHostPort(address, strconv.FormatInt(int64(tenantControlPlane.Spec.NetworkProfile.Port), 10))
+	tenantControlPlane.Status.ControlPlaneEndpoint = net.JoinHostPort(address, strconv.FormatInt(int64(port), 10))
 
 	return nil
 }
@@ -130,6 +145,10 @@ func (r *KubernetesServiceResource) mutate(ctx context.Context, tenantControlPla
 
 		r.resource.Spec.Ports = ports
 
+		// Determine service type based on configuration.
+		// For Ingress/Gateway mode, we use ClusterIP - the Ingress routes external
+		// traffic to the ClusterIP, and tcp-proxy (with TLS termination) connects
+		// via the Ingress hostname with proper SNI.
 		switch tenantControlPlane.Spec.ControlPlane.Service.ServiceType {
 		case stewardv1alpha1.ServiceTypeLoadBalancer:
 			r.resource.Spec.Type = corev1.ServiceTypeLoadBalancer
@@ -149,6 +168,7 @@ func (r *KubernetesServiceResource) mutate(ctx context.Context, tenantControlPla
 				r.resource.Spec.ExternalIPs = []string{address}
 			}
 		default:
+			// ClusterIP for all other cases including Ingress/Gateway mode
 			r.resource.Spec.Type = corev1.ServiceTypeClusterIP
 
 			if tenantControlPlane.Spec.NetworkProfile.AllowAddressAsExternalIP && len(address) > 0 {

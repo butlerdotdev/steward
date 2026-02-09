@@ -14,6 +14,15 @@ import (
 	corev1 "k8s.io/api/core/v1"
 )
 
+// TCPProxyHostAlias defines a hostname-to-IP mapping for /etc/hosts injection.
+// Used to resolve hostnames before DNS is available (bootstrap phase).
+type TCPProxyHostAlias struct {
+	// IP address of the host entry.
+	IP string `json:"ip"`
+	// Hostnames for the IP address.
+	Hostnames []string `json:"hostnames"`
+}
+
 // TCPProxySpec defines the configuration for the TCP proxy addon.
 // When enabled, Steward deploys a tcp-proxy into the tenant cluster that handles
 // kubernetes.default.svc routing and manages the kubernetes EndpointSlice.
@@ -27,6 +36,21 @@ type TCPProxySpec struct {
 	// Resources defines the compute resources for the tcp-proxy container.
 	// +optional
 	Resources *corev1.ResourceRequirements `json:"resources,omitempty"`
+
+	// HostAliases provides hostname-to-IP mappings for /etc/hosts injection.
+	// Required for Ingress/Gateway modes where the API server hostname must be
+	// resolved before CoreDNS is available. The tcp-proxy uses hostNetwork,
+	// so it needs these entries to connect to the upstream API server.
+	// +optional
+	HostAliases []TCPProxyHostAlias `json:"hostAliases,omitempty"`
+
+	// InternalEndpoint is the direct endpoint for tcp-proxy to reach the API server.
+	// For Ingress/Gateway modes, this should be a management cluster node IP that
+	// is reachable from tenant worker nodes (e.g., "10.40.0.201"). The NodePort
+	// is automatically appended by Steward based on the service configuration.
+	// If not specified, Steward attempts to use the service's LoadBalancer IP.
+	// +optional
+	InternalEndpoint string `json:"internalEndpoint,omitempty"`
 }
 
 // TCPProxyStatus defines the observed state of the TCP proxy addon.

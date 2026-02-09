@@ -65,7 +65,10 @@ type Deployment struct {
 }
 
 func (d Deployment) Build(ctx context.Context, deployment *appsv1.Deployment, tenantControlPlane stewardv1alpha1.TenantControlPlane) {
-	address, _, _ := tenantControlPlane.AssignedControlPlaneAddress()
+	// Use DeclaredControlPlaneAddress for API server advertise-address - it needs an IP, not hostname
+	// For Ingress/Gateway modes, Status.ControlPlaneEndpoint contains the hostname,
+	// but the API server advertise-address requires an internal IP address
+	address, _ := tenantControlPlane.DeclaredControlPlaneAddress(ctx, d.Client)
 
 	d.setLabels(deployment, utilities.MergeMaps(utilities.StewardLabels(tenantControlPlane.GetName(), "deployment"), tenantControlPlane.Spec.ControlPlane.Deployment.AdditionalMetadata.Labels))
 	d.setAnnotations(deployment, utilities.MergeMaps(deployment.Annotations, tenantControlPlane.Spec.ControlPlane.Deployment.AdditionalMetadata.Annotations))
