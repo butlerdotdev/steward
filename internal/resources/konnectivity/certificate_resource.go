@@ -1,4 +1,4 @@
-// Copyright 2022 Butler Labs Labs
+// Copyright 2026 Butler Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package konnectivity
@@ -7,6 +7,7 @@ import (
 	"context"
 	"crypto/x509"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -139,7 +140,30 @@ func (r *CertificateResource) mutate(ctx context.Context, tenantControlPlane *st
 			if err != nil {
 				logger.Info(fmt.Sprintf("%s certificate-private_key pair is not valid: %s", konnectivityCertAndKeyBaseName, err.Error()))
 			}
-			if isCAValid && isValid {
+
+			// For Ingress/Gateway mode, verify the certificate has the required hostname in SANs
+			var dnsNamesRequired []string
+			if tenantControlPlane.Spec.ControlPlane.Ingress != nil &&
+				len(tenantControlPlane.Spec.ControlPlane.Ingress.Hostname) > 0 {
+				apiHostname, _ := utilities.GetControlPlaneAddressAndPortFromHostname(
+					tenantControlPlane.Spec.ControlPlane.Ingress.Hostname, 0)
+				dnsNamesRequired = append(dnsNamesRequired, strings.Replace(apiHostname, ".k8s.", ".konnectivity.", 1))
+			} else if tenantControlPlane.Spec.ControlPlane.Gateway != nil &&
+				len(tenantControlPlane.Spec.ControlPlane.Gateway.Hostname) > 0 {
+				apiHostname, _ := utilities.GetControlPlaneAddressAndPortFromHostname(
+					string(tenantControlPlane.Spec.ControlPlane.Gateway.Hostname), 0)
+				dnsNamesRequired = append(dnsNamesRequired, strings.Replace(apiHostname, ".k8s.", ".konnectivity.", 1))
+			}
+
+			hasSANs := true
+			if len(dnsNamesRequired) > 0 {
+				hasSANs, _ = crypto.CheckCertificateNamesAndIPs(r.resource.Data[corev1.TLSCertKey], dnsNamesRequired)
+				if !hasSANs {
+					logger.Info("konnectivity certificate missing required SANs, regenerating", "required", dnsNamesRequired)
+				}
+			}
+
+			if isCAValid && isValid && hasSANs {
 				return nil
 			}
 		}
@@ -150,7 +174,30 @@ func (r *CertificateResource) mutate(ctx context.Context, tenantControlPlane *st
 			PrivateKey:  secretCA.Data[kubeadmconstants.CAKeyName],
 		}
 
-		cert, privKey, err := crypto.GenerateCertificatePrivateKeyPair(crypto.NewCertificateTemplate(CertCommonName), ca.Certificate, ca.PrivateKey)
+		// Build the list of DNS names for the certificate SANs
+		// For Ingress/Gateway mode, the konnectivity-agent connects via a hostname,
+		// so the server certificate must include that hostname in its SANs
+		var dnsNames []string
+		if tenantControlPlane.Spec.ControlPlane.Ingress != nil &&
+			len(tenantControlPlane.Spec.ControlPlane.Ingress.Hostname) > 0 {
+			// Generate konnectivity hostname by replacing ".k8s." with ".konnectivity."
+			// e.g., "cluster.namespace.k8s.example.com" -> "cluster.namespace.konnectivity.example.com"
+			apiHostname, _ := utilities.GetControlPlaneAddressAndPortFromHostname(
+				tenantControlPlane.Spec.ControlPlane.Ingress.Hostname, 0)
+			konnectivityHostname := strings.Replace(apiHostname, ".k8s.", ".konnectivity.", 1)
+			dnsNames = append(dnsNames, konnectivityHostname)
+			logger.Info("Adding konnectivity hostname to certificate SANs", "hostname", konnectivityHostname)
+		} else if tenantControlPlane.Spec.ControlPlane.Gateway != nil &&
+			len(tenantControlPlane.Spec.ControlPlane.Gateway.Hostname) > 0 {
+			// Same pattern for Gateway mode
+			apiHostname, _ := utilities.GetControlPlaneAddressAndPortFromHostname(
+				string(tenantControlPlane.Spec.ControlPlane.Gateway.Hostname), 0)
+			konnectivityHostname := strings.Replace(apiHostname, ".k8s.", ".konnectivity.", 1)
+			dnsNames = append(dnsNames, konnectivityHostname)
+			logger.Info("Adding konnectivity hostname to certificate SANs", "hostname", konnectivityHostname)
+		}
+
+		cert, privKey, err := crypto.GenerateCertificatePrivateKeyPair(crypto.NewCertificateTemplateWithSANs(CertCommonName, dnsNames, nil), ca.Certificate, ca.PrivateKey)
 		if err != nil {
 			logger.Error(err, "unable to generate certificate and private key")
 

@@ -177,15 +177,13 @@ datastore-postgres:
 	$(MAKE) NAME=gold _datastore-postgres
 
 _datastore-etcd:
-	$(HELM) upgrade --install etcd-$(NAME) butlerlabs/steward-etcd --create-namespace -n $(NAMESPACE) --set datastore.enabled=true --set fullnameOverride=etcd-$(NAME) $(EXTRA_ARGS)
+	$(HELM) upgrade --install etcd-$(NAME) oci://ghcr.io/butlerdotdev/charts/steward-etcd --create-namespace -n $(NAMESPACE) --set datastore.enabled=true --set fullnameOverride=etcd-$(NAME) $(EXTRA_ARGS)
 
 _datastore-nats:
 	$(MAKE) NAME=$(NAME) NAMESPACE=nats-system -C deploy/kine/nats nats
 	kubectl apply -f $(shell pwd)/config/samples/steward_v1alpha1_datastore_nats_$(NAME).yaml
 
 datastore-etcd: helm
-	$(HELM) repo add butlerlabs https://butlerdotdev.github.io/charts
-	$(HELM) repo update
 	$(MAKE) NAME=bronze NAMESPACE=etcd-system _datastore-etcd
 	$(MAKE) NAME=silver NAMESPACE=etcd-system _datastore-etcd
 	$(MAKE) NAME=gold NAMESPACE=etcd-system _datastore-etcd
@@ -225,10 +223,16 @@ KO_LOCAL ?= true
 run: manifests generate ## Run a controller from your host.
 	go run ./main.go
 
-build: $(KO)
+build: ## Build the manager binary.
+	CGO_ENABLED=0 go build -ldflags $(LD_FLAGS) -o bin/manager .
+
+build-ko: $(KO) ## Build using ko (legacy).
 	LD_FLAGS=$(LD_FLAGS) \
 	KOCACHE=/tmp/ko-cache KO_DOCKER_REPO=${CONTAINER_REPOSITORY} \
 	$(KO) build ./ --bare --tags=$(VERSION) --local=$(KO_LOCAL) --push=$(KO_PUSH)
+
+docker-build: ## Build the Docker image locally.
+	docker build -t ${CONTAINER_REPOSITORY}:${VERSION} .
 
 ##@ Development
 
@@ -265,9 +269,8 @@ cleanup: kind
 	$(KIND) delete cluster --name steward
 
 .PHONY: e2e
-e2e: env build load helm ginkgo cert-manager gateway-api envoy-gateway ## Create a KinD cluster, install Steward on it and run the test suite.
+e2e: env docker-build load helm ginkgo cert-manager gateway-api envoy-gateway ## Create a KinD cluster, install Steward on it and run the test suite.
 	$(HELM) upgrade --debug --install steward-crds ./charts/steward-crds --create-namespace --namespace steward-system
-	$(HELM) repo add butlerlabs https://butlerdotdev.github.io/charts
 	$(HELM) dependency build ./charts/steward
 	$(HELM) upgrade --debug --install steward ./charts/steward --create-namespace --namespace steward-system --set "image.tag=$(VERSION)" --set "image.pullPolicy=Never"
 	$(MAKE) datastores
@@ -275,7 +278,7 @@ e2e: env build load helm ginkgo cert-manager gateway-api envoy-gateway ## Create
 
 ##@ Document
 
-CAPI_URL = https://github.com/butlerdotdev/steward-capi-provider.git
+CAPI_URL = https://github.com/butlerdotdev/cluster-api-control-plane-provider-steward.git
 CAPI_DIR := $(shell mktemp -d)
 CRDS_DIR := $(shell mktemp -d)
 

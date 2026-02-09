@@ -1,4 +1,4 @@
-// Copyright 2022 Butler Labs Labs
+// Copyright 2026 Butler Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package kubeadm
@@ -63,6 +63,11 @@ func CreateKubeadmInitConfiguration(params Parameters) (*Configuration, error) {
 		fmt.Sprintf("%s.%s.svc", params.TenantControlPlaneName, params.TenantControlPlaneNamespace),
 		fmt.Sprintf("%s.%s.svc.cluster.local", params.TenantControlPlaneName, params.TenantControlPlaneNamespace),
 		params.TenantControlPlaneAddress,
+		// Standard kubernetes service names (matches kubeadm default behavior)
+		"kubernetes",
+		"kubernetes.default",
+		"kubernetes.default.svc",
+		"kubernetes.default.svc.cluster.local",
 	}, params.TenantControlPlaneCertSANs...)
 	conf.APIServer.ControlPlaneComponent.ExtraArgs = []kubeadmapi.Arg{
 		{Name: "etcd-compaction-interval", Value: "0s"},

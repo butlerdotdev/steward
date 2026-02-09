@@ -1,4 +1,4 @@
-// Copyright 2022 Butler Labs Labs
+// Copyright 2026 Butler Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package v1alpha1
@@ -158,6 +158,7 @@ type AddonsStatus struct {
 	CoreDNS      AddonStatus        `json:"coreDNS,omitempty"`
 	KubeProxy    AddonStatus        `json:"kubeProxy,omitempty"`
 	Konnectivity KonnectivityStatus `json:"konnectivity,omitempty"`
+	TCPProxy     TCPProxyStatus     `json:"tcpProxy,omitempty"`
 }
 
 // TenantControlPlaneStatus defines the observed state of TenantControlPlane.

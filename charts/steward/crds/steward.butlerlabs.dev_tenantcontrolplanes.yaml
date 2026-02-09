@@ -296,6 +296,110 @@ spec:
                             In case this value is set, kubeadm does not change automatically the version of the above components during upgrades.
                           type: string
                       type: object
+                    tcpProxy:
+                      description: |-
+                        TCPProxy enables the tcp-proxy addon in the tenant cluster.
+                        When enabled, tcp-proxy rewrites the default kubernetes EndpointSlice
+                        to route API server traffic through a local proxy, eliminating SNI
+                        rewriting requirements for Ingress and Gateway API network modes.
+                      properties:
+                        hostAliases:
+                          description: |-
+                            HostAliases provides hostname-to-IP mappings for /etc/hosts injection.
+                            Required for Ingress/Gateway modes where the API server hostname must be
+                            resolved before CoreDNS is available. The tcp-proxy uses hostNetwork,
+                            so it needs these entries to connect to the upstream API server.
+                          items:
+                            description: |-
+                              TCPProxyHostAlias defines a hostname-to-IP mapping for /etc/hosts injection.
+                              Used to resolve hostnames before DNS is available (bootstrap phase).
+                            properties:
+                              hostnames:
+                                description: Hostnames for the IP address.
+                                items:
+                                  type: string
+                                type: array
+                              ip:
+                                description: IP address of the host entry.
+                                type: string
+                            required:
+                              - hostnames
+                              - ip
+                            type: object
+                          type: array
+                        image:
+                          description: |-
+                            Image is the container image for the tcp-proxy.
+                            Defaults to ghcr.io/butlerdotdev/steward-tcp-proxy:<steward-version>
+                          type: string
+                        internalEndpoint:
+                          description: |-
+                            InternalEndpoint is the direct endpoint for tcp-proxy to reach the API server.
+                            For Ingress/Gateway modes, this should be a management cluster node IP that
+                            is reachable from tenant worker nodes (e.g., "10.40.0.201"). The NodePort
+                            is automatically appended by Steward based on the service configuration.
+                            If not specified, Steward attempts to use the service's LoadBalancer IP.
+                          type: string
+                        resources:
+                          description: Resources defines the compute resources for the tcp-proxy container.
+                          properties:
+                            claims:
+                              description: |-
+                                Claims lists the names of resources, defined in spec.resourceClaims,
+                                that are used by this container.
+
+                                This field depends on the
+                                DynamicResourceAllocation feature gate.
+
+                                This field is immutable. It can only be set for containers.
+                              items:
+                                description: ResourceClaim references one entry in PodSpec.ResourceClaims.
+                                properties:
+                                  name:
+                                    description: |-
+                                      Name must match the name of one entry in pod.spec.resourceClaims of
+                                      the Pod where this field is used. It makes that resource available
+                                      inside a container.
+                                    type: string
+                                  request:
+                                    description: |-
+                                      Request is the name chosen for a request in the referenced claim.
+                                      If empty, everything from the claim is made available, otherwise
+                                      only the result of this request.
+                                    type: string
+                                required:
+                                  - name
+                                type: object
+                              type: array
+                              x-kubernetes-list-map-keys:
+                                - name
+                              x-kubernetes-list-type: map
+                            limits:
+                              additionalProperties:
+                                anyOf:
+                                  - type: integer
+                                  - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: |-
+                                Limits describes the maximum amount of compute resources allowed.
+                                More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+                              type: object
+                            requests:
+                              additionalProperties:
+                                anyOf:
+                                  - type: integer
+                                  - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: |-
+                                Requests describes the minimum amount of compute resources required.
+                                If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+                                otherwise to an implementation-defined value. Requests cannot exceed Limits.
+                                More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+                              type: object
+                          type: object
+                      type: object
                   type: object
                 controlPlane:
                   description: |-
@@ -6922,6 +7026,21 @@ spec:
                                 type: string
                               type: object
                           type: object
+                        controllerType:
+                          description: |-
+                            ControllerType specifies the ingress controller type for automatic TLS passthrough configuration.
+                            Supported values: "haproxy", "nginx", "traefik", "generic"
+                            - haproxy: Uses haproxy.org/ssl-passthrough annotation
+                            - nginx: Uses nginx.ingress.kubernetes.io/ssl-passthrough annotation
+                            - traefik: Creates IngressRouteTCP instead of standard Ingress (standard Ingress doesn't support TLS passthrough)
+                            - generic: No automatic annotations, use additionalMetadata.annotations for custom configuration
+                            If not specified, defaults to "generic".
+                          enum:
+                            - haproxy
+                            - nginx
+                            - traefik
+                            - generic
+                          type: string
                         hostname:
                           description: |-
                             Hostname is an optional field which will be used as Ingress's Host. If it is not defined,
@@ -7918,6 +8037,75 @@ spec:
                         lastUpdate:
                           format: date-time
                           type: string
+                      required:
+                        - enabled
+                      type: object
+                    tcpProxy:
+                      description: TCPProxyStatus defines the observed state of the TCP proxy addon.
+                      properties:
+                        clusterRole:
+                          description: ClusterRole contains the status of the tcp-proxy ClusterRole.
+                          properties:
+                            lastUpdate:
+                              description: Last time when k8s object was updated
+                              format: date-time
+                              type: string
+                            name:
+                              type: string
+                            namespace:
+                              type: string
+                          type: object
+                        clusterRoleBinding:
+                          description: ClusterRoleBinding contains the status of the tcp-proxy ClusterRoleBinding.
+                          properties:
+                            lastUpdate:
+                              description: Last time when k8s object was updated
+                              format: date-time
+                              type: string
+                            name:
+                              type: string
+                            namespace:
+                              type: string
+                          type: object
+                        deployment:
+                          description: Deployment contains the status of the tcp-proxy Deployment in the tenant cluster.
+                          properties:
+                            lastUpdate:
+                              description: Last time when k8s object was updated
+                              format: date-time
+                              type: string
+                            name:
+                              type: string
+                            namespace:
+                              type: string
+                          type: object
+                        enabled:
+                          description: Enabled indicates whether the tcp-proxy addon is currently active.
+                          type: boolean
+                        service:
+                          description: Service contains the status of the tcp-proxy Service in the tenant cluster.
+                          properties:
+                            lastUpdate:
+                              description: Last time when k8s object was updated
+                              format: date-time
+                              type: string
+                            name:
+                              type: string
+                            namespace:
+                              type: string
+                          type: object
+                        serviceAccount:
+                          description: ServiceAccount contains the status of the tcp-proxy ServiceAccount.
+                          properties:
+                            lastUpdate:
+                              description: Last time when k8s object was updated
+                              format: date-time
+                              type: string
+                            name:
+                              type: string
+                            namespace:
+                              type: string
+                          type: object
                       required:
                         - enabled
                       type: object

@@ -12,6 +12,7 @@ linters:
     - gochecknoglobals
     - gochecknoinits
     - gocognit
+    - gocyclo
     - godox
     - gomoddirectives
     - gosec
@@ -36,7 +37,7 @@ linters:
         - -QF1008
     goheader:
       template: |-
-        Copyright 2022 Butler Labs
+        Copyright 2026 Butler Labs
         SPDX-License-Identifier: Apache-2.0
     revive:
       rules:
@@ -67,7 +68,7 @@ formatters:
       sections:
         - standard
         - default
-        - prefix(github.com/clastix/kamaji/)
+        - prefix(github.com/butlerdotdev/steward/)
   exclusions:
     generated: lax
     paths:

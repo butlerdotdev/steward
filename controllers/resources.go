@@ -1,4 +1,4 @@
-// Copyright 2022 Butler Labs Labs
+// Copyright 2026 Butler Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package controllers
@@ -35,10 +35,10 @@ type GroupResourceBuilderConfiguration struct {
 	DataStore                     stewardv1alpha1.DataStore
 	DataStoreOverrides            []builder.DataStoreOverrides
 	DataStoreOverriedsConnections map[string]datastore.Connection
-	StewardNamespace               string
-	StewardServiceAccount          string
-	StewardService                 string
-	StewardMigrateImage            string
+	StewardNamespace              string
+	StewardServiceAccount         string
+	StewardService                string
+	StewardMigrateImage           string
 	DiscoveryClient               discovery.DiscoveryInterface
 }
 
@@ -69,7 +69,7 @@ func GetResources(ctx context.Context, config GroupResourceBuilderConfiguration)
 	resources = append(resources, getKubernetesDeploymentResources(config.client, config.tcpReconcilerConfig, config.DataStore, config.DataStoreOverrides)...)
 	resources = append(resources, getKonnectivityServerPatchResources(config.client)...)
 	resources = append(resources, getDataStoreMigratingCleanup(config.client, config.StewardNamespace)...)
-	resources = append(resources, getKubernetesIngressResources(config.client)...)
+	resources = append(resources, getKubernetesIngressResources(config.client, &config.tenantControlPlane)...)
 
 	// Conditionally add Gateway resources
 	if utilities.AreGatewayResourcesAvailable(ctx, config.client, config.DiscoveryClient) {
@@ -104,9 +104,9 @@ func GetDeletableResources(tcp *stewardv1alpha1.TenantControlPlane, config Group
 func getDataStoreMigratingCleanup(c client.Client, stewardNamespace string) []resources.Resource {
 	return []resources.Resource{
 		&ds.Migrate{
-			Client:          c,
+			Client:           c,
 			StewardNamespace: stewardNamespace,
-			ShouldCleanUp:   true,
+			ShouldCleanUp:    true,
 		},
 	}
 }
@@ -114,8 +114,8 @@ func getDataStoreMigratingCleanup(c client.Client, stewardNamespace string) []re
 func getDataStoreMigratingResources(c client.Client, stewardNamespace, migrateImage string, stewardServiceAccount, stewardService string) []resources.Resource {
 	return []resources.Resource{
 		&ds.Migrate{
-			Client:               c,
-			MigrateImage:         migrateImage,
+			Client:                c,
+			MigrateImage:          migrateImage,
 			StewardNamespace:      stewardNamespace,
 			StewardServiceAccount: stewardServiceAccount,
 			StewardServiceName:    stewardService,
@@ -304,11 +304,28 @@ func getKubernetesDeploymentResources(c client.Client, tcpReconcilerConfig Tenan
 	}
 }
 
-func getKubernetesIngressResources(c client.Client) []resources.Resource {
+func getKubernetesIngressResources(c client.Client, tcp *stewardv1alpha1.TenantControlPlane) []resources.Resource {
+	// If no ingress is configured, return standard ingress resource (it will handle cleanup/no-op)
+	if tcp.Spec.ControlPlane.Ingress == nil {
+		return []resources.Resource{
+			&resources.KubernetesIngressResource{Client: c},
+		}
+	}
+
+	// Route to Traefik IngressRouteTCP if controllerType is "traefik"
+	// Standard Kubernetes Ingress doesn't support TLS passthrough with Traefik
+	// We return BOTH resources: KubernetesIngressResource will cleanup any existing Ingress,
+	// and TraefikIngressRouteTCPResource will create the IngressRouteTCP
+	if tcp.Spec.ControlPlane.Ingress.ControllerType == "traefik" {
+		return []resources.Resource{
+			&resources.KubernetesIngressResource{Client: c},
+			&resources.TraefikIngressRouteTCPResource{Client: c},
+		}
+	}
+
+	// For haproxy, nginx, generic, or unspecified - use standard Ingress with controller-specific annotations
 	return []resources.Resource{
-		&resources.KubernetesIngressResource{
-			Client: c,
-		},
+		&resources.KubernetesIngressResource{Client: c},
 	}
 }
 

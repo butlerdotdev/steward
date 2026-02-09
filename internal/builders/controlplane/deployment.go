@@ -1,4 +1,4 @@
-// Copyright 2022 Butler Labs Labs
+// Copyright 2026 Butler Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package controlplane
@@ -65,7 +65,10 @@ type Deployment struct {
 }
 
 func (d Deployment) Build(ctx context.Context, deployment *appsv1.Deployment, tenantControlPlane stewardv1alpha1.TenantControlPlane) {
-	address, _, _ := tenantControlPlane.AssignedControlPlaneAddress()
+	// Use DeclaredControlPlaneAddress for API server advertise-address - it needs an IP, not hostname
+	// For Ingress/Gateway modes, Status.ControlPlaneEndpoint contains the hostname,
+	// but the API server advertise-address requires an internal IP address
+	address, _ := tenantControlPlane.DeclaredControlPlaneAddress(ctx, d.Client)
 
 	d.setLabels(deployment, utilities.MergeMaps(utilities.StewardLabels(tenantControlPlane.GetName(), "deployment"), tenantControlPlane.Spec.ControlPlane.Deployment.AdditionalMetadata.Labels))
 	d.setAnnotations(deployment, utilities.MergeMaps(deployment.Annotations, tenantControlPlane.Spec.ControlPlane.Deployment.AdditionalMetadata.Annotations))
@@ -719,6 +722,13 @@ func (d Deployment) buildKubeAPIServerCommand(tenantControlPlane stewardv1alpha1
 
 	if len(d.DataStoreOverrides) != 0 {
 		desiredArgs["--etcd-servers-overrides"] = d.etcdServersOverrides()
+	}
+
+	// When tcp-proxy is enabled, disable the built-in endpoint reconciler.
+	// tcp-proxy manages the kubernetes EndpointSlice directly inside the
+	// tenant cluster, so kube-apiserver must not fight it for ownership.
+	if tenantControlPlane.Spec.Addons.TCPProxy != nil {
+		desiredArgs["--endpoint-reconciler-type"] = "none"
 	}
 
 	// Order matters, here: extraArgs could try to overwrite some arguments managed by Steward and that would be crucial.

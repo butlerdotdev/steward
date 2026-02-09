@@ -1,4 +1,4 @@
-// Copyright 2022 Butler Labs Labs
+// Copyright 2026 Butler Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package v1alpha1
@@ -152,6 +152,16 @@ type IngressSpec struct {
 	// Hostname is an optional field which will be used as Ingress's Host. If it is not defined,
 	// Ingress's host will be "<tenant>.<namespace>.<domain>", where domain is specified under NetworkProfileSpec
 	Hostname string `json:"hostname,omitempty"`
+	// ControllerType specifies the ingress controller type for automatic TLS passthrough configuration.
+	// Supported values: "haproxy", "nginx", "traefik", "generic"
+	// - haproxy: Uses haproxy.org/ssl-passthrough annotation
+	// - nginx: Uses nginx.ingress.kubernetes.io/ssl-passthrough annotation
+	// - traefik: Creates IngressRouteTCP instead of standard Ingress (standard Ingress doesn't support TLS passthrough)
+	// - generic: No automatic annotations, use additionalMetadata.annotations for custom configuration
+	// If not specified, defaults to "generic".
+	// +kubebuilder:validation:Enum=haproxy;nginx;traefik;generic
+	// +optional
+	ControllerType string `json:"controllerType,omitempty"`
 }
 
 // GatewaySpec defines the options for the Gateway which will expose API Server of the Tenant Control Plane.
@@ -348,6 +358,12 @@ type AddonsSpec struct {
 	// Enables the kube-proxy addon in the Tenant Cluster.
 	// The registry and the tag are configurable, the image is hard-coded to `kube-proxy`.
 	KubeProxy *AddonSpec `json:"kubeProxy,omitempty"`
+	// TCPProxy enables the tcp-proxy addon in the tenant cluster.
+	// When enabled, tcp-proxy rewrites the default kubernetes EndpointSlice
+	// to route API server traffic through a local proxy, eliminating SNI
+	// rewriting requirements for Ingress and Gateway API network modes.
+	// +optional
+	TCPProxy *TCPProxySpec `json:"tcpProxy,omitempty"`
 }
 
 type Permissions struct {

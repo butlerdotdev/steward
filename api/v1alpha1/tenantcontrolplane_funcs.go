@@ -1,4 +1,4 @@
-// Copyright 2022 Butler Labs Labs
+// Copyright 2026 Butler Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package v1alpha1
@@ -41,6 +41,8 @@ func (in *TenantControlPlane) AssignedControlPlaneAddress() (string, int32, erro
 // DeclaredControlPlaneAddress returns the desired Tenant Control Plane address.
 // In case of dynamic allocation, e.g. using a Load Balancer, it queries the API Server looking for the allocated IP.
 // When an IP has not been yet assigned, or it is expected, an error is returned.
+// Note: For internal kubeadm configuration, this always returns an IP address.
+// For the external endpoint (Ingress/Gateway), use ExternalControlPlaneAddress instead.
 func (in *TenantControlPlane) DeclaredControlPlaneAddress(ctx context.Context, client client.Client) (string, error) {
 	var loadBalancerStatus corev1.LoadBalancerStatus
 
@@ -56,6 +58,10 @@ func (in *TenantControlPlane) DeclaredControlPlaneAddress(ctx context.Context, c
 		return in.Spec.NetworkProfile.Address, nil
 	case svc.Spec.Type == corev1.ServiceTypeClusterIP:
 		return svc.Spec.ClusterIP, nil
+	case svc.Spec.Type == corev1.ServiceTypeNodePort:
+		// NodePort services (used in Ingress/Gateway mode) still have a ClusterIP
+		// which is valid for internal cluster communication and kubeadm config
+		return svc.Spec.ClusterIP, nil
 	case svc.Spec.Type == corev1.ServiceTypeLoadBalancer:
 		loadBalancerStatus = svc.Status.LoadBalancer
 		if len(loadBalancerStatus.Ingress) == 0 {
@@ -66,6 +72,36 @@ func (in *TenantControlPlane) DeclaredControlPlaneAddress(ctx context.Context, c
 	}
 
 	return "", stewarderrors.MissingValidIPError{}
+}
+
+// ExternalControlPlaneAddress returns the external address for the control plane.
+// For Ingress/Gateway modes, this returns the configured hostname.
+// For LoadBalancer mode, this returns the LoadBalancer IP.
+// This is used for Status.ControlPlaneEndpoint and konnectivity-agent configuration.
+func (in *TenantControlPlane) ExternalControlPlaneAddress(ctx context.Context, client client.Client) (address string, port int32, err error) {
+	// For Ingress mode, return the Ingress hostname and port 443
+	if in.Spec.ControlPlane.Ingress != nil && in.Spec.ControlPlane.Ingress.Hostname != "" {
+		hostname := in.Spec.ControlPlane.Ingress.Hostname
+		// Extract just the hostname without port if present
+		if idx := strings.Index(hostname, ":"); idx != -1 {
+			hostname = hostname[:idx]
+		}
+
+		return hostname, 443, nil
+	}
+
+	// For Gateway mode, return the Gateway hostname and port 443
+	if in.Spec.ControlPlane.Gateway != nil && in.Spec.ControlPlane.Gateway.Hostname != "" {
+		return string(in.Spec.ControlPlane.Gateway.Hostname), 443, nil
+	}
+
+	// For other modes, use the declared address with the configured port
+	addr, err := in.DeclaredControlPlaneAddress(ctx, client)
+	if err != nil {
+		return "", 0, err
+	}
+
+	return addr, in.Spec.NetworkProfile.Port, nil
 }
 
 // getLoadBalancerAddress extracts the IP address from LoadBalancer ingress.

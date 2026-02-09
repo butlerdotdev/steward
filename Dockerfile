@@ -1,5 +1,7 @@
 # Build stage
-FROM golang:latest AS builder
+FROM --platform=$BUILDPLATFORM golang:latest AS builder
+
+ARG TARGETARCH
 
 WORKDIR /workspace
 
@@ -8,8 +10,8 @@ RUN go mod download
 
 COPY . .
 
-# Build from root where main.go is
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+# Build for target architecture
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} \
     go build -ldflags="-s -w" -o manager .
 
 # Runtime stage

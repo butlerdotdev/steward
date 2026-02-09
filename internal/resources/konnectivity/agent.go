@@ -1,4 +1,4 @@
-// Copyright 2022 Butler Labs Labs
+// Copyright 2026 Butler Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package konnectivity
@@ -6,6 +6,7 @@ package konnectivity
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/blang/semver"
 	"github.com/prometheus/client_golang/prometheus"
@@ -182,19 +183,27 @@ func (r *Agent) mutate(ctx context.Context, tenantControlPlane *stewardv1alpha1.
 			return err
 		}
 
-		// Override address with control plane gateway hostname if configured
-		// Konnectivity TLSRoute uses the same hostname as control plane gateway
-		if tenantControlPlane.Spec.ControlPlane.Gateway != nil &&
+		// Override address and port for Ingress/Gateway modes
+		// When using Ingress/Gateway, konnectivity must connect through port 443
+		// with a dedicated hostname for SNI-based routing to the konnectivity service port
+		konnectivityPort := tenantControlPlane.Spec.Addons.Konnectivity.KonnectivityServerSpec.Port
+
+		if tenantControlPlane.Spec.ControlPlane.Ingress != nil &&
+			len(tenantControlPlane.Spec.ControlPlane.Ingress.Hostname) > 0 {
+			// Generate konnectivity hostname by replacing "k8s" with "konnectivity" in the API hostname
+			// e.g., "cluster.namespace.k8s.example.com" -> "cluster.namespace.konnectivity.example.com"
+			apiHostname, _ := utilities.GetControlPlaneAddressAndPortFromHostname(
+				tenantControlPlane.Spec.ControlPlane.Ingress.Hostname, 0)
+			address = strings.Replace(apiHostname, ".k8s.", ".konnectivity.", 1)
+			konnectivityPort = 443
+		} else if tenantControlPlane.Spec.ControlPlane.Gateway != nil &&
 			len(tenantControlPlane.Spec.ControlPlane.Gateway.Hostname) > 0 {
 			hostname := tenantControlPlane.Spec.ControlPlane.Gateway.Hostname
-
-			// Extract hostname
-			if len(hostname) > 0 {
-				konnectivityHostname, _ := utilities.GetControlPlaneAddressAndPortFromHostname(
-					string(hostname),
-					tenantControlPlane.Spec.Addons.Konnectivity.KonnectivityServerSpec.Port)
-				address = konnectivityHostname
-			}
+			// Generate konnectivity hostname by replacing "k8s" with "konnectivity"
+			apiHostname, _ := utilities.GetControlPlaneAddressAndPortFromHostname(
+				string(hostname), 0)
+			address = strings.Replace(apiHostname, ".k8s.", ".konnectivity.", 1)
+			konnectivityPort = 443
 		}
 
 		r.resource.SetLabels(utilities.MergeMaps(r.resource.GetLabels(), utilities.StewardLabels(tenantControlPlane.GetName(), r.GetName())))
@@ -219,7 +228,19 @@ func (r *Agent) mutate(ctx context.Context, tenantControlPlane *stewardv1alpha1.
 		podTemplateSpec.SetLabels(utilities.MergeMaps(podTemplateSpec.GetLabels(), specSelector.MatchLabels))
 		podTemplateSpec.Spec.PriorityClassName = "system-cluster-critical"
 		podTemplateSpec.Spec.Tolerations = tenantControlPlane.Spec.Addons.Konnectivity.KonnectivityAgentSpec.Tolerations
-		podTemplateSpec.Spec.HostNetwork = tenantControlPlane.Spec.Addons.Konnectivity.KonnectivityAgentSpec.HostNetwork
+
+		// For Ingress/Gateway mode, hostNetwork is required so the agent can resolve
+		// the konnectivity hostname from the node's /etc/hosts (configured by kubeadm bootstrap)
+		hostNetwork := tenantControlPlane.Spec.Addons.Konnectivity.KonnectivityAgentSpec.HostNetwork
+		if tenantControlPlane.Spec.ControlPlane.Ingress != nil ||
+			tenantControlPlane.Spec.ControlPlane.Gateway != nil {
+			hostNetwork = true
+		}
+		podTemplateSpec.Spec.HostNetwork = hostNetwork
+		if hostNetwork {
+			podTemplateSpec.Spec.DNSPolicy = corev1.DNSClusterFirstWithHostNet
+		}
+
 		podTemplateSpec.Spec.NodeSelector = map[string]string{
 			"kubernetes.io/os": "linux",
 		}
@@ -257,7 +278,7 @@ func (r *Agent) mutate(ctx context.Context, tenantControlPlane *stewardv1alpha1.
 		args["--logtostderr"] = "true"
 		args["--ca-cert"] = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
 		args["--proxy-server-host"] = address
-		args["--proxy-server-port"] = fmt.Sprintf("%d", tenantControlPlane.Spec.Addons.Konnectivity.KonnectivityServerSpec.Port)
+		args["--proxy-server-port"] = fmt.Sprintf("%d", konnectivityPort)
 		args["--admin-server-port"] = "8133"
 		args["--health-server-port"] = "8134"
 		args["--service-account-token-path"] = "/var/run/secrets/tokens/konnectivity-agent-token"

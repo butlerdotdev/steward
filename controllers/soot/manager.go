@@ -1,4 +1,4 @@
-// Copyright 2022 Butler Labs Labs
+// Copyright 2026 Butler Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package soot
@@ -294,6 +294,17 @@ func (m *Manager) Reconcile(ctx context.Context, request reconcile.Request) (res
 		return reconcile.Result{}, err
 	}
 
+	tcpProxyController := &controllers.TCPProxy{
+		AdminClient:               m.AdminClient,
+		GetTenantControlPlaneFunc: m.retrieveTenantControlPlane(tcpCtx, request),
+		Logger:                    mgr.GetLogger().WithName("tcp_proxy"),
+		TriggerChannel:            make(chan event.GenericEvent),
+		ControllerName:            fmt.Sprintf("%s-tcpproxy", controllerNamePrefix),
+	}
+	if err = tcpProxyController.SetupWithManager(mgr); err != nil {
+		return reconcile.Result{}, err
+	}
+
 	kubeProxy := &controllers.KubeProxy{
 		AdminClient:               m.AdminClient,
 		GetTenantControlPlaneFunc: m.retrieveTenantControlPlane(tcpCtx, request),
@@ -398,6 +409,7 @@ func (m *Manager) Reconcile(ctx context.Context, request reconcile.Request) (res
 			writePermissions.TriggerChannel,
 			migrate.TriggerChannel,
 			konnectivityAgent.TriggerChannel,
+			tcpProxyController.TriggerChannel,
 			kubeProxy.TriggerChannel,
 			coreDNS.TriggerChannel,
 			uploadKubeadmConfig.TriggerChannel,

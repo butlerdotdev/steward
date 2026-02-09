@@ -1,4 +1,4 @@
-// Copyright 2022 Butler Labs Labs
+// Copyright 2026 Butler Labs
 // SPDX-License-Identifier: Apache-2.0
 
 package resources
@@ -33,7 +33,10 @@ func GetKubeadmManifestDeps(ctx context.Context, client client.Client, tenantCon
 		return nil, nil, errors.Wrap(err, "cannot retrieve kubeconfig configuration")
 	}
 
-	address, _, err := tenantControlPlane.AssignedControlPlaneAddress()
+	// Use DeclaredControlPlaneAddress for kubeadm config - it needs an IP, not hostname
+	// For Ingress/Gateway modes, Status.ControlPlaneEndpoint contains the hostname,
+	// but kubeadm requires an internal IP address for advertiseAddress
+	address, err := tenantControlPlane.DeclaredControlPlaneAddress(ctx, client)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "cannot retrieve Tenant Control Plane address")
 	}
@@ -184,7 +187,10 @@ func KubeadmPhaseCreate(ctx context.Context, r KubeadmPhaseResource, logger logr
 		return controllerutil.OperationResultNone, err
 	}
 
-	address, _, err := tenantControlPlane.AssignedControlPlaneAddress()
+	// Use DeclaredControlPlaneAddress for kubeadm config - it needs an IP, not hostname
+	// For Ingress/Gateway modes, Status.ControlPlaneEndpoint contains the hostname,
+	// but kubeadm requires an internal IP address for advertiseAddress
+	address, err := tenantControlPlane.DeclaredControlPlaneAddress(ctx, r.GetClient())
 	if err != nil {
 		logger.Error(err, "cannot retrieve Tenant Control Plane address")
 
