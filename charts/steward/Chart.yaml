@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: latest
+appVersion: v0.2.1
 description: Steward is the Hosted Control Plane Manager for Kubernetes.
 home: https://github.com/butlerdotdev/steward
 icon: https://github.com/butlerdotdev/steward/raw/main/assets/logo.png
@@ -12,7 +12,7 @@ name: steward
 sources:
   - https://github.com/butlerdotdev/steward
 type: application
-version: 0.0.0+latest
+version: 0.2.1
 dependencies:
   - name: steward-etcd
     version: "0.14.0"
