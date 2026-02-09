@@ -24,7 +24,7 @@ const (
 
 	// DefaultImage is the default container image for tcp-proxy.
 	// TLS termination mode for Ingress/Gateway, passthrough for LoadBalancer/NodePort.
-	DefaultImage = "ghcr.io/butlerdotdev/steward-tcp-proxy:tls-termination-20260208151640"
+	DefaultImage = "ghcr.io/butlerdotdev/steward-tcp-proxy:v0.2.0"
 
 	// ProxyPort is the port tcp-proxy listens on for proxied connections.
 	ProxyPort = 6443
