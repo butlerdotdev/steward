@@ -232,6 +232,7 @@ func resolveUpstreamEndpoint(_ context.Context, _ client.Client, tcp *stewardv1a
 		if tcp.Spec.ControlPlane.Gateway != nil && len(tcp.Spec.ControlPlane.Gateway.Hostname) > 0 {
 			port = 6443
 		}
+
 		return fmt.Sprintf("%s:%d", hostname, port), nil
 	}
 
@@ -352,34 +353,18 @@ func (r *Agent) mutate(ctx context.Context, tcp *stewardv1alpha1.TenantControlPl
 			},
 		}
 
-		// For bootstrap, override KUBERNETES_SERVICE_HOST/PORT
-		// In TLS mode, we need a reachable address before the proxy is running
-		if !tlsMode {
-			// Passthrough mode - use the upstream directly for bootstrap
-			env = append(env,
-				corev1.EnvVar{
-					Name:  "KUBERNETES_SERVICE_HOST",
-					Value: utilities.ExtractHost(upstreamEndpoint),
-				},
-				corev1.EnvVar{
-					Name:  "KUBERNETES_SERVICE_PORT",
-					Value: utilities.ExtractPort(upstreamEndpoint),
-				},
-			)
-		} else {
-			// TLS mode - tcp-proxy needs to reach the Ingress/Gateway for bootstrap
-			// The hostAliases provide DNS resolution for the Ingress/Gateway hostname
-			env = append(env,
-				corev1.EnvVar{
-					Name:  "KUBERNETES_SERVICE_HOST",
-					Value: utilities.ExtractHost(upstreamEndpoint),
-				},
-				corev1.EnvVar{
-					Name:  "KUBERNETES_SERVICE_PORT",
-					Value: utilities.ExtractPort(upstreamEndpoint),
-				},
-			)
-		}
+		// For bootstrap, override KUBERNETES_SERVICE_HOST/PORT so kubelet and
+		// other components can reach the API server via the upstream endpoint.
+		env = append(env,
+			corev1.EnvVar{
+				Name:  "KUBERNETES_SERVICE_HOST",
+				Value: utilities.ExtractHost(upstreamEndpoint),
+			},
+			corev1.EnvVar{
+				Name:  "KUBERNETES_SERVICE_PORT",
+				Value: utilities.ExtractPort(upstreamEndpoint),
+			},
+		)
 		container.Env = env
 
 		container.Ports = []corev1.ContainerPort{
