@@ -98,9 +98,9 @@ func (r *KubeadmConfigResource) mutate(ctx context.Context, tenantControlPlane *
 		spec := tenantControlPlane.Spec.ControlPlane
 		if spec.Gateway != nil {
 			if len(spec.Gateway.Hostname) > 0 {
-				// For Gateway mode, default to port 443 (standard HTTPS port)
-				// since Gateway/Ingress controllers expose on 443, not 6443
-				gaddr, gport := utilities.GetControlPlaneAddressAndPortFromHostname(string(spec.Gateway.Hostname), 443)
+				// For Gateway mode, default to port 6443
+				// Gateway API TLSRoute listens on 6443, not 443 like Ingress/tcp-proxy
+				gaddr, gport := utilities.GetControlPlaneAddressAndPortFromHostname(string(spec.Gateway.Hostname), 6443)
 				endpoint = net.JoinHostPort(gaddr, strconv.FormatInt(int64(gport), 10))
 			}
 		}
