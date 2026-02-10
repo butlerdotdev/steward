@@ -221,13 +221,18 @@ func (r *Agent) ensureTLSSecret(ctx context.Context, tcp *stewardv1alpha1.Tenant
 // For LoadBalancer/NodePort, uses the assigned address (passthrough mode).
 func resolveUpstreamEndpoint(_ context.Context, _ client.Client, tcp *stewardv1alpha1.TenantControlPlane) (string, error) {
 	if isIngressOrGatewayMode(tcp) {
-		// Use the Ingress hostname - tcp-proxy will connect with proper SNI
+		// Use the Ingress/Gateway hostname - tcp-proxy will connect with proper SNI
 		hostname := getIngressHostname(tcp)
 		if hostname == "" {
 			return "", fmt.Errorf("Ingress/Gateway mode but no hostname configured")
 		}
-		// The Ingress uses port 443
-		return fmt.Sprintf("%s:443", hostname), nil
+		// Ingress uses port 443 (tcp-proxy handles TLS re-establishment)
+		// Gateway uses port 6443 (direct TLS passthrough to kube-apiserver)
+		port := 443
+		if tcp.Spec.ControlPlane.Gateway != nil && len(tcp.Spec.ControlPlane.Gateway.Hostname) > 0 {
+			port = 6443
+		}
+		return fmt.Sprintf("%s:%d", hostname, port), nil
 	}
 
 	// LoadBalancer/NodePort mode: use the assigned address directly (passthrough mode)
@@ -362,8 +367,8 @@ func (r *Agent) mutate(ctx context.Context, tcp *stewardv1alpha1.TenantControlPl
 				},
 			)
 		} else {
-			// TLS mode - tcp-proxy needs to reach the Ingress for bootstrap
-			// The hostAliases provide DNS resolution for the Ingress hostname
+			// TLS mode - tcp-proxy needs to reach the Ingress/Gateway for bootstrap
+			// The hostAliases provide DNS resolution for the Ingress/Gateway hostname
 			env = append(env,
 				corev1.EnvVar{
 					Name:  "KUBERNETES_SERVICE_HOST",
@@ -371,7 +376,7 @@ func (r *Agent) mutate(ctx context.Context, tcp *stewardv1alpha1.TenantControlPl
 				},
 				corev1.EnvVar{
 					Name:  "KUBERNETES_SERVICE_PORT",
-					Value: "443",
+					Value: utilities.ExtractPort(upstreamEndpoint),
 				},
 			)
 		}
