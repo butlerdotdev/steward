@@ -12,7 +12,7 @@ name: steward
 sources:
   - https://github.com/butlerdotdev/steward
 type: application
-version: 0.2.2
+version: 0.2.3
 dependencies:
   - name: steward-etcd
     version: "0.14.0"
