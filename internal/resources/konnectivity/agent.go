@@ -203,7 +203,7 @@ func (r *Agent) mutate(ctx context.Context, tenantControlPlane *stewardv1alpha1.
 			apiHostname, _ := utilities.GetControlPlaneAddressAndPortFromHostname(
 				string(hostname), 0)
 			address = strings.Replace(apiHostname, ".k8s.", ".konnectivity.", 1)
-			konnectivityPort = 443
+			konnectivityPort = 8132
 		}
 
 		r.resource.SetLabels(utilities.MergeMaps(r.resource.GetLabels(), utilities.StewardLabels(tenantControlPlane.GetName(), r.GetName())))

@@ -90,9 +90,10 @@ func (in *TenantControlPlane) ExternalControlPlaneAddress(ctx context.Context, c
 		return hostname, 443, nil
 	}
 
-	// For Gateway mode, return the Gateway hostname and port 443
+	// For Gateway mode, return the Gateway hostname and port 6443
+	// Gateway API TLSRoute listens on port 6443 (not 443 like Ingress/tcp-proxy)
 	if in.Spec.ControlPlane.Gateway != nil && in.Spec.ControlPlane.Gateway.Hostname != "" {
-		return string(in.Spec.ControlPlane.Gateway.Hostname), 443, nil
+		return string(in.Spec.ControlPlane.Gateway.Hostname), 6443, nil
 	}
 
 	// For other modes, use the declared address with the configured port

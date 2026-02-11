@@ -6,6 +6,7 @@ package konnectivity
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/prometheus/client_golang/prometheus"
 	v1 "k8s.io/api/core/v1"
@@ -195,7 +196,10 @@ func (r *KubernetesKonnectivityGatewayResource) mutate(tcp *stewardv1alpha1.Tena
 			},
 		}
 
-		r.resource.Spec.Hostnames = []gatewayv1.Hostname{tcp.Spec.ControlPlane.Gateway.Hostname}
+		// Generate konnectivity hostname by replacing ".k8s." with ".konnectivity." in the API hostname
+		// This must match what the konnectivity agent does in agent.go to generate the proxy-server-host
+		konnectivityHostname := gatewayv1.Hostname(strings.Replace(string(tcp.Spec.ControlPlane.Gateway.Hostname), ".k8s.", ".konnectivity.", 1))
+		r.resource.Spec.Hostnames = []gatewayv1.Hostname{konnectivityHostname}
 		r.resource.Spec.Rules = []gatewayv1alpha2.TLSRouteRule{rule}
 
 		return controllerutil.SetControllerReference(tcp, r.resource, r.Client.Scheme())
