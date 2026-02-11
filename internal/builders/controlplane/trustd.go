@@ -140,7 +140,7 @@ func (t Trustd) buildVolumes(tcp stewardv1alpha1.TenantControlPlane, podSpec *co
 	podSpec.Volumes[index].VolumeSource = corev1.VolumeSource{
 		Secret: &corev1.SecretVolumeSource{
 			SecretName:  fmt.Sprintf("%s-trustd-creds", tcp.GetName()),
-			DefaultMode: pointer.To(int32(0400)),
+			DefaultMode: pointer.To(int32(420)),
 		},
 	}
 }
