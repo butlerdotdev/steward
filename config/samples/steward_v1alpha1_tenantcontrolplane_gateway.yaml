@@ -6,6 +6,7 @@
 # Prerequisites:
 # 1. Gateway API CRDs must be installed (GatewayClass, Gateway, TLSRoute)
 # 2. A Gateway resource must exist with listeners for ports 6443 and 8132
+#    (and port 50001 if workerBootstrap is enabled)
 # 3. DNS(or worker nodes hosts entries) must be configured to resolve the hostname to the Gateway's external address
 #
 # Example GatewayClass and Gateway configuration:
@@ -49,6 +50,18 @@
 #     protocol: TLS
 #     tls:
 #       mode: Passthrough
+#   - allowedRoutes:
+#       kinds:
+#       - group: gateway.networking.k8s.io
+#         kind: TLSRoute
+#       namespaces:
+#         from: All
+#     hostname: '*.cluster.dev'
+#     name: steward-trustd
+#     port: 50001
+#     protocol: TLS
+#     tls:
+#       mode: Passthrough
 
 apiVersion: steward.butlerlabs.dev/v1alpha1
 kind: TenantControlPlane
@@ -59,6 +72,11 @@ spec:
     coreDNS: {}
     kubeProxy: {}
     konnectivity: {}
+    # workerBootstrap:         # Uncomment to enable Talos worker node bootstrap
+    #   provider: talos
+    #   talos:
+    #     port: 50001
+    #     image: ghcr.io/butlerdotdev/steward-trustd
   dataStore: default
   controlPlane:
     gateway:

@@ -228,6 +228,9 @@ func NewCmd(scheme *runtime.Scheme) *cobra.Command {
 						KonnectivityBuilder: controlplane.Konnectivity{
 							Scheme: *mgr.GetScheme(),
 						},
+						TrustdBuilder: controlplane.Trustd{
+							Scheme: *mgr.GetScheme(),
+						},
 					},
 					handlers.TenantControlPlaneServiceCIDR{},
 					handlers.TenantControlPlaneLoadBalancerSourceRanges{},
@@ -235,6 +238,7 @@ func NewCmd(scheme *runtime.Scheme) *cobra.Command {
 						Client:          mgr.GetClient(),
 						DiscoveryClient: discoveryClient,
 					},
+					handlers.TenantControlPlaneWorkerBootstrapValidation{},
 				},
 				routes.DataStoreValidate{}: {
 					handlers.DataStoreValidation{Client: mgr.GetClient()},

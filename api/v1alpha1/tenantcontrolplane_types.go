@@ -364,6 +364,9 @@ type AddonsSpec struct {
 	// rewriting requirements for Ingress and Gateway API network modes.
 	// +optional
 	TCPProxy *TCPProxySpec `json:"tcpProxy,omitempty"`
+	// WorkerBootstrap configures immutable OS worker node bootstrap.
+	// +optional
+	WorkerBootstrap *WorkerBootstrapSpec `json:"workerBootstrap,omitempty"`
 }
 
 type Permissions struct {

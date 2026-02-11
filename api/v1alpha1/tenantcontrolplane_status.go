@@ -155,10 +155,11 @@ type AddonStatus struct {
 
 // AddonsStatus defines the observed state of the different Addons.
 type AddonsStatus struct {
-	CoreDNS      AddonStatus        `json:"coreDNS,omitempty"`
-	KubeProxy    AddonStatus        `json:"kubeProxy,omitempty"`
-	Konnectivity KonnectivityStatus `json:"konnectivity,omitempty"`
-	TCPProxy     TCPProxyStatus     `json:"tcpProxy,omitempty"`
+	CoreDNS         AddonStatus           `json:"coreDNS,omitempty"`
+	KubeProxy       AddonStatus           `json:"kubeProxy,omitempty"`
+	Konnectivity    KonnectivityStatus    `json:"konnectivity,omitempty"`
+	TCPProxy        TCPProxyStatus        `json:"tcpProxy,omitempty"`
+	WorkerBootstrap WorkerBootstrapStatus `json:"workerBootstrap,omitempty"`
 }
 
 // TenantControlPlaneStatus defines the observed state of TenantControlPlane.
