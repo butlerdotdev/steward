@@ -74,10 +74,10 @@ helm uninstall steward -n steward-system
 | podSecurityContext | object | `{"runAsNonRoot":true}` | The securityContext to apply to the Steward controller pods. |
 | readinessProbe | object | `{"httpGet":{"path":"/readyz","port":"healthcheck"},"initialDelaySeconds":5,"periodSeconds":10}` | The readinessProbe for the controller container |
 | replicaCount | int | `1` | The number of the pod replicas for the Steward controller. |
-| resources.limits.cpu | string | `"200m"` |  |
-| resources.limits.memory | string | `"100Mi"` |  |
+| resources.limits.cpu | string | `"2"` |  |
+| resources.limits.memory | string | `"1Gi"` |  |
 | resources.requests.cpu | string | `"100m"` |  |
-| resources.requests.memory | string | `"20Mi"` |  |
+| resources.requests.memory | string | `"128Mi"` |  |
 | securityContext | object | `{"allowPrivilegeEscalation":false}` | The securityContext to apply to the Steward controller container only. It does not apply to the Steward RBAC proxy container. |
 | serviceAccount.annotations | object | `{}` |  |
 | serviceAccount.create | bool | `true` |  |
