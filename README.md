@@ -1,10 +1,10 @@
 # Steward
 
 <p align="left">
-  <img src="https://img.shields.io/github/license/butlerlabs/steward"/>
-  <img src="https://img.shields.io/github/go-mod/go-version/butlerlabs/steward"/>
-  <a href="https://github.com/butlerlabs/steward/releases"><img src="https://img.shields.io/github/v/release/butlerlabs/steward"/></a>
-  <img src="https://goreportcard.com/badge/github.com/butlerlabs/steward">
+  <img src="https://img.shields.io/github/license/butlerdotdev/steward"/>
+  <img src="https://img.shields.io/github/go-mod/go-version/butlerdotdev/steward"/>
+  <a href="https://github.com/butlerdotdev/steward/releases"><img src="https://img.shields.io/github/v/release/butlerdotdev/steward"/></a>
+  <img src="https://goreportcard.com/badge/github.com/butlerdotdev/steward">
   <a href="https://kubernetes.slack.com/archives/C03GLTTMWNN"><img alt="#steward on Kubernetes Slack" src="https://img.shields.io/badge/slack-@kubernetes/steward-blue.svg?logo=slack"/></a>
 </p>
 
@@ -266,7 +266,7 @@ Since Steward is just focusing on the Control Plane a [Steward's Cluster API Con
 ### 🏷️ Versioning
 
 Versioning adheres to the [Semantic Versioning](http://semver.org/) principles.
-A full list of the available releases is available in the GitHub repository's [**Release** section](https://github.com/butlerlabs/steward/releases).
+A full list of the available releases is available in the GitHub repository's [**Release** section](https://github.com/butlerdotdev/steward/releases).
 
 ### 📄 Documentation
 
@@ -276,14 +276,14 @@ Further documentation can be found on the official [Steward documentation websit
 
 Contributions are highly appreciated and very welcomed!
 
-In case of bugs, please, check if the issue has been already opened by checking the [GitHub Issues](https://github.com/butlerlabs/steward/issues) section.
+In case of bugs, please, check if the issue has been already opened by checking the [GitHub Issues](https://github.com/butlerdotdev/steward/issues) section.
 In case it isn't, you can open a new one: a detailed report will help us to replicate it, assess it, and work on a fix.
 
 You can express your intention in working on the fix on your own.
 The commit messages are checked according to the described [semantics](https://github.com/projectcapsule/capsule/blob/main/CONTRIBUTING.md#semantics).
 Commits are used to generate the changelog, and their author will be referenced in it.
 
-In case of **✨ Feature Requests** please use the [Discussion's Feature Request section](https://github.com/butlerlabs/steward/discussions/categories/feature-requests).
+In case of **✨ Feature Requests** please use the [Discussion's Feature Request section](https://github.com/butlerdotdev/steward/discussions/categories/feature-requests).
 
 ### 📜 Project History
 
