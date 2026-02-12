@@ -30,6 +30,7 @@ type TalosDeploymentResource struct {
 
 func (r *TalosDeploymentResource) GetHistogram() prometheus.Histogram {
 	deploymentCollector = resources.LazyLoadHistogramFromResource(deploymentCollector, r)
+
 	return deploymentCollector
 }
 
@@ -71,6 +72,7 @@ func (r *TalosDeploymentResource) Define(_ context.Context, tcp *stewardv1alpha1
 			Namespace: tcp.GetNamespace(),
 		},
 	}
+
 	return nil
 }
 
@@ -93,6 +95,7 @@ func (r *TalosDeploymentResource) mutate(tcp *stewardv1alpha1.TenantControlPlane
 		}
 
 		r.Builder.Build(r.resource, *tcp)
+
 		return nil
 	}
 }
@@ -103,5 +106,6 @@ func (r *TalosDeploymentResource) GetName() string {
 
 func (r *TalosDeploymentResource) UpdateTenantControlPlaneStatus(_ context.Context, tcp *stewardv1alpha1.TenantControlPlane) error {
 	tcp.Status.Addons.WorkerBootstrap.Enabled = shouldHaveWorkerBootstrap(tcp)
+
 	return nil
 }

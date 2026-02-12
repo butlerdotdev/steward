@@ -50,9 +50,11 @@ func (w *WorkerBootstrapRBAC) Reconcile(ctx context.Context, _ reconcile.Request
 	if err != nil {
 		if errors.Is(err, sooterrors.ErrPausedReconciliation) {
 			w.Logger.Info(err.Error())
+
 			return reconcile.Result{}, nil
 		}
 		w.Logger.Error(err, "cannot retrieve TenantControlPlane")
+
 		return reconcile.Result{}, err
 	}
 
@@ -64,20 +66,24 @@ func (w *WorkerBootstrapRBAC) Reconcile(ctx context.Context, _ reconcile.Request
 
 	if err := w.ensureEndpointSliceReaderRole(ctx); err != nil {
 		w.Logger.Error(err, "failed to ensure EndpointSlice reader ClusterRole")
+
 		return reconcile.Result{}, err
 	}
 
 	if err := w.ensureEndpointSliceReaderBinding(ctx); err != nil {
 		w.Logger.Error(err, "failed to ensure EndpointSlice reader ClusterRoleBinding")
+
 		return reconcile.Result{}, err
 	}
 
 	if err := w.ensureKubeletServingAutoApproveBinding(ctx); err != nil {
 		w.Logger.Error(err, "failed to ensure kubelet-serving auto-approve ClusterRoleBinding")
+
 		return reconcile.Result{}, err
 	}
 
 	w.Logger.Info("reconciliation completed")
+
 	return reconcile.Result{}, nil
 }
 
@@ -96,8 +102,10 @@ func (w *WorkerBootstrapRBAC) ensureEndpointSliceReaderRole(ctx context.Context)
 				Verbs:     []string{"get", "list", "watch"},
 			},
 		}
+
 		return nil
 	})
+
 	return err
 }
 
@@ -120,8 +128,10 @@ func (w *WorkerBootstrapRBAC) ensureEndpointSliceReaderBinding(ctx context.Conte
 				Name: "system:nodes",
 			},
 		}
+
 		return nil
 	})
+
 	return err
 }
 
@@ -144,8 +154,10 @@ func (w *WorkerBootstrapRBAC) ensureKubeletServingAutoApproveBinding(ctx context
 				Name: "system:nodes",
 			},
 		}
+
 		return nil
 	})
+
 	return err
 }
 
@@ -158,6 +170,7 @@ func (w *WorkerBootstrapRBAC) SetupWithManager(mgr manager.Manager) error {
 		WithOptions(controller.TypedOptions[reconcile.Request]{SkipNameValidation: ptr.To(true)}).
 		For(&rbacv1.ClusterRoleBinding{}, builder.WithPredicates(predicate.NewPredicateFuncs(func(object client.Object) bool {
 			name := object.GetName()
+
 			return name == endpointSliceReaderClusterRoleBindingName || name == kubeletServingAutoApproveBindingName
 		}))).
 		WatchesRawSource(source.Channel(w.TriggerChannel, &handler.EnqueueRequestForObject{})).

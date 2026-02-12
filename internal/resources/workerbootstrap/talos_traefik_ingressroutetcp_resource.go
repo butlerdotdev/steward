@@ -37,6 +37,7 @@ type TalosTraefikIngressRouteTCPResource struct {
 
 func (r *TalosTraefikIngressRouteTCPResource) GetHistogram() prometheus.Histogram {
 	traefikCollector = resources.LazyLoadHistogramFromResource(traefikCollector, r)
+
 	return traefikCollector
 }
 
@@ -51,6 +52,7 @@ func (r *TalosTraefikIngressRouteTCPResource) ShouldCleanup(tcp *stewardv1alpha1
 	if tcp.Spec.ControlPlane.Ingress == nil {
 		return true
 	}
+
 	return tcp.Spec.ControlPlane.Ingress.ControllerType != "traefik"
 }
 
@@ -66,8 +68,10 @@ func (r *TalosTraefikIngressRouteTCPResource) CleanUp(ctx context.Context, tcp *
 	}, existing); err != nil {
 		if !k8serrors.IsNotFound(err) {
 			logger.Error(err, "failed to get trustd IngressRouteTCP before cleanup")
+
 			return false, err
 		}
+
 		return false, nil
 	}
 
@@ -77,6 +81,7 @@ func (r *TalosTraefikIngressRouteTCPResource) CleanUp(ctx context.Context, tcp *
 	for _, ref := range ownerRefs {
 		if ref.UID == tcp.GetUID() {
 			isOwned = true
+
 			break
 		}
 	}
@@ -87,12 +92,15 @@ func (r *TalosTraefikIngressRouteTCPResource) CleanUp(ctx context.Context, tcp *
 	if err := r.Client.Delete(ctx, existing); err != nil {
 		if !k8serrors.IsNotFound(err) {
 			logger.Error(err, "cannot cleanup trustd IngressRouteTCP")
+
 			return false, err
 		}
+
 		return false, nil
 	}
 
 	logger.V(1).Info("trustd IngressRouteTCP cleaned up")
+
 	return true, nil
 }
 
@@ -105,6 +113,7 @@ func (r *TalosTraefikIngressRouteTCPResource) Define(_ context.Context, tcp *ste
 	r.resource.SetGroupVersionKind(trustdIngressRouteTCPGVK)
 	r.resource.SetName(fmt.Sprintf("%s-trustd", tcp.GetName()))
 	r.resource.SetNamespace(tcp.GetNamespace())
+
 	return nil
 }
 

@@ -177,6 +177,7 @@ func generateToken() (string, error) {
 	if _, err := cryptorand.Read(tokenBytes); err != nil {
 		return "", fmt.Errorf("generating random bytes: %w", err)
 	}
+
 	return "butler." + hex.EncodeToString(tokenBytes), nil
 }
 
@@ -202,12 +203,14 @@ func parseEd25519PrivateKey(keyPEM []byte) (ed25519.PrivateKey, error) {
 func encodeCertPEM(certDER []byte) []byte {
 	var buf bytes.Buffer
 	_ = pem.Encode(&buf, &pem.Block{Type: "CERTIFICATE", Bytes: certDER})
+
 	return buf.Bytes()
 }
 
 func encodeKeyPEM(keyDER []byte) []byte {
 	var buf bytes.Buffer
 	_ = pem.Encode(&buf, &pem.Block{Type: "PRIVATE KEY", Bytes: keyDER})
+
 	return buf.Bytes()
 }
 
@@ -218,5 +221,6 @@ func ParseTrustdServerCertSANs(certPEM []byte) ([]net.IP, []string, error) {
 	if err != nil {
 		return nil, nil, err
 	}
+
 	return cert.IPAddresses, cert.DNSNames, nil
 }

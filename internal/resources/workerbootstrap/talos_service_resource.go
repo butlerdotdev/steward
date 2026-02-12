@@ -30,6 +30,7 @@ type TalosServiceResource struct {
 
 func (r *TalosServiceResource) GetHistogram() prometheus.Histogram {
 	serviceCollector = resources.LazyLoadHistogramFromResource(serviceCollector, r)
+
 	return serviceCollector
 }
 
@@ -48,6 +49,7 @@ func (r *TalosServiceResource) ShouldStatusBeUpdated(_ context.Context, tcp *ste
 	if port == 0 {
 		return true
 	}
+
 	return tcp.Status.Addons.WorkerBootstrap.Service.Port != port
 }
 
@@ -62,13 +64,16 @@ func (r *TalosServiceResource) CleanUp(ctx context.Context, _ *stewardv1alpha1.T
 		for i, port := range r.resource.Spec.Ports {
 			if port.Name == trustdServicePortName {
 				r.resource.Spec.Ports = append(r.resource.Spec.Ports[:i], r.resource.Spec.Ports[i+1:]...)
+
 				break
 			}
 		}
+
 		return nil
 	})
 	if err != nil {
 		logger.Error(err, "unable to cleanup trustd service port")
+
 		return false, err
 	}
 
@@ -78,6 +83,7 @@ func (r *TalosServiceResource) CleanUp(ctx context.Context, _ *stewardv1alpha1.T
 func (r *TalosServiceResource) UpdateTenantControlPlaneStatus(_ context.Context, tcp *stewardv1alpha1.TenantControlPlane) error {
 	if !shouldHaveWorkerBootstrap(tcp) {
 		tcp.Status.Addons.WorkerBootstrap.Service = stewardv1alpha1.KubernetesServiceStatus{}
+
 		return nil
 	}
 
@@ -96,6 +102,7 @@ func (r *TalosServiceResource) Define(_ context.Context, tcp *stewardv1alpha1.Te
 			Namespace: tcp.GetNamespace(),
 		},
 	}
+
 	return nil
 }
 
@@ -126,6 +133,7 @@ func (r *TalosServiceResource) mutate(tcp *stewardv1alpha1.TenantControlPlane) f
 					r.resource.Spec.Ports[i].NodePort = port
 				}
 				found = true
+
 				break
 			}
 		}
@@ -157,5 +165,6 @@ func findTrustdPort(svc *corev1.Service) int32 {
 			return p.Port
 		}
 	}
+
 	return 0
 }

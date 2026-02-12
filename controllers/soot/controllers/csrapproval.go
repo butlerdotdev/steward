@@ -49,9 +49,11 @@ func (c *CSRApproval) Reconcile(ctx context.Context, _ reconcile.Request) (recon
 	if err != nil {
 		if errors.Is(err, sooterrors.ErrPausedReconciliation) {
 			c.Logger.Info(err.Error())
+
 			return reconcile.Result{}, nil
 		}
 		c.Logger.Error(err, "cannot retrieve TenantControlPlane")
+
 		return reconcile.Result{}, err
 	}
 
@@ -84,6 +86,7 @@ func (c *CSRApproval) validateAndApprove(ctx context.Context, csr *certificatesv
 	// Validate requestor is a node
 	if !strings.HasPrefix(csr.Spec.Username, "system:node:") {
 		c.Logger.V(1).Info("skipping CSR: requestor is not a node", "csr", csr.Name, "username", csr.Spec.Username)
+
 		return nil
 	}
 
@@ -91,11 +94,13 @@ func (c *CSRApproval) validateAndApprove(ctx context.Context, csr *certificatesv
 	for _, group := range csr.Spec.Groups {
 		if group == "system:nodes" {
 			hasNodesGroup = true
+
 			break
 		}
 	}
 	if !hasNodesGroup {
 		c.Logger.V(1).Info("skipping CSR: requestor not in system:nodes group", "csr", csr.Name)
+
 		return nil
 	}
 
@@ -104,11 +109,13 @@ func (c *CSRApproval) validateAndApprove(ctx context.Context, csr *certificatesv
 	for _, usage := range csr.Spec.Usages {
 		if usage == certificatesv1.UsageServerAuth {
 			hasServerAuth = true
+
 			break
 		}
 	}
 	if !hasServerAuth {
 		c.Logger.V(1).Info("skipping CSR: missing server auth usage", "csr", csr.Name)
+
 		return nil
 	}
 
@@ -117,22 +124,24 @@ func (c *CSRApproval) validateAndApprove(ctx context.Context, csr *certificatesv
 		parsedCSR, err := parseCSRRequest(csr.Spec.Request)
 		if err != nil {
 			c.Logger.V(1).Info("skipping CSR: cannot parse request", "csr", csr.Name, "error", err)
+
 			return nil
 		}
 
 		if !ipSANsInAllowedSubnets(parsedCSR.IPAddresses, tcp.Spec.Addons.WorkerBootstrap.AllowedSubnets) {
 			c.Logger.V(1).Info("skipping CSR: IP SANs not in allowed subnets", "csr", csr.Name)
+
 			return nil
 		}
 	}
 
 	// Approve the CSR
 	csr.Status.Conditions = append(csr.Status.Conditions, certificatesv1.CertificateSigningRequestCondition{
-		Type:               certificatesv1.CertificateApproved,
-		Status:             corev1.ConditionTrue,
-		Reason:             "StewardAutoApproved",
-		Message:            "Auto-approved by Steward worker bootstrap CSR approval controller",
-		LastUpdateTime:     metav1.Now(),
+		Type:           certificatesv1.CertificateApproved,
+		Status:         corev1.ConditionTrue,
+		Reason:         "StewardAutoApproved",
+		Message:        "Auto-approved by Steward worker bootstrap CSR approval controller",
+		LastUpdateTime: metav1.Now(),
 	})
 
 	if err := c.client.SubResource("approval").Update(ctx, csr); err != nil {
@@ -140,6 +149,7 @@ func (c *CSRApproval) validateAndApprove(ctx context.Context, csr *certificatesv
 	}
 
 	c.Logger.Info("approved CSR", "csr", csr.Name, "username", csr.Spec.Username)
+
 	return nil
 }
 
@@ -152,6 +162,7 @@ func (c *CSRApproval) SetupWithManager(mgr manager.Manager) error {
 		WithOptions(controller.TypedOptions[reconcile.Request]{SkipNameValidation: ptr.To(true)}).
 		For(&certificatesv1.CertificateSigningRequest{}, builder.WithPredicates(predicate.NewPredicateFuncs(func(object client.Object) bool {
 			csr := object.(*certificatesv1.CertificateSigningRequest) //nolint:forcetypeassert
+
 			return csr.Spec.SignerName == certificatesv1.KubeletServingSignerName && !isApprovedOrDenied(csr)
 		}))).
 		WatchesRawSource(source.Channel(c.TriggerChannel, &handler.EnqueueRequestForObject{})).
@@ -164,6 +175,7 @@ func isApprovedOrDenied(csr *certificatesv1.CertificateSigningRequest) bool {
 			return true
 		}
 	}
+
 	return false
 }
 
@@ -172,11 +184,12 @@ func parseCSRRequest(csrPEM []byte) (*x509.CertificateRequest, error) {
 	if block == nil || block.Type != "CERTIFICATE REQUEST" {
 		return x509.ParseCertificateRequest(csrPEM)
 	}
+
 	return x509.ParseCertificateRequest(block.Bytes)
 }
 
 func ipSANsInAllowedSubnets(ips []net.IP, subnets []string) bool {
-	var cidrs []*net.IPNet
+	cidrs := make([]*net.IPNet, 0, len(subnets))
 	for _, s := range subnets {
 		_, cidr, err := net.ParseCIDR(s)
 		if err != nil {
@@ -190,6 +203,7 @@ func ipSANsInAllowedSubnets(ips []net.IP, subnets []string) bool {
 		for _, cidr := range cidrs {
 			if cidr.Contains(ip) {
 				allowed = true
+
 				break
 			}
 		}

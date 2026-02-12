@@ -29,6 +29,7 @@ type TalosGatewayResource struct {
 
 func (r *TalosGatewayResource) GetHistogram() prometheus.Histogram {
 	gatewayCollector = resources.LazyLoadHistogramFromResource(gatewayCollector, r)
+
 	return gatewayCollector
 }
 
@@ -36,6 +37,7 @@ func (r *TalosGatewayResource) ShouldStatusBeUpdated(_ context.Context, tcp *ste
 	if !r.shouldHaveGateway(tcp) {
 		return false
 	}
+
 	return false
 }
 
@@ -43,6 +45,7 @@ func (r *TalosGatewayResource) shouldHaveGateway(tcp *stewardv1alpha1.TenantCont
 	if !shouldHaveWorkerBootstrap(tcp) {
 		return false
 	}
+
 	return tcp.Spec.ControlPlane.Gateway != nil
 }
 
@@ -56,6 +59,7 @@ func (r *TalosGatewayResource) CleanUp(ctx context.Context, tcp *stewardv1alpha1
 	cleaned, err := resources.CleanupTLSRoute(ctx, r.Client, r.resource.GetName(), r.resource.GetNamespace(), tcp)
 	if err != nil {
 		logger.Error(err, "failed to cleanup trustd TLSRoute")
+
 		return false, err
 	}
 
@@ -77,6 +81,7 @@ func (r *TalosGatewayResource) Define(_ context.Context, tcp *stewardv1alpha1.Te
 			Namespace: tcp.GetNamespace(),
 		},
 	}
+
 	return nil
 }
 
@@ -114,7 +119,7 @@ func (r *TalosGatewayResource) mutate(tcp *stewardv1alpha1.TenantControlPlane) c
 			return fmt.Errorf("control plane gateway hostname is not set")
 		}
 
-		port := gatewayv1.PortNumber(tcp.Spec.Addons.WorkerBootstrap.Talos.Port)
+		port := tcp.Spec.Addons.WorkerBootstrap.Talos.Port
 		serviceName := gatewayv1alpha2.ObjectName(tcp.Status.Kubernetes.Service.Name)
 
 		if serviceName == "" || port == 0 {
@@ -125,7 +130,7 @@ func (r *TalosGatewayResource) mutate(tcp *stewardv1alpha1.TenantControlPlane) c
 		if tcp.Spec.ControlPlane.Gateway.GatewayParentRefs == nil {
 			return fmt.Errorf("control plane gateway parentRefs are not specified")
 		}
-		r.resource.Spec.ParentRefs = resources.NewParentRefsSpecWithPortAndSection(tcp.Spec.ControlPlane.Gateway.GatewayParentRefs, int32(port), "steward-trustd")
+		r.resource.Spec.ParentRefs = resources.NewParentRefsSpecWithPortAndSection(tcp.Spec.ControlPlane.Gateway.GatewayParentRefs, port, "steward-trustd")
 
 		rule := gatewayv1alpha2.TLSRouteRule{
 			BackendRefs: []gatewayv1alpha2.BackendRef{
@@ -157,11 +162,13 @@ func (r *TalosGatewayResource) GetName() string {
 }
 
 // Ensure interface satisfaction at compile time.
-var _ resources.Resource = &TalosGatewayResource{}
-var _ resources.Resource = &TalosCredentialsResource{}
-var _ resources.Resource = &TalosDeploymentResource{}
-var _ resources.Resource = &TalosServiceResource{}
-var _ resources.Resource = &TalosTraefikIngressRouteTCPResource{}
+var (
+	_ resources.Resource = &TalosGatewayResource{}
+	_ resources.Resource = &TalosCredentialsResource{}
+	_ resources.Resource = &TalosDeploymentResource{}
+	_ resources.Resource = &TalosServiceResource{}
+	_ resources.Resource = &TalosTraefikIngressRouteTCPResource{}
+)
 
 // Suppress unused import warning for v1.
 var _ = v1.LocalObjectReference{}

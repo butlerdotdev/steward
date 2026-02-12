@@ -29,6 +29,7 @@ type TalosCredentialsResource struct {
 
 func (r *TalosCredentialsResource) GetHistogram() prometheus.Histogram {
 	credentialsCollector = resources.LazyLoadHistogramFromResource(credentialsCollector, r)
+
 	return credentialsCollector
 }
 
@@ -36,6 +37,7 @@ func (r *TalosCredentialsResource) ShouldStatusBeUpdated(_ context.Context, tcp 
 	if !shouldHaveWorkerBootstrap(tcp) {
 		return tcp.Status.Addons.WorkerBootstrap.Enabled
 	}
+
 	return tcp.Status.Addons.WorkerBootstrap.Credentials.SecretName != r.resource.Name ||
 		tcp.Status.Addons.WorkerBootstrap.Endpoint == ""
 }
@@ -50,18 +52,22 @@ func (r *TalosCredentialsResource) CleanUp(ctx context.Context, tcp *stewardv1al
 	if err := r.Client.Delete(ctx, r.resource); err != nil {
 		if client.IgnoreNotFound(err) != nil {
 			logger.Error(err, "failed to delete trustd credentials secret")
+
 			return false, err
 		}
+
 		return false, nil
 	}
 
 	logger.V(1).Info("trustd credentials secret cleaned up")
+
 	return true, nil
 }
 
 func (r *TalosCredentialsResource) UpdateTenantControlPlaneStatus(_ context.Context, tcp *stewardv1alpha1.TenantControlPlane) error {
 	if !shouldHaveWorkerBootstrap(tcp) {
 		tcp.Status.Addons.WorkerBootstrap = stewardv1alpha1.WorkerBootstrapStatus{}
+
 		return nil
 	}
 
@@ -80,6 +86,7 @@ func (r *TalosCredentialsResource) Define(_ context.Context, tcp *stewardv1alpha
 			Namespace: tcp.GetNamespace(),
 		},
 	}
+
 	return nil
 }
 
@@ -128,11 +135,13 @@ func (r *TalosCredentialsResource) CreateOrUpdate(ctx context.Context, tcp *stew
 			existingIPs, existingDNS, err := crypto.ParseTrustdServerCertSANs(r.resource.Data["server.crt"])
 			if err != nil {
 				logger.V(1).Info("failed to parse existing server cert, regenerating", "error", err)
+
 				return r.regenerateServerCert(ipAddresses, dnsNames)
 			}
 
 			if !sansEqual(existingIPs, ipAddresses, existingDNS, dnsNames) {
 				logger.V(1).Info("SANs changed, regenerating server cert")
+
 				return r.regenerateServerCert(ipAddresses, dnsNames)
 			}
 		}
@@ -157,6 +166,7 @@ func (r *TalosCredentialsResource) regenerateServerCert(ipAddresses []net.IP, dn
 	}
 	r.resource.Data["server.crt"] = chain
 	r.resource.Data["server.key"] = key
+
 	return nil
 }
 
@@ -279,6 +289,7 @@ func resolveHostIPs(host string) []net.IP {
 			ips = append(ips, ip)
 		}
 	}
+
 	return ips
 }
 

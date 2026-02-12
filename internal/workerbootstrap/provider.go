@@ -50,6 +50,7 @@ func GetPostDeploymentResources(spec *stewardv1alpha1.WorkerBootstrapSpec, c cli
 		if tcp.Spec.ControlPlane.Ingress != nil && tcp.Spec.ControlPlane.Ingress.ControllerType == "traefik" {
 			res = append(res, &wb.TalosTraefikIngressRouteTCPResource{Client: c})
 		}
+
 		return res
 	default:
 		return nil

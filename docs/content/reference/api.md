@@ -42931,6 +42931,13 @@ to route API server traffic through a local proxy, eliminating SNI
 rewriting requirements for Ingress and Gateway API network modes.<br/>
         </td>
         <td>false</td>
+      </tr><tr>
+        <td><b><a href="#tenantcontrolplanespecaddonsworkerbootstrap">workerBootstrap</a></b></td>
+        <td>object</td>
+        <td>
+          WorkerBootstrap configures immutable OS worker node bootstrap.<br/>
+        </td>
+        <td>false</td>
       </tr></tbody>
 </table>
 
@@ -43519,6 +43526,225 @@ only the result of this request.<br/>
 </table>
 
 
+<span id="tenantcontrolplanespecaddonsworkerbootstrap">`TenantControlPlane.spec.addons.workerBootstrap`</span>
+
+
+WorkerBootstrap configures immutable OS worker node bootstrap.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>provider</b></td>
+        <td>string</td>
+        <td>
+          Provider specifies the immutable OS bootstrap provider.<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>allowedSubnets</b></td>
+        <td>[]string</td>
+        <td>
+          AllowedSubnets restricts which worker IP ranges are valid for CSR approval.
+CIDR format (e.g., "10.40.0.0/22"). If empty, all IPs are allowed.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b><a href="#tenantcontrolplanespecaddonsworkerbootstrapcsrapproval">csrApproval</a></b></td>
+        <td>object</td>
+        <td>
+          CSRApproval configures automatic CSR approval for worker kubelet-serving certs.<br/>
+          <br/>
+            <i>Default</i>: map[autoApprove:true]<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b><a href="#tenantcontrolplanespecaddonsworkerbootstraptalos">talos</a></b></td>
+        <td>object</td>
+        <td>
+          Talos-specific configuration. Required when provider is "talos".<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="tenantcontrolplanespecaddonsworkerbootstrapcsrapproval">`TenantControlPlane.spec.addons.workerBootstrap.csrApproval`</span>
+
+
+CSRApproval configures automatic CSR approval for worker kubelet-serving certs.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>autoApprove</b></td>
+        <td>boolean</td>
+        <td>
+          AutoApprove enables automatic approval of kubelet-serving CSRs from workers.<br/>
+          <br/>
+            <i>Default</i>: true<br/>
+        </td>
+        <td>true</td>
+      </tr></tbody>
+</table>
+
+
+<span id="tenantcontrolplanespecaddonsworkerbootstraptalos">`TenantControlPlane.spec.addons.workerBootstrap.talos`</span>
+
+
+Talos-specific configuration. Required when provider is "talos".
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>certSANs</b></td>
+        <td>[]string</td>
+        <td>
+          CertSANs adds extra Subject Alternative Names to the trustd server certificate.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>image</b></td>
+        <td>string</td>
+        <td>
+          Image is the container image for steward-trustd.<br/>
+          <br/>
+            <i>Default</i>: ghcr.io/butlerdotdev/steward-trustd<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>imageTag</b></td>
+        <td>string</td>
+        <td>
+          ImageTag is the image tag for steward-trustd.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>port</b></td>
+        <td>integer</td>
+        <td>
+          Port for the trustd gRPC service.<br/>
+          <br/>
+            <i>Format</i>: int32<br/>
+            <i>Default</i>: 50001<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b><a href="#tenantcontrolplanespecaddonsworkerbootstraptalosresources">resources</a></b></td>
+        <td>object</td>
+        <td>
+          Resources for the trustd container.<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="tenantcontrolplanespecaddonsworkerbootstraptalosresources">`TenantControlPlane.spec.addons.workerBootstrap.talos.resources`</span>
+
+
+Resources for the trustd container.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b><a href="#tenantcontrolplanespecaddonsworkerbootstraptalosresourcesclaimsindex">claims</a></b></td>
+        <td>[]object</td>
+        <td>
+          Claims lists the names of resources, defined in spec.resourceClaims,
+that are used by this container.
+
+This field depends on the
+DynamicResourceAllocation feature gate.
+
+This field is immutable. It can only be set for containers.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>limits</b></td>
+        <td>map[string]int or string</td>
+        <td>
+          Limits describes the maximum amount of compute resources allowed.
+More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>requests</b></td>
+        <td>map[string]int or string</td>
+        <td>
+          Requests describes the minimum amount of compute resources required.
+If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+otherwise to an implementation-defined value. Requests cannot exceed Limits.
+More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="tenantcontrolplanespecaddonsworkerbootstraptalosresourcesclaimsindex">`TenantControlPlane.spec.addons.workerBootstrap.talos.resources.claims[index]`</span>
+
+
+ResourceClaim references one entry in PodSpec.ResourceClaims.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>name</b></td>
+        <td>string</td>
+        <td>
+          Name must match the name of one entry in pod.spec.resourceClaims of
+the Pod where this field is used. It makes that resource available
+inside a container.<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>request</b></td>
+        <td>string</td>
+        <td>
+          Request is the name chosen for a request in the referenced claim.
+If empty, everything from the claim is made available, otherwise
+only the result of this request.<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
 <span id="tenantcontrolplanespecdatastoreoverridesindex">`TenantControlPlane.spec.dataStoreOverrides[index]`</span>
 
 
@@ -43820,6 +44046,13 @@ Addons contains the status of the different Addons
         <td>object</td>
         <td>
           TCPProxyStatus defines the observed state of the TCP proxy addon.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b><a href="#tenantcontrolplanestatusaddonsworkerbootstrap">workerBootstrap</a></b></td>
+        <td>object</td>
+        <td>
+          WorkerBootstrapStatus defines the observed state of worker bootstrap.<br/>
         </td>
         <td>false</td>
       </tr></tbody>
@@ -45239,6 +45472,362 @@ ServiceAccount contains the status of the tcp-proxy ServiceAccount.
           <br/>
         </td>
         <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="tenantcontrolplanestatusaddonsworkerbootstrap">`TenantControlPlane.status.addons.workerBootstrap`</span>
+
+
+WorkerBootstrapStatus defines the observed state of worker bootstrap.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>enabled</b></td>
+        <td>boolean</td>
+        <td>
+          Enabled indicates whether worker bootstrap is currently active.<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b><a href="#tenantcontrolplanestatusaddonsworkerbootstrapcredentials">credentials</a></b></td>
+        <td>object</td>
+        <td>
+          Credentials tracks the OS credential Secret.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>endpoint</b></td>
+        <td>string</td>
+        <td>
+          Endpoint is the trustd endpoint for worker nodes (ip:port or hostname:port).<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>provider</b></td>
+        <td>enum</td>
+        <td>
+          Provider is the active bootstrap provider.<br/>
+          <br/>
+            <i>Enum</i>: talos<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b><a href="#tenantcontrolplanestatusaddonsworkerbootstrapservice">service</a></b></td>
+        <td>object</td>
+        <td>
+          Service tracks the trustd port on the TCP Service.<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="tenantcontrolplanestatusaddonsworkerbootstrapcredentials">`TenantControlPlane.status.addons.workerBootstrap.credentials`</span>
+
+
+Credentials tracks the OS credential Secret.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>checksum</b></td>
+        <td>string</td>
+        <td>
+          <br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>lastUpdate</b></td>
+        <td>string</td>
+        <td>
+          <br/>
+          <br/>
+            <i>Format</i>: date-time<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>secretName</b></td>
+        <td>string</td>
+        <td>
+          <br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="tenantcontrolplanestatusaddonsworkerbootstrapservice">`TenantControlPlane.status.addons.workerBootstrap.service`</span>
+
+
+Service tracks the trustd port on the TCP Service.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>name</b></td>
+        <td>string</td>
+        <td>
+          The name of the Service for the given cluster.<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>namespace</b></td>
+        <td>string</td>
+        <td>
+          The namespace which the Service for the given cluster is deployed.<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>port</b></td>
+        <td>integer</td>
+        <td>
+          The port where the service is running<br/>
+          <br/>
+            <i>Format</i>: int32<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b><a href="#tenantcontrolplanestatusaddonsworkerbootstrapserviceconditionsindex">conditions</a></b></td>
+        <td>[]object</td>
+        <td>
+          Current service state<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b><a href="#tenantcontrolplanestatusaddonsworkerbootstrapserviceloadbalancer">loadBalancer</a></b></td>
+        <td>object</td>
+        <td>
+          LoadBalancer contains the current status of the load-balancer,
+if one is present.<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="tenantcontrolplanestatusaddonsworkerbootstrapserviceconditionsindex">`TenantControlPlane.status.addons.workerBootstrap.service.conditions[index]`</span>
+
+
+Condition contains details for one aspect of the current state of this API Resource.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>lastTransitionTime</b></td>
+        <td>string</td>
+        <td>
+          lastTransitionTime is the last time the condition transitioned from one status to another.
+This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.<br/>
+          <br/>
+            <i>Format</i>: date-time<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>message</b></td>
+        <td>string</td>
+        <td>
+          message is a human readable message indicating details about the transition.
+This may be an empty string.<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>reason</b></td>
+        <td>string</td>
+        <td>
+          reason contains a programmatic identifier indicating the reason for the condition's last transition.
+Producers of specific condition types may define expected values and meanings for this field,
+and whether the values are considered a guaranteed API.
+The value should be a CamelCase string.
+This field may not be empty.<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>status</b></td>
+        <td>enum</td>
+        <td>
+          status of the condition, one of True, False, Unknown.<br/>
+          <br/>
+            <i>Enum</i>: True, False, Unknown<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>type</b></td>
+        <td>string</td>
+        <td>
+          type of condition in CamelCase or in foo.example.com/CamelCase.<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>observedGeneration</b></td>
+        <td>integer</td>
+        <td>
+          observedGeneration represents the .metadata.generation that the condition was set based upon.
+For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+with respect to the current state of the instance.<br/>
+          <br/>
+            <i>Format</i>: int64<br/>
+            <i>Minimum</i>: 0<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="tenantcontrolplanestatusaddonsworkerbootstrapserviceloadbalancer">`TenantControlPlane.status.addons.workerBootstrap.service.loadBalancer`</span>
+
+
+LoadBalancer contains the current status of the load-balancer,
+if one is present.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b><a href="#tenantcontrolplanestatusaddonsworkerbootstrapserviceloadbalanceringressindex">ingress</a></b></td>
+        <td>[]object</td>
+        <td>
+          Ingress is a list containing ingress points for the load-balancer.
+Traffic intended for the service should be sent to these ingress points.<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="tenantcontrolplanestatusaddonsworkerbootstrapserviceloadbalanceringressindex">`TenantControlPlane.status.addons.workerBootstrap.service.loadBalancer.ingress[index]`</span>
+
+
+LoadBalancerIngress represents the status of a load-balancer ingress point:
+traffic intended for the service should be sent to an ingress point.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>hostname</b></td>
+        <td>string</td>
+        <td>
+          Hostname is set for load-balancer ingress points that are DNS based
+(typically AWS load-balancers)<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>ip</b></td>
+        <td>string</td>
+        <td>
+          IP is set for load-balancer ingress points that are IP based
+(typically GCE or OpenStack load-balancers)<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>ipMode</b></td>
+        <td>string</td>
+        <td>
+          IPMode specifies how the load-balancer IP behaves, and may only be specified when the ip field is specified.
+Setting this to "VIP" indicates that traffic is delivered to the node with
+the destination set to the load-balancer's IP and port.
+Setting this to "Proxy" indicates that traffic is delivered to the node or pod with
+the destination set to the node's IP and node port or the pod's IP and port.
+Service implementations may use this information to adjust traffic routing.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b><a href="#tenantcontrolplanestatusaddonsworkerbootstrapserviceloadbalanceringressindexportsindex">ports</a></b></td>
+        <td>[]object</td>
+        <td>
+          Ports is a list of records of service ports
+If used, every port defined in the service should have an entry in it<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="tenantcontrolplanestatusaddonsworkerbootstrapserviceloadbalanceringressindexportsindex">`TenantControlPlane.status.addons.workerBootstrap.service.loadBalancer.ingress[index].ports[index]`</span>
+
+
+PortStatus represents the error condition of a service port
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>error</b></td>
+        <td>string</td>
+        <td>
+          Error is to record the problem with the service port
+The format of the error shall comply with the following rules:
+- built-in error values shall be specified in this file and those shall use
+  CamelCase names
+- cloud provider specific error values must have names that comply with the
+  format foo.example.com/CamelCase.<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>port</b></td>
+        <td>integer</td>
+        <td>
+          Port is the port number of the service port of which status is recorded here<br/>
+          <br/>
+            <i>Format</i>: int32<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>protocol</b></td>
+        <td>string</td>
+        <td>
+          Protocol is the protocol of the service port of which status is recorded here
+The supported values are: "TCP", "UDP", "SCTP"<br/>
+        </td>
+        <td>true</td>
       </tr></tbody>
 </table>
 
