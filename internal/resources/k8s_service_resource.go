@@ -118,21 +118,32 @@ func (r *KubernetesServiceResource) mutate(ctx context.Context, tenantControlPla
 			r.resource.Spec.Ports = make([]corev1.ServicePort, 1)
 		}
 
-		var ports []corev1.ServicePort
-		for i, port := range r.resource.Spec.Ports {
-			switch {
-			case i == 0:
-				port.Name = "kube-apiserver"
-				port.Protocol = corev1.ProtocolTCP
-				port.Port = tenantControlPlane.Spec.NetworkProfile.Port
-				port.TargetPort = intstr.FromInt32(tenantControlPlane.Spec.NetworkProfile.Port)
+		// Build set of port names managed by this resource to avoid
+		// overwriting ports owned by other resources (e.g. steward-trustd).
+		managedNames := map[string]bool{"kube-apiserver": true}
+		for _, ap := range tenantControlPlane.Spec.ControlPlane.Service.AdditionalPorts {
+			managedNames[ap.Name] = true
+		}
 
-				ports = append(ports, port)
-			case i == 1 && port.Name == "konnectivity-server":
+		// Update or insert the kube-apiserver port.
+		if len(r.resource.Spec.Ports) == 0 {
+			r.resource.Spec.Ports = []corev1.ServicePort{{}}
+		}
+		r.resource.Spec.Ports[0].Name = "kube-apiserver"
+		r.resource.Spec.Ports[0].Protocol = corev1.ProtocolTCP
+		r.resource.Spec.Ports[0].Port = tenantControlPlane.Spec.NetworkProfile.Port
+		r.resource.Spec.Ports[0].TargetPort = intstr.FromInt32(tenantControlPlane.Spec.NetworkProfile.Port)
+
+		// Collect ports not managed by this resource (preserve them).
+		var ports []corev1.ServicePort
+		ports = append(ports, r.resource.Spec.Ports[0])
+		for _, port := range r.resource.Spec.Ports[1:] {
+			if !managedNames[port.Name] {
 				ports = append(ports, port)
 			}
 		}
 
+		// Append additional ports from the spec.
 		for _, port := range tenantControlPlane.Spec.ControlPlane.Service.AdditionalPorts {
 			ports = append(ports, corev1.ServicePort{
 				Name:        port.Name,

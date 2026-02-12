@@ -99,6 +99,17 @@ func (r *TalosCredentialsResource) CreateOrUpdate(ctx context.Context, tcp *stew
 
 		ipAddresses, dnsNames := collectSANs(tcp)
 
+		// Read the Service directly from Kubernetes to get the LB/ClusterIP,
+		// since the credentials resource runs before the service status resource
+		// populates tcp.Status fields.
+		if declaredAddr, dErr := tcp.DeclaredControlPlaneAddress(ctx, r.Client); dErr == nil && declaredAddr != "" {
+			if ip := net.ParseIP(declaredAddr); ip != nil {
+				ipAddresses = append(ipAddresses, ip)
+			} else {
+				dnsNames = append(dnsNames, declaredAddr)
+			}
+		}
+
 		if r.resource.Data == nil || len(r.resource.Data["os-ca.crt"]) == 0 {
 			logger.V(1).Info("generating new trustd credentials")
 			creds, err := crypto.GenerateTrustdCredentials(tcp.GetName(), ipAddresses, dnsNames)
@@ -157,7 +168,7 @@ func collectSANs(tcp *stewardv1alpha1.TenantControlPlane) ([]net.IP, []string) {
 	var ipAddresses []net.IP
 	var dnsNames []string
 
-	// LB IP from service status
+	// LB IP from main service status
 	for _, ingress := range tcp.Status.Kubernetes.Service.LoadBalancer.Ingress {
 		if ingress.IP != "" {
 			if ip := net.ParseIP(ingress.IP); ip != nil {
@@ -169,23 +180,40 @@ func collectSANs(tcp *stewardv1alpha1.TenantControlPlane) ([]net.IP, []string) {
 		}
 	}
 
-	// Ingress hostname
+	// LB IP from workerBootstrap service status (trustd shares the TCP Service)
+	for _, ingress := range tcp.Status.Addons.WorkerBootstrap.Service.LoadBalancer.Ingress {
+		if ingress.IP != "" {
+			if ip := net.ParseIP(ingress.IP); ip != nil {
+				ipAddresses = append(ipAddresses, ip)
+			}
+		}
+		if ingress.Hostname != "" {
+			dnsNames = append(dnsNames, ingress.Hostname)
+		}
+	}
+
+	// Ingress hostname — add both the DNS name and resolved IPs.
+	// Resolved IPs are needed because Talos validates the trustd cert against
+	// the IP the hostname resolves to (the Ingress controller's external IP),
+	// not the hostname itself.
 	if tcp.Spec.ControlPlane.Ingress != nil && tcp.Spec.ControlPlane.Ingress.Hostname != "" {
 		host, _ := utilities.GetControlPlaneAddressAndPortFromHostname(tcp.Spec.ControlPlane.Ingress.Hostname, 0)
 		if ip := net.ParseIP(host); ip != nil {
 			ipAddresses = append(ipAddresses, ip)
 		} else if host != "" {
 			dnsNames = append(dnsNames, host)
+			ipAddresses = append(ipAddresses, resolveHostIPs(host)...)
 		}
 	}
 
-	// Gateway hostname
+	// Gateway hostname — same DNS resolution treatment as Ingress.
 	if tcp.Spec.ControlPlane.Gateway != nil && len(tcp.Spec.ControlPlane.Gateway.Hostname) > 0 {
 		host, _ := utilities.GetControlPlaneAddressAndPortFromHostname(string(tcp.Spec.ControlPlane.Gateway.Hostname), 0)
 		if ip := net.ParseIP(host); ip != nil {
 			ipAddresses = append(ipAddresses, ip)
 		} else if host != "" {
 			dnsNames = append(dnsNames, host)
+			ipAddresses = append(ipAddresses, resolveHostIPs(host)...)
 		}
 	}
 
@@ -232,6 +260,26 @@ func deriveEndpoint(tcp *stewardv1alpha1.TenantControlPlane) string {
 	}
 
 	return ""
+}
+
+// resolveHostIPs resolves a hostname to its IP addresses so they can be added
+// as certificate SANs. This is necessary for TLS passthrough proxies (Ingress,
+// Gateway) where the client connects to the proxy IP but validates the backend
+// cert against the resolved IP rather than the hostname.
+// Returns nil on lookup failure — the cert will still have the DNS SAN which
+// is sufficient for hostname-based validation. IP SANs are best-effort.
+func resolveHostIPs(host string) []net.IP {
+	addrs, err := net.LookupHost(host)
+	if err != nil {
+		return nil
+	}
+	var ips []net.IP
+	for _, addr := range addrs {
+		if ip := net.ParseIP(addr); ip != nil {
+			ips = append(ips, ip)
+		}
+	}
+	return ips
 }
 
 func sansEqual(existingIPs, newIPs []net.IP, existingDNS, newDNS []string) bool {

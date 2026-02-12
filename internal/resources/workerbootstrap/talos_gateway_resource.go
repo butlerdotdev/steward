@@ -138,7 +138,12 @@ func (r *TalosGatewayResource) mutate(tcp *stewardv1alpha1.TenantControlPlane) c
 			},
 		}
 
-		// Use the CP hostname directly (NOT .trustd. derivation)
+		// Use the CP hostname for SNI-based routing.
+		// NOTE: Talos's gRPC trustd client currently resolves the CP
+		// hostname to IP and connects by IP without sending hostname
+		// SNI, so Gateway/Ingress mode for trustd requires an upstream
+		// Talos fix. LoadBalancer mode is the supported path for Talos
+		// worker bootstrap until then.
 		hostname := tcp.Spec.ControlPlane.Gateway.Hostname
 		r.resource.Spec.Hostnames = []gatewayv1.Hostname{hostname}
 		r.resource.Spec.Rules = []gatewayv1alpha2.TLSRouteRule{rule}
