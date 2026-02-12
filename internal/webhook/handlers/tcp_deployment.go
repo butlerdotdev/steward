@@ -25,6 +25,7 @@ type TenantControlPlaneDeployment struct {
 	Client              client.Client
 	DeploymentBuilder   controlplane.Deployment
 	KonnectivityBuilder controlplane.Konnectivity
+	TrustdBuilder       controlplane.Trustd
 }
 
 func (t TenantControlPlaneDeployment) OnCreate(runtime.Object) AdmissionResponse {
@@ -94,6 +95,10 @@ func (t TenantControlPlaneDeployment) OnUpdate(newObject runtime.Object, oldObje
 
 		if tcp.Spec.Addons.Konnectivity != nil {
 			t.KonnectivityBuilder.Build(&deployment, *tcp)
+		}
+
+		if tcp.Spec.Addons.WorkerBootstrap != nil && tcp.Spec.Addons.WorkerBootstrap.Provider == stewardv1alpha1.TalosProvider {
+			t.TrustdBuilder.Build(&deployment, *tcp)
 		}
 
 		if k8serrors.IsNotFound(err) {

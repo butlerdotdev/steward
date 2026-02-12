@@ -23,6 +23,7 @@ import (
 	ds "github.com/butlerdotdev/steward/internal/resources/datastore"
 	"github.com/butlerdotdev/steward/internal/resources/konnectivity"
 	"github.com/butlerdotdev/steward/internal/utilities"
+	workerbootstrap "github.com/butlerdotdev/steward/internal/workerbootstrap"
 )
 
 type GroupResourceBuilderConfiguration struct {
@@ -66,8 +67,12 @@ func GetResources(ctx context.Context, config GroupResourceBuilderConfiguration)
 	resources = append(resources, getKubernetesStorageResources(config.client, config.Connection, config.DataStore, config.ExpirationThreshold)...)
 	resources = append(resources, getKubernetesAdditionalStorageResources(config.client, config.DataStoreOverriedsConnections, config.DataStoreOverrides, config.ExpirationThreshold)...)
 	resources = append(resources, getKonnectivityServerRequirementsResources(config.client, config.ExpirationThreshold)...)
+	// Worker bootstrap pre-deployment: credentials Secret must exist before Deployment creates trustd sidecar (volume mount)
+	resources = append(resources, workerbootstrap.GetPreDeploymentResources(config.tenantControlPlane.Spec.Addons.WorkerBootstrap, config.client)...)
 	resources = append(resources, getKubernetesDeploymentResources(config.client, config.tcpReconcilerConfig, config.DataStore, config.DataStoreOverrides)...)
 	resources = append(resources, getKonnectivityServerPatchResources(config.client)...)
+	// Worker bootstrap post-deployment: deployment patch (sidecar), service port, Traefik IngressRouteTCP
+	resources = append(resources, workerbootstrap.GetPostDeploymentResources(config.tenantControlPlane.Spec.Addons.WorkerBootstrap, config.client, &config.tenantControlPlane)...)
 	resources = append(resources, getDataStoreMigratingCleanup(config.client, config.StewardNamespace)...)
 	resources = append(resources, getKubernetesIngressResources(config.client, &config.tenantControlPlane)...)
 
@@ -75,6 +80,8 @@ func GetResources(ctx context.Context, config GroupResourceBuilderConfiguration)
 	if utilities.AreGatewayResourcesAvailable(ctx, config.client, config.DiscoveryClient) {
 		resources = append(resources, getKubernetesGatewayResources(config.client)...)
 		resources = append(resources, getKonnectivityGatewayResources(config.client)...)
+		// Worker bootstrap gateway: TLSRoute for trustd
+		resources = append(resources, workerbootstrap.GetProviderGatewayResources(config.tenantControlPlane.Spec.Addons.WorkerBootstrap, config.client)...)
 	}
 
 	return resources

@@ -378,6 +378,27 @@ func (m *Manager) Reconcile(ctx context.Context, request reconcile.Request) (res
 	if err = kubeadmRbac.SetupWithManager(mgr); err != nil {
 		return reconcile.Result{}, err
 	}
+
+	csrApproval := &controllers.CSRApproval{
+		AdminClient:               m.AdminClient,
+		GetTenantControlPlaneFunc: m.retrieveTenantControlPlane(tcpCtx, request),
+		TriggerChannel:            make(chan event.GenericEvent),
+		ControllerName:            fmt.Sprintf("%s-csrapproval", controllerNamePrefix),
+	}
+	if err = csrApproval.SetupWithManager(mgr); err != nil {
+		return reconcile.Result{}, err
+	}
+
+	workerRBAC := &controllers.WorkerBootstrapRBAC{
+		AdminClient:               m.AdminClient,
+		GetTenantControlPlaneFunc: m.retrieveTenantControlPlane(tcpCtx, request),
+		TriggerChannel:            make(chan event.GenericEvent),
+		ControllerName:            fmt.Sprintf("%s-workerrbac", controllerNamePrefix),
+	}
+	if err = workerRBAC.SetupWithManager(mgr); err != nil {
+		return reconcile.Result{}, err
+	}
+
 	completedCh := make(chan struct{})
 	// Starting the manager
 	go func() {
@@ -415,6 +436,8 @@ func (m *Manager) Reconcile(ctx context.Context, request reconcile.Request) (res
 			uploadKubeadmConfig.TriggerChannel,
 			uploadKubeletConfig.TriggerChannel,
 			bootstrapToken.TriggerChannel,
+			csrApproval.TriggerChannel,
+			workerRBAC.TriggerChannel,
 		},
 		cancelFn:    tcpCancelFn,
 		completedCh: completedCh,
