@@ -31,6 +31,10 @@ type TrustdCredentials struct {
 	ServerKey []byte
 	// Token is the machine token in the format "butler.<32-hex-chars>".
 	Token string
+	// AdminCert is the PEM-encoded admin client certificate for CLI access.
+	AdminCert []byte
+	// AdminKey is the PEM-encoded admin client private key.
+	AdminKey []byte
 }
 
 // GenerateTrustdCredentials generates a full set of OS credentials for steward-trustd:
@@ -48,6 +52,12 @@ func GenerateTrustdCredentials(clusterName string, ipAddresses []net.IP, dnsName
 		return nil, fmt.Errorf("generating trustd server cert: %w", err)
 	}
 
+	// Generate admin client cert
+	adminCert, adminKey, err := GenerateAdminClientCert(clusterName, caCert, caKey)
+	if err != nil {
+		return nil, fmt.Errorf("generating admin client cert: %w", err)
+	}
+
 	// Generate token
 	token, err := generateToken()
 	if err != nil {
@@ -60,6 +70,8 @@ func GenerateTrustdCredentials(clusterName string, ipAddresses []net.IP, dnsName
 		ServerChain: serverChain,
 		ServerKey:   serverKey,
 		Token:       token,
+		AdminCert:   adminCert,
+		AdminKey:    adminKey,
 	}, nil
 }
 
@@ -77,6 +89,62 @@ func RegenerateTrustdServerCert(caCertPEM, caKeyPEM []byte, ipAddresses []net.IP
 	}
 
 	return generateEd25519ServerCert(caCert, caKey, caCertPEM, ipAddresses, dnsNames)
+}
+
+// GenerateAdminClientCert generates an admin client certificate signed by the OS CA.
+// This certificate can be used with talosctl to authenticate against trustd.
+func GenerateAdminClientCert(clusterName string, caCert *x509.Certificate, caKey ed25519.PrivateKey) (certPEM, keyPEM []byte, err error) {
+	pub, priv, err := ed25519.GenerateKey(cryptorand.Reader)
+	if err != nil {
+		return nil, nil, fmt.Errorf("generating Ed25519 key: %w", err)
+	}
+
+	serialNumber, err := cryptorand.Int(cryptorand.Reader, new(big.Int).Lsh(big.NewInt(1), 128))
+	if err != nil {
+		return nil, nil, fmt.Errorf("generating serial number: %w", err)
+	}
+
+	template := &x509.Certificate{
+		SerialNumber: serialNumber,
+		Subject: pkix.Name{
+			CommonName:   fmt.Sprintf("%s admin", clusterName),
+			Organization: []string{"steward"},
+		},
+		NotBefore:   time.Now().Add(-1 * time.Hour),
+		NotAfter:    time.Now().AddDate(1, 0, 0),
+		KeyUsage:    x509.KeyUsageDigitalSignature,
+		ExtKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageClientAuth},
+	}
+
+	certDER, err := x509.CreateCertificate(cryptorand.Reader, template, caCert, pub, caKey)
+	if err != nil {
+		return nil, nil, fmt.Errorf("creating admin client certificate: %w", err)
+	}
+
+	certPEM = encodeCertPEM(certDER)
+
+	keyDER, err := x509.MarshalPKCS8PrivateKey(priv)
+	if err != nil {
+		return nil, nil, fmt.Errorf("marshaling admin client private key: %w", err)
+	}
+	keyPEM = encodeKeyPEM(keyDER)
+
+	return certPEM, keyPEM, nil
+}
+
+// RegenerateAdminClientCert regenerates an admin client certificate from PEM-encoded CA cert and key.
+func RegenerateAdminClientCert(clusterName string, caCertPEM, caKeyPEM []byte) (certPEM, keyPEM []byte, err error) {
+	caCert, err := ParseCertificateBytes(caCertPEM)
+	if err != nil {
+		return nil, nil, fmt.Errorf("parsing CA cert: %w", err)
+	}
+
+	caKey, err := parseEd25519PrivateKey(caKeyPEM)
+	if err != nil {
+		return nil, nil, fmt.Errorf("parsing CA key: %w", err)
+	}
+
+	return GenerateAdminClientCert(clusterName, caCert, caKey)
 }
 
 func generateEd25519CA(clusterName string) (*x509.Certificate, ed25519.PrivateKey, []byte, []byte, error) {

@@ -269,6 +269,13 @@ to route API server traffic through a local proxy, eliminating SNI
 rewriting requirements for Ingress and Gateway API network modes.<br/>
         </td>
         <td>false</td>
+      </tr><tr>
+        <td><b><a href="#stewardcontrolplanespecaddonsworkerbootstrap">workerBootstrap</a></b></td>
+        <td>object</td>
+        <td>
+          WorkerBootstrap configures immutable OS worker node bootstrap.<br/>
+        </td>
+        <td>false</td>
       </tr></tbody>
 </table>
 
@@ -830,6 +837,225 @@ More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-co
 
 
 <span id="stewardcontrolplanespecaddonstcpproxyresourcesclaimsindex">`StewardControlPlane.spec.addons.tcpProxy.resources.claims[index]`</span>
+
+
+ResourceClaim references one entry in PodSpec.ResourceClaims.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>name</b></td>
+        <td>string</td>
+        <td>
+          Name must match the name of one entry in pod.spec.resourceClaims of
+the Pod where this field is used. It makes that resource available
+inside a container.<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>request</b></td>
+        <td>string</td>
+        <td>
+          Request is the name chosen for a request in the referenced claim.
+If empty, everything from the claim is made available, otherwise
+only the result of this request.<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="stewardcontrolplanespecaddonsworkerbootstrap">`StewardControlPlane.spec.addons.workerBootstrap`</span>
+
+
+WorkerBootstrap configures immutable OS worker node bootstrap.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>provider</b></td>
+        <td>string</td>
+        <td>
+          Provider specifies the immutable OS bootstrap provider.<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>allowedSubnets</b></td>
+        <td>[]string</td>
+        <td>
+          AllowedSubnets restricts which worker IP ranges are valid for CSR approval.
+CIDR format (e.g., "10.40.0.0/22"). If empty, all IPs are allowed.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b><a href="#stewardcontrolplanespecaddonsworkerbootstrapcsrapproval">csrApproval</a></b></td>
+        <td>object</td>
+        <td>
+          CSRApproval configures automatic CSR approval for worker kubelet-serving certs.<br/>
+          <br/>
+            <i>Default</i>: map[autoApprove:true]<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b><a href="#stewardcontrolplanespecaddonsworkerbootstraptalos">talos</a></b></td>
+        <td>object</td>
+        <td>
+          Talos-specific configuration. Required when provider is "talos".<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="stewardcontrolplanespecaddonsworkerbootstrapcsrapproval">`StewardControlPlane.spec.addons.workerBootstrap.csrApproval`</span>
+
+
+CSRApproval configures automatic CSR approval for worker kubelet-serving certs.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>autoApprove</b></td>
+        <td>boolean</td>
+        <td>
+          AutoApprove enables automatic approval of kubelet-serving CSRs from workers.<br/>
+          <br/>
+            <i>Default</i>: true<br/>
+        </td>
+        <td>true</td>
+      </tr></tbody>
+</table>
+
+
+<span id="stewardcontrolplanespecaddonsworkerbootstraptalos">`StewardControlPlane.spec.addons.workerBootstrap.talos`</span>
+
+
+Talos-specific configuration. Required when provider is "talos".
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>certSANs</b></td>
+        <td>[]string</td>
+        <td>
+          CertSANs adds extra Subject Alternative Names to the trustd server certificate.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>image</b></td>
+        <td>string</td>
+        <td>
+          Image is the container image for steward-trustd.<br/>
+          <br/>
+            <i>Default</i>: ghcr.io/butlerdotdev/steward-trustd<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>imageTag</b></td>
+        <td>string</td>
+        <td>
+          ImageTag is the image tag for steward-trustd.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>port</b></td>
+        <td>integer</td>
+        <td>
+          Port for the trustd gRPC service.<br/>
+          <br/>
+            <i>Format</i>: int32<br/>
+            <i>Default</i>: 50001<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b><a href="#stewardcontrolplanespecaddonsworkerbootstraptalosresources">resources</a></b></td>
+        <td>object</td>
+        <td>
+          Resources for the trustd container.<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="stewardcontrolplanespecaddonsworkerbootstraptalosresources">`StewardControlPlane.spec.addons.workerBootstrap.talos.resources`</span>
+
+
+Resources for the trustd container.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b><a href="#stewardcontrolplanespecaddonsworkerbootstraptalosresourcesclaimsindex">claims</a></b></td>
+        <td>[]object</td>
+        <td>
+          Claims lists the names of resources, defined in spec.resourceClaims,
+that are used by this container.
+
+This field depends on the
+DynamicResourceAllocation feature gate.
+
+This field is immutable. It can only be set for containers.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>limits</b></td>
+        <td>map[string]int or string</td>
+        <td>
+          Limits describes the maximum amount of compute resources allowed.
+More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>requests</b></td>
+        <td>map[string]int or string</td>
+        <td>
+          Requests describes the minimum amount of compute resources required.
+If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+otherwise to an implementation-defined value. Requests cannot exceed Limits.
+More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="stewardcontrolplanespecaddonsworkerbootstraptalosresourcesclaimsindex">`StewardControlPlane.spec.addons.workerBootstrap.talos.resources.claims[index]`</span>
 
 
 ResourceClaim references one entry in PodSpec.ResourceClaims.
@@ -14506,6 +14732,13 @@ to route API server traffic through a local proxy, eliminating SNI
 rewriting requirements for Ingress and Gateway API network modes.<br/>
         </td>
         <td>false</td>
+      </tr><tr>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecaddonsworkerbootstrap">workerBootstrap</a></b></td>
+        <td>object</td>
+        <td>
+          WorkerBootstrap configures immutable OS worker node bootstrap.<br/>
+        </td>
+        <td>false</td>
       </tr></tbody>
 </table>
 
@@ -15067,6 +15300,225 @@ More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-co
 
 
 <span id="stewardcontrolplanetemplatespectemplatespecaddonstcpproxyresourcesclaimsindex">`StewardControlPlaneTemplate.spec.template.spec.addons.tcpProxy.resources.claims[index]`</span>
+
+
+ResourceClaim references one entry in PodSpec.ResourceClaims.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>name</b></td>
+        <td>string</td>
+        <td>
+          Name must match the name of one entry in pod.spec.resourceClaims of
+the Pod where this field is used. It makes that resource available
+inside a container.<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>request</b></td>
+        <td>string</td>
+        <td>
+          Request is the name chosen for a request in the referenced claim.
+If empty, everything from the claim is made available, otherwise
+only the result of this request.<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="stewardcontrolplanetemplatespectemplatespecaddonsworkerbootstrap">`StewardControlPlaneTemplate.spec.template.spec.addons.workerBootstrap`</span>
+
+
+WorkerBootstrap configures immutable OS worker node bootstrap.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>provider</b></td>
+        <td>string</td>
+        <td>
+          Provider specifies the immutable OS bootstrap provider.<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>allowedSubnets</b></td>
+        <td>[]string</td>
+        <td>
+          AllowedSubnets restricts which worker IP ranges are valid for CSR approval.
+CIDR format (e.g., "10.40.0.0/22"). If empty, all IPs are allowed.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecaddonsworkerbootstrapcsrapproval">csrApproval</a></b></td>
+        <td>object</td>
+        <td>
+          CSRApproval configures automatic CSR approval for worker kubelet-serving certs.<br/>
+          <br/>
+            <i>Default</i>: map[autoApprove:true]<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecaddonsworkerbootstraptalos">talos</a></b></td>
+        <td>object</td>
+        <td>
+          Talos-specific configuration. Required when provider is "talos".<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="stewardcontrolplanetemplatespectemplatespecaddonsworkerbootstrapcsrapproval">`StewardControlPlaneTemplate.spec.template.spec.addons.workerBootstrap.csrApproval`</span>
+
+
+CSRApproval configures automatic CSR approval for worker kubelet-serving certs.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>autoApprove</b></td>
+        <td>boolean</td>
+        <td>
+          AutoApprove enables automatic approval of kubelet-serving CSRs from workers.<br/>
+          <br/>
+            <i>Default</i>: true<br/>
+        </td>
+        <td>true</td>
+      </tr></tbody>
+</table>
+
+
+<span id="stewardcontrolplanetemplatespectemplatespecaddonsworkerbootstraptalos">`StewardControlPlaneTemplate.spec.template.spec.addons.workerBootstrap.talos`</span>
+
+
+Talos-specific configuration. Required when provider is "talos".
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>certSANs</b></td>
+        <td>[]string</td>
+        <td>
+          CertSANs adds extra Subject Alternative Names to the trustd server certificate.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>image</b></td>
+        <td>string</td>
+        <td>
+          Image is the container image for steward-trustd.<br/>
+          <br/>
+            <i>Default</i>: ghcr.io/butlerdotdev/steward-trustd<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>imageTag</b></td>
+        <td>string</td>
+        <td>
+          ImageTag is the image tag for steward-trustd.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>port</b></td>
+        <td>integer</td>
+        <td>
+          Port for the trustd gRPC service.<br/>
+          <br/>
+            <i>Format</i>: int32<br/>
+            <i>Default</i>: 50001<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecaddonsworkerbootstraptalosresources">resources</a></b></td>
+        <td>object</td>
+        <td>
+          Resources for the trustd container.<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="stewardcontrolplanetemplatespectemplatespecaddonsworkerbootstraptalosresources">`StewardControlPlaneTemplate.spec.template.spec.addons.workerBootstrap.talos.resources`</span>
+
+
+Resources for the trustd container.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b><a href="#stewardcontrolplanetemplatespectemplatespecaddonsworkerbootstraptalosresourcesclaimsindex">claims</a></b></td>
+        <td>[]object</td>
+        <td>
+          Claims lists the names of resources, defined in spec.resourceClaims,
+that are used by this container.
+
+This field depends on the
+DynamicResourceAllocation feature gate.
+
+This field is immutable. It can only be set for containers.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>limits</b></td>
+        <td>map[string]int or string</td>
+        <td>
+          Limits describes the maximum amount of compute resources allowed.
+More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>requests</b></td>
+        <td>map[string]int or string</td>
+        <td>
+          Requests describes the minimum amount of compute resources required.
+If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+otherwise to an implementation-defined value. Requests cannot exceed Limits.
+More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+<span id="stewardcontrolplanetemplatespectemplatespecaddonsworkerbootstraptalosresourcesclaimsindex">`StewardControlPlaneTemplate.spec.template.spec.addons.workerBootstrap.talos.resources.claims[index]`</span>
 
 
 ResourceClaim references one entry in PodSpec.ResourceClaims.
