@@ -129,8 +129,25 @@ func (r *TalosCredentialsResource) CreateOrUpdate(ctx context.Context, tcp *stew
 				"server.crt": creds.ServerChain,
 				"server.key": creds.ServerKey,
 				"token":      []byte(creds.Token),
+				"admin.crt":  creds.AdminCert,
+				"admin.key":  creds.AdminKey,
 			}
 		} else {
+			// Existing Secret — backfill admin creds if missing (upgrade path)
+			if len(r.resource.Data["admin.crt"]) == 0 {
+				logger.V(1).Info("generating admin client credentials for existing Secret")
+				adminCert, adminKey, err := crypto.RegenerateAdminClientCert(
+					tcp.GetName(),
+					r.resource.Data["os-ca.crt"],
+					r.resource.Data["os-ca.key"],
+				)
+				if err != nil {
+					return fmt.Errorf("generating admin client cert: %w", err)
+				}
+				r.resource.Data["admin.crt"] = adminCert
+				r.resource.Data["admin.key"] = adminKey
+			}
+
 			// Check if SANs changed and regenerate server cert only
 			existingIPs, existingDNS, err := crypto.ParseTrustdServerCertSANs(r.resource.Data["server.crt"])
 			if err != nil {
