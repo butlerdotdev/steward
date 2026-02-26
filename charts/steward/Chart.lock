@@ -1,6 +1,6 @@
 dependencies:
 - name: steward-etcd
   repository: oci://ghcr.io/butlerdotdev/charts
-  version: 0.14.0
-digest: sha256:51a5daf34c6424d4334799efc23a3aec38871aa8e22e7de8daf29bd69aba7c6f
-generated: "2026-01-21T08:42:01.029897-06:00"
+  version: 0.15.0
+digest: sha256:663d3fd0f7a85a1dc1991e68551661aceba601cf67917d81bec4ad8deb56635d
+generated: "2026-02-25T23:12:26.194154-06:00"
