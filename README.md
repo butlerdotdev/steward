@@ -1,13 +1,26 @@
-# Steward
-
-<p align="left">
-  <img src="https://img.shields.io/github/license/butlerdotdev/steward"/>
-  <img src="https://img.shields.io/github/go-mod/go-version/butlerdotdev/steward"/>
-  <a href="https://github.com/butlerdotdev/steward/releases"><img src="https://img.shields.io/github/v/release/butlerdotdev/steward"/></a>
-  <img src="https://goreportcard.com/badge/github.com/butlerdotdev/steward">
-  <a href="https://kubernetes.slack.com/archives/C03GLTTMWNN"><img alt="#steward on Kubernetes Slack" src="https://img.shields.io/badge/slack-@kubernetes/steward-blue.svg?logo=slack"/></a>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/butlerdotdev/butler/main/assets/mascots/steward.png" alt="Steward" width="150"/>
 </p>
 
+<h1 align="center">Steward</h1>
+
+<p align="center">
+  Hosted Kubernetes control plane operator. Run tenant API servers as Pods in a management cluster.
+</p>
+
+<p align="center">
+  <a href="https://github.com/butlerdotdev/steward/releases"><img src="https://img.shields.io/github/v/release/butlerdotdev/steward" alt="Release"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/butlerdotdev/steward" alt="License"></a>
+  <img src="https://img.shields.io/github/go-mod/go-version/butlerdotdev/steward" alt="Go Version">
+  <a href="https://goreportcard.com/report/github.com/butlerdotdev/steward"><img src="https://goreportcard.com/badge/github.com/butlerdotdev/steward" alt="Go Report Card"></a>
+  <a href="https://kubernetes.slack.com/archives/C03GLTTMWNN"><img src="https://img.shields.io/badge/slack-@kubernetes/steward-blue.svg?logo=slack" alt="Slack"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/butlerdotdev/butler">Butler</a> · <a href="https://docs.butlerlabs.dev/steward">Docs</a> · <a href="https://butlerlabs.dev">Website</a>
+</p>
+
+---
 
 ### 🤔 What is Steward?
 
